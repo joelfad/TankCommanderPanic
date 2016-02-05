@@ -73,3 +73,5 @@ build-*-*-*/
 *.dll
 *.exe
 
+# Cmake generated files
+*build/
