@@ -20,3 +20,7 @@ To run the TCP Client:<br>
 
 ## Troubleshooting
 If you have any difficulties compiling or running these programs, please let us (Group 36) know so that we can demonstrate our assignment.
+
+## Notes
+A special, minimalistic protocol was created in order to support file transfer. As such, the TCP server is not completely compatible with the TCP client provided in lectures.
+
