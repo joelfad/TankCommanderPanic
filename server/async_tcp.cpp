@@ -67,42 +67,20 @@ void tcp_session::do_read() {
                 // list
                 if (std::regex_match(data_buffer.data(), data_buffer.data()+length, std::regex("list\\s*"))) {
                     auto current_dir = boost::filesystem::path{"./"};
-                    //auto message = std::stringstream{};
-                    if (boost::filesystem::exists(current_dir)) {
-                        //auto files = std::stringstream{};
-                        //files << data_buffer << '\n';
 
+                    if (boost::filesystem::exists(current_dir)) {
                         // read list of directory items
                         for (auto&& entry : boost::filesystem::directory_iterator(current_dir)) {
-                            //files << entry.path().filename().string() << '\n';
                             body << entry.path().filename().string() << '\n';
                         }
-
-                        // add header with the number of bytes of the body
-                        /*auto bytes = std::to_string(files.str().size());
-
-                        // add padding to the header
-                        for (int i = bytes.size(); i < 4; i++) {
-                            message << '0';
-                        }
-
-                        // build the final message and copy it to the buffer
-                        message << bytes << files.str();
-                        data_buffer.copy(message.str());*/
                     }
                     else {
                         body << data_buffer << "\n";
                     }
-
-                    // write collected data
-                    //do_write(std::min(message.str().size(), data_buffer.size()));
                 }
                 // get <file name>
                 else if (std::regex_match(data_buffer.data(), data_buffer.data()+length, std::regex("get [A-Za-z_ /.]+\\s*"))){
-                    boost::filesystem::path file_path("./" + std::string{data_buffer.data()+4, data_buffer.data()+length});
-
-                    //std::stringstream message;
-                    //std::stringstream body;
+                    auto file_path = boost::filesystem::path{"./" + std::string{data_buffer.data()+4, data_buffer.data()+length}};
 
                     if (boost::filesystem::exists(file_path)) {
                         // read file
@@ -115,24 +93,9 @@ void tcp_session::do_read() {
                         std::cout << "Open file: " << file_path.string() << "\n";
                     }
                     else {
-                        body << "Error in openning file " << file_path.string();
+                        body << "Error in opening file " << file_path.string();
                         std::cout << "open() failed\n";
                     }
-
-                    // add header with the number of bytes of the body
-                    /*auto bytes = std::to_string(std::min(body.str().size(), max_length - 4));
-
-                    // add padding to the header
-                    for (int i = bytes.size(); i < 4; i++) {
-                        message << '0';
-                    }
-
-                    // build the final message and copy it to the buffer
-                    message << bytes << body.str();
-                    data_buffer.copy(message.str());
-
-                    // write collected data
-                    do_write(std::min(message.str().size(), data_buffer.size()));*/
                 }
                 // terminate
                 else if (std::regex_match(data_buffer.data(), data_buffer.data()+length, std::regex("terminate\\s*"))) {
@@ -141,7 +104,6 @@ void tcp_session::do_read() {
                 }
                 // [unknown command]
                 else {
-                    // create body content
                     body << "Server: Unknown command: " << data_buffer << "\n";
                 }
 
