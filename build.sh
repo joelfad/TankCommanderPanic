@@ -33,6 +33,7 @@ cd $UDIR/build && make
 cd ../../
 
 # Create symlinks
+echo "Creating symbolic links..."
 ln -s $SDIR/build/server SelectServer
 ln -s $TDIR/build/tcp_client_cpp TCPClient
 ln -s $UDIR/build/udp_client_cpp UDPClient
