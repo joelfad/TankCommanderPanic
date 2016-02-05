@@ -56,7 +56,13 @@ void tcp_session::do_read() {
             if (!error) {
                 std::cout << "TCP Client: " << data_buffer << "\n";
 
-                if (data_buffer == "list") {
+                /*####################################################################################
+                ### Here, regular expressions (regex) are used to match commands in order to ensure ##
+                ### maximal compatibility accross multiple client implementations.                  ##
+                ####################################################################################*/
+
+                // list
+                if (std::regex_match(data_buffer.data(), data_buffer.data()+length, std::regex("list\\s*"))) {
                     auto current_dir = boost::filesystem::path{"./"};
                     auto message = std::stringstream{};
                     if (boost::filesystem::exists(current_dir)) {
@@ -84,6 +90,7 @@ void tcp_session::do_read() {
                     // write collected data
                     do_write(std::min(message.str().size(), data_buffer.size()));
                 }
+                // get <file name>
                 else if (std::regex_match(data_buffer.data(), data_buffer.data()+length, std::regex("get [A-Za-z_ /.]+\\s*"))){
                     boost::filesystem::path file_path("./" + std::string{data_buffer.data()+4, data_buffer.data()+length});
 
@@ -120,10 +127,11 @@ void tcp_session::do_read() {
                     // write collected data
                     do_write(std::min(message.str().size(), data_buffer.size()));
                 }
-                else if (data_buffer == "terminate") {
-                    //do_write(length);
+                // terminate
+                else if (std::regex_match(data_buffer.data(), data_buffer.data()+length, std::regex("terminate\\s*"))) {
                     socket.get_io_service().stop();
                 }
+                // [unknown command]
                 else {
                     auto current_dir = boost::filesystem::path{"./"};
                     auto message = std::stringstream{};
@@ -153,10 +161,8 @@ void tcp_session::do_read() {
 
 void tcp_session::do_write(std::size_t length) {
     auto self(shared_from_this());
-    std::cout << data_buffer;
-    std::cout.flush();
     boost::asio::async_write(socket, boost::asio::buffer(data_buffer, length),
-        [this, self, length](boost::system::error_code error, std::size_t transmitted) {
+        [this, self, length](boost::system::error_code error, std::size_t /*transmitted*/) {
             if (!error) {
                 data_buffer.clear();
                 do_read();
