@@ -1,16 +1,14 @@
-//
-// blocking_tcp_echo_client.cpp
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-// Copyright (c) 2003-2015 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
+/*
+Project:  Server
+File:  main.cpp
+Author:  Leonardo Banderali
+Description:  This is a simple TCP client to work with the provided TCP/UDP server.
+Notes:  Code was inspired from some examples provided with the Boost.Asio library.
+    (http://www.boost.org/doc/libs/1_60_0/doc/html/boost_asio/examples/cpp11_examples.html)
+*/
 
 #include <char_array.hpp>
 
-//#include <cstdlib>
 #include <iostream>
 #include <string>
 #include <regex>
@@ -39,7 +37,6 @@ int main(int argc, char* argv[]) {
 
         while (true) {
             std::cout << "Enter message: ";
-            //char request[max_length];
             char_array<max_length> request;
             std::cin.getline(request.data(), request.size());
             size_t request_length = request.length();
@@ -51,13 +48,11 @@ int main(int argc, char* argv[]) {
                 boost::asio::write(s, boost::asio::buffer(request, request_length));
 
                 char_array<4> byte_count;
-                /*size_t reply_length = */boost::asio::read(s, boost::asio::buffer(byte_count, byte_count.size()));
+                boost::asio::read(s, boost::asio::buffer(byte_count, byte_count.size()));
                 int bytes = std::stoi(std::string(byte_count.data()));
                 char_array<max_length> reply;
                 size_t reply_length = boost::asio::read(s, boost::asio::buffer(reply.data(), bytes));
-                std::cout << "Reply is: ";
                 std::cout.write(reply.data(), reply_length);
-                std::cout << "\n";
                 std::cout.flush();
             }
             else if (std::regex_match(request.data(), request.data()+request_length, std::regex("get [A-Za-z_ /.]+\\s*"))) {
@@ -68,10 +63,6 @@ int main(int argc, char* argv[]) {
                 int bytes = std::stoi(std::string(byte_count.data()));
                 char_array<max_length> reply;
                 size_t reply_length = boost::asio::read(s, boost::asio::buffer(reply.data(), bytes));
-                /*std::cout << "Reply is: ";
-                std::cout.write(reply.data(), reply_length);
-                std::cout << "\n";
-                std::cout.flush();*/
                 std::string file_name = std::string{request.data()+4, request.data()+request_length} + "-" + std::string(argv[2]);
                 std::ofstream file;
                 file.open(file_name);
@@ -80,14 +71,17 @@ int main(int argc, char* argv[]) {
                 file.close();
                 std::cout << "File saved in " << file_name << "(" << reply_length << " bytes)\n";
             }
+            else if (request == "terminate") {
+            }
             else {  // echo
                 boost::asio::write(s, boost::asio::buffer(request, request_length));
 
+                char_array<4> byte_count;
+                boost::asio::read(s, boost::asio::buffer(byte_count, byte_count.size()));
+                int bytes = std::stoi(std::string(byte_count.data()));
                 char_array<max_length> reply;
-                size_t reply_length = boost::asio::read(s, boost::asio::buffer(reply.data(), request_length));
-                std::cout << "Reply is: ";
+                size_t reply_length = boost::asio::read(s, boost::asio::buffer(reply.data(), bytes));
                 std::cout.write(reply.data(), reply_length);
-                std::cout << "\n";
                 std::cout.flush();
             }
         }

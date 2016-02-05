@@ -61,7 +61,7 @@ void tcp_session::do_read() {
                     auto message = std::stringstream{};
                     if (boost::filesystem::exists(current_dir)) {
                         auto files = std::stringstream{};
-                        files << data_buffer << '\n';
+                        //files << data_buffer << '\n';
 
                         // read list of directory items
                         for (auto&& entry : boost::filesystem::directory_iterator(current_dir)) {
@@ -98,9 +98,11 @@ void tcp_session::do_read() {
                         std::getline(file, content, (char)0); // read all lines from file
                         file.close();
                         body << content;
+                        std::cout << "Open file: " << file_path.string() << "\n";
                     }
                     else {
                         body << "Error in openning file " << file_path.string();
+                        std::cout << "open() failed\n";
                     }
 
                     // add header with the number of bytes of the body
@@ -119,11 +121,31 @@ void tcp_session::do_read() {
                     do_write(std::min(message.str().size(), data_buffer.size()));
                 }
                 else if (data_buffer == "terminate") {
-                    do_write(length);
+                    //do_write(length);
                     socket.get_io_service().stop();
                 }
                 else {
-                    do_write(length);
+                    auto current_dir = boost::filesystem::path{"./"};
+                    auto message = std::stringstream{};
+                    auto body = std::stringstream{};
+
+                    // create body content
+                    body << "Server: Unknown command: " << data_buffer << "\n";
+
+                    // add header with the number of bytes of the body
+                    auto bytes = std::to_string(body.str().size());
+
+                    // add padding to the header
+                    for (int i = bytes.size(); i < 4; i++) {
+                        message << '0';
+                    }
+
+                    // build the final message and copy it to the buffer
+                    message << bytes << body.str();
+                    data_buffer.copy(message.str());
+
+                    // write collected data
+                    do_write(std::min(message.str().size(), data_buffer.size()));
                 }
             }
         });
