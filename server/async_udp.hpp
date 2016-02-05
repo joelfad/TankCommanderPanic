@@ -10,7 +10,10 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 #ifndef ASYNC_UDP_HPP
 #define ASYNC_UDP_HPP
 
-#include <iostream>
+// project headers
+#include <char_array.hpp>
+
+// boost libraries
 #include <boost/asio.hpp>
 
 using boost::asio::ip::udp;
@@ -26,8 +29,8 @@ class async_udp_server {
     private:
         udp::socket socket_;
         udp::endpoint sender_endpoint_;
-        enum { max_length = 1024 };
-        char data_[max_length];
+        static constexpr std::size_t max_length = 1024;
+        char_array<max_length> data_buffer;
 };
 
 #endif // ASYNC_UDP_HPP
