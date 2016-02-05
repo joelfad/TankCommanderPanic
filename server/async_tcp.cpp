@@ -58,6 +58,7 @@ void tcp_session::do_read() {
 
                 auto message = std::stringstream{};
                 auto body = std::stringstream{};
+                auto status_code = '0';  // status message
 
                 /*####################################################################################
                 ### Here, regular expressions (regex) are used to match commands in order to ensure ##
@@ -93,8 +94,9 @@ void tcp_session::do_read() {
                         std::cout << "Open file: " << file_path.string() << "\n";
                     }
                     else {
-                        body << "Error in opening file " << file_path.string();
+                        body << "Error in opening file " << file_path.string() << "\n";
                         std::cout << "open() failed\n";
+                        status_code = '1';
                     }
                 }
                 // terminate
@@ -108,7 +110,7 @@ void tcp_session::do_read() {
                 }
 
                 // add header with the number of bytes of the body
-                const auto byte_count = std::min(body.str().size(), data_buffer.size() - 4);
+                const auto byte_count = std::min(body.str().size(), data_buffer.size() - 5);
                 auto header = std::to_string(byte_count);
 
                 // add padding to the header
@@ -116,8 +118,10 @@ void tcp_session::do_read() {
                     message << '0';
                 }
 
-                // build the final message and copy it to the buffer
-                message << header << body.str();
+                // build the final message
+                message << header << status_code << body.str();
+
+                // copy message to the buffer
                 data_buffer.copy(message.str());
 
                 // write collected data
