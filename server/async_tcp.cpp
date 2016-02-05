@@ -153,6 +153,8 @@ void tcp_session::do_read() {
 
 void tcp_session::do_write(std::size_t length) {
     auto self(shared_from_this());
+    std::cout << data_buffer;
+    std::cout.flush();
     boost::asio::async_write(socket, boost::asio::buffer(data_buffer, length),
         [this, self, length](boost::system::error_code error, std::size_t transmitted) {
             if (!error) {

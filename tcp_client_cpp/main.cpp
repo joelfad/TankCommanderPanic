@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
 
     if (argc != 3)
     {
-      std::cerr << "Usage: blocking_tcp_echo_client <host> <port>\n";
+      std::cerr << "Usage: tcp_client_cpp <host> <port>\n";
       return 1;
     }
 
@@ -47,8 +47,9 @@ int main(int argc, char* argv[]) {
             else if (request == "list") {
                 boost::asio::write(s, boost::asio::buffer(request, request_length));
 
-                char_array<4> byte_count;
-                boost::asio::read(s, boost::asio::buffer(byte_count, byte_count.size()));
+                char_array<5> byte_count;
+                boost::asio::read(s, boost::asio::buffer(byte_count, byte_count.size() - 1));
+                byte_count.set_null(4); // add null terminator
                 int bytes = std::stoi(std::string(byte_count.data()));
                 char_array<max_length> reply;
                 size_t reply_length = boost::asio::read(s, boost::asio::buffer(reply.data(), bytes));
@@ -58,8 +59,11 @@ int main(int argc, char* argv[]) {
             else if (std::regex_match(request.data(), request.data()+request_length, std::regex("get [A-Za-z_ /.]+\\s*"))) {
                 boost::asio::write(s, boost::asio::buffer(request, request_length));
 
-                char_array<4> byte_count;
-                boost::asio::read(s, boost::asio::buffer(byte_count, byte_count.size()));
+                char_array<5> byte_count;
+                boost::asio::read(s, boost::asio::buffer(byte_count, byte_count.size() - 1));
+                byte_count.set_null(4); // add null terminator
+                std::cout << byte_count.data();
+                std::cout.flush();
                 int bytes = std::stoi(std::string(byte_count.data()));
                 char_array<max_length> reply;
                 size_t reply_length = boost::asio::read(s, boost::asio::buffer(reply.data(), bytes));
@@ -72,12 +76,14 @@ int main(int argc, char* argv[]) {
                 std::cout << "File saved in " << file_name << "(" << reply_length << " bytes)\n";
             }
             else if (request == "terminate") {
+                break;
             }
-            else {  // echo
+            else {
                 boost::asio::write(s, boost::asio::buffer(request, request_length));
 
-                char_array<4> byte_count;
-                boost::asio::read(s, boost::asio::buffer(byte_count, byte_count.size()));
+                char_array<5> byte_count;
+                boost::asio::read(s, boost::asio::buffer(byte_count, byte_count.size() - 1));
+                byte_count.set_null(4); // add null terminator
                 int bytes = std::stoi(std::string(byte_count.data()));
                 char_array<max_length> reply;
                 size_t reply_length = boost::asio::read(s, boost::asio::buffer(reply.data(), bytes));
