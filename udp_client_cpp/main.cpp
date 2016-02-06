@@ -1,5 +1,5 @@
 /*
-Project:  Server
+Project:  Tank Commander Panic
 File:  main.cpp
 Author:  Joel McFadden
 Description:  This is a simple TCP client to work with the provided TCP/UDP server.

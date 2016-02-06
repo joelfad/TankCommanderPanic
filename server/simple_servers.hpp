@@ -1,5 +1,5 @@
 /*
-Project:  Server
+Project:  Tank Commander Panic
 File:  simple_servers.hpp
 Author:  Leonardo Banderali
 Description:  This is a simple TCP/UDP echoing server.
