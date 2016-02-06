@@ -62,7 +62,7 @@ void tcp_session::do_read() {
 
                 /*####################################################################################
                 ### Here, regular expressions (regex) are used to match commands in order to ensure ##
-                ### maximal compatibility accross multiple client implementations.                  ##
+                ### maximal compatibility across multiple client implementations.                   ##
                 ####################################################################################*/
 
                 // list
@@ -80,7 +80,7 @@ void tcp_session::do_read() {
                     }
                 }
                 // get <file name>
-                else if (std::regex_match(data_buffer.data(), data_buffer.data()+length, std::regex("get [A-Za-z_ /.]+\\s*"))){
+                else if (std::regex_match(data_buffer.data(), data_buffer.data()+length, std::regex("get [-A-Za-z_ /.]+\\s*"))){
                     auto file_path = boost::filesystem::path{"./" + std::string{data_buffer.data()+4, data_buffer.data()+length}};
 
                     if (boost::filesystem::exists(file_path)) {
@@ -140,4 +140,3 @@ void tcp_session::do_write(std::size_t length) {
             }
         });
 }
-
