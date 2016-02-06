@@ -75,3 +75,6 @@ build-*-*-*/
 
 # Cmake generated files
 *build/
+
+# Jetbrains
+.idea/
