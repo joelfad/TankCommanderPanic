@@ -8,14 +8,17 @@ The coding portion of Assignment 1 was completed in C++ 14 using the Boost libra
 - `gcc (v4.9 or greater)` is required to support C++ 14.
 
 ## Building
-The server and client can be compiled with a provided script:<br>
+The server and client can be compiled with a provided script:
+
 `./build`
 
 ## Running
-To run the TCP/UDP Server:<br>
+To run the TCP/UDP Server:
+
 `./SelectServer <port>`
 
-To run the TCP Client:<br>
+To run the TCP Client:
+
 `./TCPClient <host ip> <port>`
 
 ## Troubleshooting
