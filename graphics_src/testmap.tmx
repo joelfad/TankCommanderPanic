@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" nextobjectid="1">
  <tileset firstgid="1" name="terrain" tilewidth="32" tileheight="32" tilecount="483" columns="21">
-  <image source="terrain.png" width="672" height="736"/>
+  <image source="palette_terrain.png" width="672" height="736"/>
  </tileset>
  <tileset firstgid="484" name="tanks" tilewidth="32" tileheight="32" tilecount="16" columns="4">
-  <image source="tanks_palette.png" width="128" height="128"/>
+  <image source="palette_tanks.png" width="128" height="128"/>
  </tileset>
  <tileset firstgid="500" name="hud_palette" tilewidth="32" tileheight="32" tilecount="16" columns="4">
-  <image source="hud_palette.png" width="128" height="128"/>
+  <image source="palette_hud.png" width="128" height="128"/>
  </tileset>
  <layer name="grass" width="30" height="20">
   <data encoding="csv">
@@ -76,8 +76,8 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,379,380,381,380,381,382,382,380,381,382,380,381,382,381,382,382,380,381,382,381,382,383,0,0,
-0,0,0,0,0,0,400,401,402,401,402,403,403,401,402,403,401,402,403,402,403,403,401,402,403,402,403,404,0,0,
+0,0,0,0,0,379,380,381,382,380,381,382,380,381,382,380,381,382,380,381,382,380,381,382,380,381,382,383,0,0,
+0,0,0,0,0,400,401,402,403,401,402,403,401,402,403,401,402,403,401,402,403,401,402,403,401,402,403,404,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
