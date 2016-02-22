@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" nextobjectid="1">
  <tileset firstgid="1" name="terrain" tilewidth="32" tileheight="32" tilecount="483" columns="21">
-  <image source="palette_terrain.png" width="672" height="736"/>
+  <image source="palettes/terrain.png" width="672" height="736"/>
  </tileset>
  <tileset firstgid="484" name="tanks" tilewidth="32" tileheight="32" tilecount="16" columns="4">
-  <image source="palette_tanks.png" width="128" height="128"/>
+  <image source="palettes/tans.png" width="128" height="128"/>
  </tileset>
  <tileset firstgid="500" name="hud_palette" tilewidth="32" tileheight="32" tilecount="16" columns="4">
-  <image source="palette_hud.png" width="128" height="128"/>
+  <image source="palettes/hud.png" width="128" height="128"/>
  </tileset>
  <layer name="grass" width="30" height="20">
   <data encoding="csv">
