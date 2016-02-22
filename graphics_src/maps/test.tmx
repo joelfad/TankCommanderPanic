@@ -4,7 +4,7 @@
   <image source="palettes/terrain.png" width="672" height="736"/>
  </tileset>
  <tileset firstgid="484" name="tanks" tilewidth="32" tileheight="32" tilecount="16" columns="4">
-  <image source="palettes/tans.png" width="128" height="128"/>
+  <image source="palettes/tanks.png" width="128" height="128"/>
  </tileset>
  <tileset firstgid="500" name="hud_palette" tilewidth="32" tileheight="32" tilecount="16" columns="4">
   <image source="palettes/hud.png" width="128" height="128"/>
