@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" nextobjectid="1">
+ <properties>
+  <property name="stageversion" value="1.0"/>
+ </properties>
  <tileset firstgid="1" name="palette" tilewidth="32" tileheight="32" tilecount="567" columns="21">
   <image source="../palette.png" width="672" height="864"/>
  </tileset>
  <layer name="back" width="32" height="32">
+  <properties>
+   <property name="cleardrive" value="true"/>
+   <property name="clearshot" value="true"/>
+  </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,68,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,68,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -40,6 +47,10 @@
 </data>
  </layer>
  <layer name="base" width="32" height="32">
+  <properties>
+   <property name="cleardrive" value="true"/>
+   <property name="clearshot" value="true"/>
+  </properties>
   <data encoding="csv">
 200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,201,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,
 200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,201,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,68,
@@ -76,6 +87,10 @@
 </data>
  </layer>
  <layer name="water" width="32" height="32">
+  <properties>
+   <property name="cleardrive" value="false"/>
+   <property name="clearshot" value="true"/>
+  </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -112,6 +127,10 @@
 </data>
  </layer>
  <layer name="rock" width="32" height="32">
+  <properties>
+   <property name="cleardrive" value="false"/>
+   <property name="clearshot" value="false"/>
+  </properties>
   <data encoding="csv">
 398,419,420,398,398,419,399,419,419,420,399,397,399,399,420,420,440,441,441,440,440,440,440,441,440,440,441,440,440,441,440,440,
 398,0,0,0,0,0,0,427,0,0,0,0,0,0,0,0,0,0,0,0,0,441,0,0,0,0,0,0,0,0,0,440,
@@ -184,6 +203,10 @@
 </data>
  </layer>
  <layer name="foliage" width="32" height="32">
+  <properties>
+   <property name="cleardrive" value="true"/>
+   <property name="clearshot" value="false"/>
+  </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
