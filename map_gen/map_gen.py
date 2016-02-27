@@ -2,6 +2,9 @@ import sys
 import os
 import xml.etree.ElementTree as ET
 
+# set DEBUG flag
+DEBUG = True
+
 """Parse a .tmx file and produce a file for the server to load as a map."""
 def main():
     # parse the .tmx file into an XML tree
@@ -17,14 +20,39 @@ def main():
     # a dictionary for the properties
     map_properties = {}
 
+    # add map element attributes
+    map_properties["width"] = int(root.attrib["width"])
+    map_properties["height"] = int(root.attrib["height"])
+
     # iterate over the properties
     for ppty in properties:
         map_properties[ppty.attrib["name"]] = ppty.attrib["value"]
 
-    # TEMP print the map properties
-    print("Map properties:")
-    for ppty, value in map_properties.items():
-        print(ppty, ": ", value, sep="")
+    # DEBUG print the map properties
+    if DEBUG is True:
+        print("Map properties:")
+        for ppty, value in map_properties.items():
+            print(ppty, ": ", value, sep="")
+
+    # a 2D array for the tile properties
+    tile_properties = [[(0,0) for j in range(map_properties["width"])] for i in range(map_properties["height"])]
+    # tile_properties = {i: {j: (0,0) for j in range(map_properties["width"])} for i in range(map_properties["height"])}
+
+    #DEBUG print tile properties
+    if DEBUG is True:
+        print("Tile properties:")
+        [print(row) for row in tile_properties]
+
+    # iterate through the layers
+    for layer in root.findall("layer"):
+
+        # get data string
+        csv_data = layer.find("data").text
+
+        # DEBUG print text
+        if DEBUG is True:
+            print("Layer csv data:")
+            print(csv_data)
 
 if __name__ == "__main__":
 
