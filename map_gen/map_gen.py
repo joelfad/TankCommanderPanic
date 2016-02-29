@@ -95,7 +95,7 @@ def main():
 
 def combine(existing, new):
     # if there's a new ground layer (like a bridge) overwrite
-    if new is (True, True):
+    if new == (True, True):
         return (True, True)
 
     # AND the properties together to get the result
