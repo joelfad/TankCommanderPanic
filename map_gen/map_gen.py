@@ -39,8 +39,7 @@ def main():
 
     # DEBUG print tile properties
     if DEBUG is True:
-        print("Tile properties:")
-        [print(row) for row in tile_properties]
+        print_tiles(tile_properties)
 
     # iterate through the layers
     for layer in root.findall("layer"):
@@ -92,8 +91,7 @@ def main():
 
         # DEBUG print tile properties
         if DEBUG is True:
-            print("Tile properties:")
-            [print(row) for row in tile_properties]
+            print_tiles(tile_properties)
 
 def combine(existing, new):
     # if there's a new ground layer (like a bridge) overwrite
@@ -102,6 +100,20 @@ def combine(existing, new):
 
     # AND the properties together to get the result
     return (existing[0] and new[0], existing[1] and new[1])
+
+def print_tiles(tile_properties):
+    print("Tile properties:")
+    for row in tile_properties:
+        for tile in row:
+            if tile == (True, True):
+                print(".", end="")
+            elif tile == (False, True):
+                print("~", end="")
+            elif tile == (True, False):
+                print("#", end="")
+            elif tile == (False, False):
+                print("@", end="")
+        print()
 
 if __name__ == "__main__":
 
