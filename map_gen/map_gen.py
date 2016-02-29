@@ -36,9 +36,8 @@ def main():
 
     # a 2D array for the tile properties
     tile_properties = [[(0,0) for j in range(map_properties["width"])] for i in range(map_properties["height"])]
-    # tile_properties = {i: {j: (0,0) for j in range(map_properties["width"])} for i in range(map_properties["height"])}
 
-    #DEBUG print tile properties
+    # DEBUG print tile properties
     if DEBUG is True:
         print("Tile properties:")
         [print(row) for row in tile_properties]
@@ -47,12 +46,49 @@ def main():
     for layer in root.findall("layer"):
 
         # get data string
-        csv_data = layer.find("data").text
+        csv_data = layer.find("data").text.strip()
 
-        # DEBUG print text
+        # get layer properties
+        properties = layer.find("properties")
+
+        # skip the layer if it has no game properties
+        if properties is None:
+            continue
+
+        # a dictionary for the layer properties
+        layer_properties = {}
+
+        # iterate over the properties
+        for ppty in properties:
+            layer_properties[ppty.attrib["name"]] = ppty.attrib["value"]
+
+        # parse the properties
+        if layer_properties["cleardrive"].find("true") >= 0:
+            cleardrive = 1
+        else:
+            cleardrive = 0
+        if layer_properties["clearshot"].find("true") >= 0:
+            clearshot = 1
+        else:
+            clearshot = 0
+
+        # make a tuple out of the properties
+        layer_tuple = (cleardrive, clearshot)
+
+        # DEBUG print layer data
         if DEBUG is True:
-            print("Layer csv data:")
+            print()
+            print("cleardrive:", layer_properties["cleardrive"])
+            print("clearshot:", layer_properties["clearshot"])
+            print(layer_tuple)
             print(csv_data)
+
+        # iterate through the layer's tiles
+        # for tile in csv_data.split(","):
+        #     if tile.strip() is not "0":
+        #
+        #         # add tile's properties to tile_properties
+        #         tile_properties[i][j] = combine(tile_properties[i][j], layer_tuple)
 
 if __name__ == "__main__":
 
