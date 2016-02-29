@@ -35,7 +35,7 @@ def main():
             print(ppty, ": ", value, sep="")
 
     # a 2D array for the tile properties
-    tile_properties = [[(0,0) for j in range(map_properties["width"])] for i in range(map_properties["height"])]
+    tile_properties = [[(True, True) for j in range(map_properties["width"])] for i in range(map_properties["height"])]
 
     # DEBUG print tile properties
     if DEBUG is True:
@@ -63,14 +63,8 @@ def main():
             layer_properties[ppty.attrib["name"]] = ppty.attrib["value"]
 
         # parse the properties
-        if layer_properties["cleardrive"].find("true") >= 0:
-            cleardrive = 1
-        else:
-            cleardrive = 0
-        if layer_properties["clearshot"].find("true") >= 0:
-            clearshot = 1
-        else:
-            clearshot = 0
+        cleardrive = (layer_properties["cleardrive"].find("true") >= 0)
+        clearshot = (layer_properties["clearshot"].find("true") >= 0)
 
         # make a tuple out of the properties
         layer_tuple = (cleardrive, clearshot)
@@ -84,11 +78,30 @@ def main():
             print(csv_data)
 
         # iterate through the layer's tiles
-        # for tile in csv_data.split(","):
-        #     if tile.strip() is not "0":
-        #
-        #         # add tile's properties to tile_properties
-        #         tile_properties[i][j] = combine(tile_properties[i][j], layer_tuple)
+        i, j = 0, 0
+        for tile in csv_data.split(","):
+            if tile.strip() is not "0":
+
+                # add tile's properties to tile_properties
+                tile_properties[i][j] = combine(tile_properties[i][j], layer_tuple)
+
+            j += 1
+            if j >= map_properties["width"]:
+                j = 0
+                i += 1
+
+        # DEBUG print tile properties
+        if DEBUG is True:
+            print("Tile properties:")
+            [print(row) for row in tile_properties]
+
+def combine(existing, new):
+    # if there's a new ground layer (like a bridge) overwrite
+    if new is (True, True):
+        return (True, True)
+
+    # AND the properties together to get the result
+    return (existing[0] and new[0], existing[1] and new[1])
 
 if __name__ == "__main__":
 
