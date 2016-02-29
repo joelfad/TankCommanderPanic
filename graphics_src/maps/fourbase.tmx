@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" nextobjectid="1">
  <properties>
-  <property name="stageversion" value="1.0"/>
+  <property name="name" value="Fourbase"/>
+  <property name="id" value="2"/>
+  <property name="version" value="1.0"/>
+  <property name="players" value="4"/>
  </properties>
  <tileset firstgid="1" name="palette" tilewidth="32" tileheight="32" tilecount="567" columns="21">
   <image source="../palette.png" width="672" height="864"/>
