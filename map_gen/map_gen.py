@@ -93,6 +93,7 @@ def main():
         if DEBUG is True:
             print_tiles(tile_properties)
 
+"""Combine the properties of two layers for a given tile."""
 def combine(existing, new):
     # if there's a new ground layer (like a bridge) overwrite
     if new == (True, True):
@@ -101,6 +102,7 @@ def combine(existing, new):
     # AND the properties together to get the result
     return (existing[0] and new[0], existing[1] and new[1])
 
+"""Represent the properties of the map tiles nicely."""
 def print_tiles(tile_properties):
     print("Tile properties:")
     for row in tile_properties:
