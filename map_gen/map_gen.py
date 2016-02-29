@@ -93,6 +93,47 @@ def main():
         if DEBUG is True:
             print_tiles(tile_properties)
 
+    # output the map file
+    output_file_name = sys.argv[1][:-3] + "txt"
+
+    # DEBUG print the output file name
+    if DEBUG is True:
+        print("Output file:", output_file_name)
+
+    # open the output file
+    with open(output_file_name, "w") as output_file:
+
+        # write the maps's name
+        output_file.write(map_properties["name"])
+        output_file.write("\n")
+
+        # write the maps's id
+        output_file.write(map_properties["id"])
+        output_file.write("\n")
+
+        # write the maps's version
+        output_file.write(map_properties["version"])
+        output_file.write("\n")
+
+        # write the maps's number of players
+        output_file.write(map_properties["players"])
+        output_file.write("\n")
+
+        # write the maps's width
+        output_file.write(str(map_properties["width"]))
+        output_file.write("\n")
+
+        # write the maps's height
+        output_file.write(str(map_properties["height"]))
+        output_file.write("\n")
+
+        # write the tile properties
+        output_file.write("\n")
+        for row in tile_properties:
+            for tile in row:
+                output_file.write(tilechar(tile))
+            output_file.write("\n")
+
 """Combine the properties of two layers for a given tile."""
 def combine(existing, new):
     # if there's a new ground layer (like a bridge) overwrite
@@ -101,6 +142,15 @@ def combine(existing, new):
 
     # AND the properties together to get the result
     return (existing[0] and new[0], existing[1] and new[1])
+
+""""Represent the a tile in a character for output."""
+def tilechar(tile):
+    result = 48 # offset
+    if tile[0]:
+        result += 2
+    if tile[1]:
+        result += 1
+    return str(chr(result))
 
 """Represent the properties of the map tiles nicely."""
 def print_tiles(tile_properties):
