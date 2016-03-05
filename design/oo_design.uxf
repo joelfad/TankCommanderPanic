@@ -303,14 +303,14 @@ lt=&lt;&lt;&lt;&lt;-</panel_attributes>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>1100</x>
+      <x>1150</x>
       <y>40</y>
       <w>150</w>
-      <h>90</h>
+      <h>100</h>
     </coordinates>
     <panel_attributes>Action Message
 --
-&lt;id : short&gt;
+&lt;player_id : short&gt;
 &lt;action_type : char&gt;
 &lt;direction : char&gt;
 &lt;piece_id : int&gt;
@@ -365,14 +365,13 @@ layer=-2</panel_attributes>
     <id>UMLNote</id>
     <coordinates>
       <x>860</x>
-      <y>290</y>
-      <w>200</w>
+      <y>180</y>
+      <w>270</w>
       <h>110</h>
     </coordinates>
     <panel_attributes>Event Message
-(64-255)
 --
-&lt;message_event_type : char&gt;
+&lt;message_event_type : char&gt; // 64-255
 &lt;direction : char&gt;
 &lt;value : int&gt;
 &lt;piece_id : int&gt;
@@ -385,16 +384,15 @@ bg=green
     <id>UMLNote</id>
     <coordinates>
       <x>860</x>
-      <y>150</y>
-      <w>200</w>
+      <y>40</y>
+      <w>270</w>
       <h>120</h>
     </coordinates>
     <panel_attributes>Create Piece Message
-(2-31)
 --
-&lt;message_piece_type : char&gt;
+&lt;message_piece_type : char&gt; // 2-31
 &lt;value : int&gt;
-&lt;piece_id | winner_id : int&gt;
+&lt;piece_id : int&gt;
 &lt;piece_coord_x : char&gt;
 &lt;piece_coord_y : char&gt;
 
@@ -406,16 +404,18 @@ bg=green
     <id>UMLNote</id>
     <coordinates>
       <x>860</x>
-      <y>40</y>
-      <w>220</w>
-      <h>90</h>
+      <y>310</y>
+      <w>270</w>
+      <h>120</h>
     </coordinates>
     <panel_attributes>Game State Message
-(1)
 --
-0x01
-&lt;message length : int&gt;
-&lt;serialized form of game state&gt;
+&lt;message_type : char&gt; // 1 
+&lt;map_id : char&gt;
+&lt;map_version : char&gt;
+&lt;owned_tank_count : char&gt;
+[&lt;tank_pice_id : int&gt;, ...]
+
 
 bg=green
 </panel_attributes>
