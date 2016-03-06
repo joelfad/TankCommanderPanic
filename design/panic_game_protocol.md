@@ -14,13 +14,13 @@ There is one message format for messages sent from the client.
 This message is sent to inform the server of the player's attempt to take an
 action such as move, shoot, or quit. The message format is as follows.
 
-| field | size | description |
-|-|-|-|
-| `player_id` | 2 bytes | player's id number, identifies the client |
-| `action_type` | 1 byte | enum: `attempt to move`, `attempt to shoot`, `quit` |
-| `direction` | 1 byte | enum: `N`, `S`, `E`, `W` (not used when quitting) |
-| `piece_id` | 4 bytes | GamePiece id number (not used when quitting) |
-| **Total** | 8 bytes |
+| field         | size    | description                                         |
+|---------------|---------|-----------------------------------------------------|
+| `player_id`   | 2 bytes | player's id number, identifies the client           |
+| `action_type` | 1 byte  | enum: `attempt to move`, `attempt to shoot`, `quit` |
+| `direction`   | 1 byte  | enum: `N`, `S`, `E`, `W` (not used when quitting)   |
+| `piece_id`    | 4 bytes | GamePiece id number (not used when quitting)        |
+| **Total**     | 8 bytes |
 
 ## Server Messages
 
@@ -62,7 +62,7 @@ GamePiece itself. The `value` field's meaning also differs depending of the type
 GamePiece:
 
 | GamePiece type | meaning of `piece_type` | meaning of `value` |
-|-|-|
+|-|-|-|
 | Tank | team color and style | health (used to determine sprite and display health bars in HUD) |
 | Brick | style | health (used to determine sprite) |
 | Health | - | amount (used to determine sprite) |
@@ -85,7 +85,7 @@ This format is identified by a `message_type` value of `64` - `255`.
 `value` field's meaning differs depending of the type of event:
 
 | event type | meaning of `value` | other notes |
-|-|-|
+|-|-|-|
 | Update Ammo | new ammo count | `piece_id` is not specified |
 | Update Health | new health value | - |
 | Destroy GamePiece | `0` (not used) | - |
