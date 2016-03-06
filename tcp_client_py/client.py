@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # Project: CPSC 441, Assignment 2 (python-client)
 # File: client.py
