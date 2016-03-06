@@ -14,7 +14,10 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 //~constructors~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PlayerClient::PlayerClient(boost::asio::ip::tcp::socket _socket) : socket{std::move(_socket)} {}
+PlayerClient::PlayerClient(boost::asio::ip::tcp::socket _socket, MessageSpool& _receive_msg_spool)
+: socket{std::move(_socket)}, receive_msg_spool{_receive_msg_spool} {
+    read(); // perform first read
+}
 
 
 
@@ -25,7 +28,7 @@ adds message to buffer and performs asynchronous write
 */
 void PlayerClient::send(std::string msg) {
     /*#################################################################################
-    ### This function does not perform the actual write (send) operation. Instead,  ##
+    ### This function does not perform the actual write (send) operation. Instead,   ##
     ### it adds the new message to the spool of messages to be written, letting      ##
     ### `PlayerClient::write()` performs the asynchronous write operation.           ##
     ###                                                                              ##
@@ -59,7 +62,7 @@ void PlayerClient::send(std::string msg) {
 
     bool not_writing = write_msg_spool.empty(); // check if there are current asynchronous write
     write_msg_spool.push_back(msg);             // add new message buffer
-    if (not_writing) {                          // if there are no asynchronous writes, add a new write
+    if (not_writing) {                          // if there are no asynchronous writes, do a new write
         write();
     }
 
@@ -69,6 +72,22 @@ void PlayerClient::send(std::string msg) {
 
 
 //~private functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/*
+performs asynchronous read on the socket
+*/
+void PlayerClient::read() {
+    auto self(shared_from_this());
+    socket.async_read_some(boost::asio::buffer(read_buffer.data(), read_buffer.size()),
+        [this, self](boost::system::error_code error, std::size_t /*length*/) {
+            if (!error) {
+                auto msg = std::string(read_buffer.data());
+                receive_msg_spool.add(msg);
+            }
+            read();
+        }
+    );
+}
 
 /*
 performs asynchronous write on the socket

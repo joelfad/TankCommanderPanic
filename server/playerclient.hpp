@@ -12,6 +12,10 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 
 
+// project headers
+#include "messagespool.hpp"
+#include "char_array.hpp"
+
 // c++ standard libraries
 #include <deque>
 #include <mutex>
@@ -23,7 +27,7 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
     public:
-        explicit PlayerClient(boost::asio::ip::tcp::socket _socket);
+        PlayerClient(boost::asio::ip::tcp::socket _socket, MessageSpool& _receive_msg_spool);
 
         void send(std::string msg);
         /*  adds message to buffer and performs asynchronous write */
@@ -37,6 +41,10 @@ class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
         /*  performs asynchronous write on the socket */
 
         boost::asio::ip::tcp::socket socket;        // the communication socket
+
+        MessageSpool& receive_msg_spool;            // spool for the messages recieved
+        char_array<8> read_buffer;                  // buffer in which to read messages
+
         std::deque<std::string> write_msg_spool;    // spool of messages (data buffers) to be written/sent
         std::mutex spool_lock;                      // a mutex to prevent race condition with data buffers
 };
