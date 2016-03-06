@@ -365,7 +365,7 @@ layer=-2</panel_attributes>
     <id>UMLNote</id>
     <coordinates>
       <x>860</x>
-      <y>180</y>
+      <y>320</y>
       <w>270</w>
       <h>110</h>
     </coordinates>
@@ -384,7 +384,7 @@ bg=green
     <id>UMLNote</id>
     <coordinates>
       <x>860</x>
-      <y>40</y>
+      <y>180</y>
       <w>270</w>
       <h>120</h>
     </coordinates>
@@ -404,7 +404,7 @@ bg=green
     <id>UMLNote</id>
     <coordinates>
       <x>860</x>
-      <y>310</y>
+      <y>40</y>
       <w>270</w>
       <h>120</h>
     </coordinates>
