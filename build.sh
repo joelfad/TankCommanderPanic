@@ -11,7 +11,8 @@
 
 # Relative Paths
 SDIR="server"
-TDIR="tcp_client_cpp"
+CTDIR="tcp_client_cpp"
+PTDIR="tcp_client_py"
 UDIR="udp_client_cpp"
 
 # Build the TCP/UDP Server
@@ -22,8 +23,8 @@ cd ../../
 
 # Build the TCP Client
 echo "Building TCP Client..."
-cmake -B$TDIR/build -H$TDIR
-cd $TDIR/build && make
+cmake -B$CTDIR/build -H$CTDIR
+cd $CTDIR/build && make
 cd ../../
 
 # Build the UDP Client
@@ -35,5 +36,6 @@ cd ../../
 # Create symlinks
 echo "Creating symbolic links..."
 ln -s $SDIR/build/server SelectServer
-ln -s $TDIR/build/tcp_client_cpp TCPClient
+ln -s $CTDIR/build/tcp_client_cpp TCPClientCPP
+ln -s $PTDIR/client.py TCPClientPy
 ln -s $UDIR/build/udp_client_cpp UDPClient
