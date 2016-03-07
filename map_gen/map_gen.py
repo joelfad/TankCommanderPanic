@@ -173,30 +173,43 @@ def print_tiles(tile_properties):
 
 if __name__ == "__main__":
 
+    # create a list of files to generate
+    gen_queue = []
+
     # enforce argument count
     if len(sys.argv) >= 2:
 
-        # make sure it's a .tmx file
-        if sys.argv[1].endswith(".tmx"):
+        # iterate over arguments
+        for arg in sys.argv[1:]:
 
-            # make sure it's a real file
-            if os.path.isfile(sys.argv[1]):
+            # check for debug flag
+            if arg == "--debug":
+                DEBUG = True
+                continue
 
-                # check for debug flag
-                if "--debug" in sys.argv:
-                    DEBUG = True
+            # make sure it's a .tmx file
+            if arg.endswith(".tmx"):
 
-                # generate the server's map file
-                generate(sys.argv[1])
+                # make sure it's a real file
+                if os.path.isfile(arg):
+
+                    # add to queue
+                    gen_queue.append(arg)
+
+                else:
+                    # print error message
+                    print("File, ", arg, ", not found")
 
             else:
-                # print error message
-                print("File, ", sys.argv[1], ", not found")
-
-        else:
-            # print usage clarification
-            print("File, ", sys.argv[1], ", is not a .tmx file.")
+                # print usage clarification
+                print("File, ", arg, ", is not a .tmx file.")
 
     else:
         # print usage message
         print("Usage: map_gen.py <tmx-map-file-path> [--debug]")
+
+    # iterate over queued input files
+    for input_file_name in gen_queue:
+
+        # generate the server's map file
+        generate(input_file_name)
