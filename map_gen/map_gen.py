@@ -26,9 +26,22 @@ def generate(input_file_name):
     map_properties["width"] = int(root.attrib["width"])
     map_properties["height"] = int(root.attrib["height"])
 
+    # create a list of starting positions
+    start_poses = []
+
     # iterate over the properties
     for ppty in properties:
-        map_properties[ppty.attrib["name"]] = ppty.attrib["value"]
+
+        # check if the property is a starting position
+        if "start_pos" in ppty.attrib["name"]:
+
+            # add the starting position
+            start_poses.append(ppty.attrib["value"])
+
+        else:
+
+            # add the property
+            map_properties[ppty.attrib["name"]] = ppty.attrib["value"]
 
     # DEBUG print the map properties
     if DEBUG is True:
@@ -122,6 +135,11 @@ def generate(input_file_name):
         # write the maps's number of players
         output_file.write(map_properties["players"])
         output_file.write("\n")
+
+        # write the starting positions
+        for start_pos in start_poses:
+            output_file.write(start_pos)
+            output_file.write("\n")
 
         # write the maps's width
         output_file.write(str(map_properties["width"]))
