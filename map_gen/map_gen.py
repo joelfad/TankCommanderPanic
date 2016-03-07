@@ -8,10 +8,10 @@ import xml.etree.ElementTree as ET
 DEBUG = False
 
 """Parse a .tmx file and produce a .map file for the server to load."""
-def main():
+def generate(input_file_name):
     # parse the .tmx file into an XML tree
-    tree = ET.parse(sys.argv[1])
-    print("Parsing ", sys.argv[1], "...")
+    tree = ET.parse(input_file_name)
+    print("Parsing ", input_file_name, "...")
 
     # get the tree's root: the map tag
     root = tree.getroot()
@@ -99,7 +99,7 @@ def main():
             print_tiles(tile_properties)
 
     # create the output .map file name
-    output_file_name = sys.argv[1][:-3] + "map"
+    output_file_name = input_file_name[:-3] + "map"
 
     # print the output file name
     print("Saving", output_file_name, "...")
@@ -187,7 +187,7 @@ if __name__ == "__main__":
                     DEBUG = True
 
                 # generate the server's map file
-                main()
+                generate(sys.argv[1])
 
             else:
                 # print error message
