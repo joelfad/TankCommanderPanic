@@ -114,6 +114,9 @@ def generate(input_file_name):
     # create the output .map file name
     output_file_name = input_file_name[:-3] + "map"
 
+    # print the final map properties
+    print_tiles(tile_properties)
+
     # print the output file name
     print("Saving", output_file_name, "...")
 
@@ -176,7 +179,6 @@ def tilechar(tile):
 
 """Represent the properties of the map tiles nicely."""
 def print_tiles(tile_properties):
-    print("Tile properties:")
     for row in tile_properties:
         for tile in row:
             if tile == (True, True):
