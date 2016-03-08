@@ -112,7 +112,9 @@ def generate(input_file_name):
             print_tiles(tile_properties)
 
     # create the output .map file name
-    output_file_name = input_file_name[:-3] + "map"
+    output_base_name = map_properties["id"] + "_" + map_properties["version"] + "_" + map_properties["name"] + ".map"
+    output_dir_name = os.path.dirname(input_file_name)
+    output_file_name = os.path.join(output_dir_name, output_base_name)
 
     # print the final map properties
     print_tiles(tile_properties)
