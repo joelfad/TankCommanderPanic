@@ -10,9 +10,6 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 
 // project headers
-//#include "simple_servers.hpp"
-//#include "async_tcp.hpp"
-//#include "async_udp.hpp"
 #include "server.hpp"
 #include "gamedriver.hpp"
 #include "playerclient.hpp"
@@ -20,13 +17,9 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 // c++ standard libraries
 #include <exception>
-#include <iostream>
 #include <thread>
 #include <vector>
 #include <memory>
-
-// boost libraries
-//#include <boost/asio.hpp>
 
 
 
@@ -42,19 +35,6 @@ int main(int argc, char *argv[]) {
 
     try
     {
-        // create a boost io_service object (provides the core functionalities for asynchronous IO)
-        //boost::asio::io_service io_service;
-
-        // start the server
-        //simple_tcp_server(io_service, std::atoi(argv[1]));
-        //simple_udp_server(io_service, std::atoi(argv[1]));
-
-        // create asynchronous server objects
-        //async_tcp_server s_tcp(io_service, std::atoi(argv[1]));
-        //async_udp_server s_udp(io_service, std::atoi(argv[1]));
-
-        //io_service.run();
-
         std::vector<std::shared_ptr<PlayerClient>> players;
         MessageSpool messages;
 
