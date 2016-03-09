@@ -1,15 +1,17 @@
+#!/usr/bin/python3
+
 import sys
 import os
 import xml.etree.ElementTree as ET
 
 # set DEBUG flag
-DEBUG = True
+DEBUG = False
 
-"""Parse a .tmx file and produce a file for the server to load as a map."""
-def main():
+"""Parse a .tmx file and produce a .map file for the server to load."""
+def generate(input_file_name):
     # parse the .tmx file into an XML tree
-    tree = ET.parse(sys.argv[1])
-    print("Parsing ", sys.argv[1], "...")
+    tree = ET.parse(input_file_name)
+    print("Parsing ", input_file_name, "...")
 
     # get the tree's root: the map tag
     root = tree.getroot()
@@ -17,16 +19,29 @@ def main():
     # get the properties of the map
     properties = root.find("properties")
 
-    # a dictionary for the properties
+    # create a dictionary for the properties
     map_properties = {}
 
     # add map element attributes
     map_properties["width"] = int(root.attrib["width"])
     map_properties["height"] = int(root.attrib["height"])
 
+    # create a list of starting positions
+    start_poses = []
+
     # iterate over the properties
     for ppty in properties:
-        map_properties[ppty.attrib["name"]] = ppty.attrib["value"]
+
+        # check if the property is a starting position
+        if "start_pos" in ppty.attrib["name"]:
+
+            # add the starting position
+            start_poses.append(ppty.attrib["value"])
+
+        else:
+
+            # add the property
+            map_properties[ppty.attrib["name"]] = ppty.attrib["value"]
 
     # DEBUG print the map properties
     if DEBUG is True:
@@ -34,7 +49,7 @@ def main():
         for ppty, value in map_properties.items():
             print(ppty, ": ", value, sep="")
 
-    # a 2D array for the tile properties
+    # initialize a 2D array for the tile properties
     tile_properties = [[(True, True) for j in range(map_properties["width"])] for i in range(map_properties["height"])]
 
     # DEBUG print tile properties
@@ -54,7 +69,7 @@ def main():
         if properties is None:
             continue
 
-        # a dictionary for the layer properties
+        # create a dictionary for the layer properties
         layer_properties = {}
 
         # iterate over the properties
@@ -79,11 +94,14 @@ def main():
         # iterate through the layer's tiles
         i, j = 0, 0
         for tile in csv_data.split(","):
+
+            # if the tile is not empty on this layer
             if tile.strip() is not "0":
 
                 # add tile's properties to tile_properties
                 tile_properties[i][j] = combine(tile_properties[i][j], layer_tuple)
 
+            # iterate through the rows of tile_properties correctly
             j += 1
             if j >= map_properties["width"]:
                 j = 0
@@ -93,12 +111,16 @@ def main():
         if DEBUG is True:
             print_tiles(tile_properties)
 
-    # output the map file
-    output_file_name = sys.argv[1][:-3] + "txt"
+    # create the output .map file name
+    output_base_name = map_properties["id"] + "_" + map_properties["version"] + "_" + map_properties["name"] + ".map"
+    output_dir_name = os.path.dirname(input_file_name)
+    output_file_name = os.path.join(output_dir_name, output_base_name)
 
-    # DEBUG print the output file name
-    if DEBUG is True:
-        print("Output file:", output_file_name)
+    # print the final map properties
+    print_tiles(tile_properties)
+
+    # print the output file name
+    print("Saving", output_file_name, "...")
 
     # open the output file
     with open(output_file_name, "w") as output_file:
@@ -118,6 +140,11 @@ def main():
         # write the maps's number of players
         output_file.write(map_properties["players"])
         output_file.write("\n")
+
+        # write the starting positions
+        for start_pos in start_poses:
+            output_file.write(start_pos)
+            output_file.write("\n")
 
         # write the maps's width
         output_file.write(str(map_properties["width"]))
@@ -143,7 +170,7 @@ def combine(existing, new):
     # AND the properties together to get the result
     return (existing[0] and new[0], existing[1] and new[1])
 
-""""Represent the a tile in a character for output."""
+""""Represent a tile's properties as a character for output."""
 def tilechar(tile):
     result = 48 # offset
     if tile[0]:
@@ -154,7 +181,6 @@ def tilechar(tile):
 
 """Represent the properties of the map tiles nicely."""
 def print_tiles(tile_properties):
-    print("Tile properties:")
     for row in tile_properties:
         for tile in row:
             if tile == (True, True):
@@ -169,26 +195,43 @@ def print_tiles(tile_properties):
 
 if __name__ == "__main__":
 
+    # create a list of files to generate
+    gen_queue = []
+
     # enforce argument count
-    if len(sys.argv) is 2:
+    if len(sys.argv) >= 2:
 
-        # make sure it's a .tmx file
-        if sys.argv[1].endswith(".tmx"):
+        # iterate over arguments
+        for arg in sys.argv[1:]:
 
-            # make sure it's a real file
-            if os.path.isfile(sys.argv[1]):
+            # check for debug flag
+            if arg == "--debug":
+                DEBUG = True
+                continue
 
-                # generate the server's map file
-                main()
+            # make sure it's a .tmx file
+            if arg.endswith(".tmx"):
+
+                # make sure it's a real file
+                if os.path.isfile(arg):
+
+                    # add to queue
+                    gen_queue.append(arg)
+
+                else:
+                    # print error message
+                    print("File, ", arg, ", not found")
 
             else:
-                # print error message
-                print("File, ", sys.argv[1], ", not found")
-
-        else:
-            # print usage clarification
-            print("File, ", sys.argv[1], ", is not a .tmx file.")
+                # print usage clarification
+                print("File, ", arg, ", is not a .tmx file.")
 
     else:
         # print usage message
-        print("Usage: map_gen <tmx-map-file-path>")
+        print("Usage: map_gen.py <tmx-map-file-path> [--debug]")
+
+    # iterate over queued input files
+    for input_file_name in gen_queue:
+
+        # generate the server's map file
+        generate(input_file_name)
