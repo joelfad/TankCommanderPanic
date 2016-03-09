@@ -1,10 +1,4 @@
-# CPSC 441 Assignment 2
-
-## Overview
-
-The coding portion of Assignment 2 was completed in C++ 14 using the Boost
-libraries and Python 3. See Section XI Plan for where this submission fits into
-the development of the entire project.
+# Tank Commander Panic
 
 ## Dependencies
 
@@ -17,28 +11,18 @@ package manager of your Linux distribution.
 ## Building
 The server and client can be compiled with a provided script:
 
-`./build`
+`./build.sh`
 
 ## Running
-To run the TCP/UDP Server:
+To run the Server:
 
-`./SelectServer <port>`
+`./Server <port>`
 
-To run the C++ TCP Client:
+To run the Client:
 
-`./TCPClientCPP <host ip> <port>`
-
-To run the Python TCP Client:
-
-`./TCPClientPy <host ip> <port>`
+`./Client <host ip> <port>`
 
 ## Troubleshooting
 
 If you have any difficulties compiling or running these programs, please let us
 (Group 36) know so that we can demonstrate our assignment.
-
-## Notes
-
-A special, minimalistic protocol was created in order to support file transfer.
-As such, the TCP server is not completely compatible with the TCP client
-provided in lectures.

@@ -28,12 +28,13 @@ Makefile*
 *.app
 moc_*.cpp
 ui_*.h
+/.qmake.cache
+/.qmake.stash
 qrc_*.cpp
 Thumbs.db
 *.res
 *.rc
-/.qmake.cache
-/.qmake.stash
+untracked/
 
 # qtcreator generated files
 *.pro.user*
