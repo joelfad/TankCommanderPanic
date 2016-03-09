@@ -18,8 +18,6 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 // c++ standard libraries
 #include <exception>
 #include <thread>
-#include <vector>
-#include <memory>
 
 
 
@@ -33,9 +31,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    try
-    {
-        std::vector<std::shared_ptr<PlayerClient>> players;
+    try {
+        PlayerClientList players;
         MessageSpool messages;
 
         // run the communication server on a separate thread
@@ -49,8 +46,7 @@ int main(int argc, char *argv[]) {
         // wait for communication to finish
         com_server.join();
     }
-    catch (std::exception& e)
-    {
+    catch (std::exception& e) {
         std::cerr << "Exception: " << e.what() << "\n";
     }
 }

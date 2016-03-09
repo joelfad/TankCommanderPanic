@@ -19,6 +19,8 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 // c++ standard libraries
 #include <deque>
 #include <mutex>
+#include <memory>
+#include <vector>
 
 // boost libraries
 #include <boost/asio.hpp>
@@ -48,5 +50,7 @@ class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
         std::deque<std::string> write_msg_spool;    // spool of messages (data buffers) to be written/sent
         std::mutex spool_lock;                      // a mutex to prevent race condition with data buffers
 };
+
+using PlayerClientList = std::vector<std::shared_ptr<PlayerClient>>;
 
 #endif // PLAYERCLIENT_HPP
