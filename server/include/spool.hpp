@@ -33,10 +33,7 @@ class spool {
         /*  adds an item to the spool */
 
         auto get() -> maybe_item;
-        /*  if available, returns the first item on the spool, otherwise returns empty item */
-
-        auto pop() -> void;
-        /*  pops the first item on the spool */
+        /*  if available, pops returns the first item on the spool, otherwise returns empty item */
 
     private:
         std::deque<item_type> queue;    // queue to spool messages
@@ -59,26 +56,18 @@ auto spool<T>::add(G&& msg) -> void{
 }
 
 /*
-returns the first item on the spool
+if available, pops returns the first item on the spool, otherwise returns empty item
 */
 template <typename T>
 auto spool<T>::get() -> maybe_item {
-    mutex.lock();
     auto item = maybe_item{};
-    if (!queue.empty())
+    mutex.lock();
+    if (!queue.empty()) {
         item = maybe_item{queue.front()};
+        queue.pop_front();
+    }
     mutex.unlock();
     return item;
-}
-
-/*
-pops the first item on the spool
-*/
-template <typename T>
-auto spool<T>::pop() -> void {
-    mutex.lock();
-    queue.pop_front();
-    mutex.unlock();
 }
 
 #endif // SPOOL_HPP
