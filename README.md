@@ -26,3 +26,12 @@ To run the Client:
 
 If you have any difficulties compiling or running these programs, please let us
 (Group 36) know so that we can demonstrate our assignment.
+
+## Development
+
+### Gitflow
+
+The `master` branch is for tagged releases. The `devel` branch is live
+development of components outside of the server and client themselves. The
+`server` and `client` branches are upstream of `devel`. They are live
+development branches for their respective components.
