@@ -15,11 +15,11 @@ Description:  The main game logic driver.
 /*
 runs the game
 */
-void game_driver(std::vector<std::shared_ptr<PlayerClient>>& clients, MessageSpool& msg_spool) {
+void game_driver(PlayerClientList& clients, MessageSpool& msg_spool) {
     while (true) {
         for (auto&& client : clients) {
-            client->send("Message!");
+            client->send("Server message!");
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 }

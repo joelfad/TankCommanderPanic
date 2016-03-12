@@ -16,7 +16,7 @@ Description:  The main game logic driver.
 #include <vector>
 #include <memory>
 
-void game_driver(std::vector<std::shared_ptr<PlayerClient>>& clients, MessageSpool& msg_spool);
+void game_driver(PlayerClientList& clients, MessageSpool& msg_spool);
 /*  runs the game */
 
 #endif // GAMEDRIVER_HPP

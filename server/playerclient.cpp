@@ -9,14 +9,19 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 // project headers
 #include "playerclient.hpp"
-
+#include <iostream>
 
 
 //~constructors~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PlayerClient::PlayerClient(boost::asio::ip::tcp::socket _socket, MessageSpool& _receive_msg_spool)
-: socket{std::move(_socket)}, receive_msg_spool{_receive_msg_spool} {
-    read(); // perform first read
+: socket{std::move(_socket)}, receive_msg_spool{_receive_msg_spool} {}
+
+/*
+starts the server
+*/
+void PlayerClient::start() {
+    read();
 }
 
 
@@ -93,9 +98,10 @@ void PlayerClient::read() {
 performs asynchronous write on the socket
 */
 void PlayerClient::write() {
-    if (!write_msg_spool.empty()) {
+    //if (!write_msg_spool.empty()) {
         auto self(shared_from_this());
         boost::asio::async_write(socket, boost::asio::buffer(write_msg_spool.front().data(), write_msg_spool.front().length()),
+        //boost::asio::async_write(socket, boost::asio::buffer(temp_msg, 8),
             [this, self](boost::system::error_code /*error*/, std::size_t /*transmitted*/) {
                 /*#########################################################################################
                 ### This function will be called once the asynchronous write is complete.                ##
@@ -107,12 +113,15 @@ void PlayerClient::write() {
 
                 spool_lock.lock();  //*** begin cirical zone ***
 
+                //if (!write_msg_spool.empty())
                 write_msg_spool.pop_front();    // remove the message from the spool
+
                 if (!write_msg_spool.empty()) { // if there are more unwritten/unsent messages
                     write();                    // do another asynchronous write
                 }
 
                 spool_lock.unlock();//*** end cirical zone ***
+                //write();
             });
-    }
+    //}
 }
