@@ -39,11 +39,7 @@ class ConnectionAcceptor {
                     {
                         auto c = std::make_shared<PlayerClient>(std::move(socket), msg_spool);
                         c->start();
-                        //clients.push_back(c);
-                        //waiting_clients.push_back(c);
                         client_spool.add(c);
-                        //if (waiting_clients.size() == 2)
-                            //client_spool.add(std::move(waiting_clients));
                     }
 
                     do_accept();
@@ -53,7 +49,6 @@ class ConnectionAcceptor {
         tcp::acceptor acceptor;
         tcp::socket socket;
 
-        //PlayerClientList waiting_clients;   // clients that are waiting for more players to connect to play a game
         PlayerSpool& client_spool;  // spool for groups of clients to play together
         MessageSpool& msg_spool;    // spool for messages comming from clients
 };
@@ -68,20 +63,8 @@ void server(PlayerSpool& client_spool, MessageSpool& msg_spool, unsigned short p
     boost::asio::io_service io_service;
 
     // create a tcp connection acceptor object
-    //tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), port));
     auto acceptor = ConnectionAcceptor{io_service, port, client_spool, msg_spool};
 
-    // create a tcp socket
-    /*tcp::socket sock(io_service);
-
-    // accept two connections
-    for (int i = 0; i < 2; i++) {
-        // once a connection is accept, create a client object for it and add it to the list of clients
-        acceptor.accept(sock);
-        auto c = std::make_shared<PlayerClient>(std::move(sock), msg_spool);
-        c->start();
-        clients.push_back(c);
-    }*/
 
     // run the asynchronous I/O
     io_service.run();
