@@ -58,4 +58,6 @@ class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
 
 using PlayerClientList = std::vector<std::shared_ptr<PlayerClient>>;
 
+using PlayerSpool = spool<std::shared_ptr<PlayerClient>>;
+
 #endif // PLAYERCLIENT_HPP

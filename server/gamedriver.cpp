@@ -15,10 +15,23 @@ Description:  The main game logic driver.
 /*
 runs the game
 */
-void game_driver(PlayerClientList& clients, MessageSpool& msg_spool) {
+void game_driver(PlayerSpool& client_spool, MessageSpool& msg_spool) {
+    PlayerClientList players;
     while (true) {
-        for (auto&& client : clients) {
+        /*MessageSpool::maybe_item message = msg_spool.get();
+        if (message) {
+            for (auto&& client : clients) {
+                //client->send("Server message!");
+                client->send(*message);
+            }
+        }*/
+        PlayerSpool::maybe_item client = client_spool.get();
+        if (client) {
+            players.push_back(*client);
+        }
+        for (auto&& client : players) {
             client->send("Server message!");
+            //client->send(*message);
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }

@@ -1,6 +1,6 @@
 /*
 Project:  Tank Commander Panic
-File:  spool.hpp
+File:  messagespool.hpp
 Author:  Leonardo Banderali
 Description:  A synchronized spool for passing messages between a PlayerClient the GameDriver.
 */
@@ -10,6 +10,7 @@ Description:  A synchronized spool for passing messages between a PlayerClient t
 
 // project headers
 #include "spool.hpp"
+#include "playerclient.hpp"
 
 // c++ standard libraries
 #include <string>
