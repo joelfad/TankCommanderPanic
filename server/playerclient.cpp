@@ -98,30 +98,25 @@ void PlayerClient::read() {
 performs asynchronous write on the socket
 */
 void PlayerClient::write() {
-    //if (!write_msg_spool.empty()) {
-        auto self(shared_from_this());
-        boost::asio::async_write(socket, boost::asio::buffer(write_msg_spool.front().data(), write_msg_spool.front().length()),
-        //boost::asio::async_write(socket, boost::asio::buffer(temp_msg, 8),
-            [this, self](boost::system::error_code /*error*/, std::size_t /*transmitted*/) {
-                /*#########################################################################################
-                ### This function will be called once the asynchronous write is complete.                ##
-                ###                                                                                      ##
-                ### Since the message has been sent, it can be removed from the spool.                   ##
-                ###                                                                                      ##
-                ### A mutex is used to avoid race conditions with `PlayerClient::send(std::string msg)`. ##
-                ########################################################################################*/
+    auto self(shared_from_this());
+    boost::asio::async_write(socket, boost::asio::buffer(write_msg_spool.front().data(), write_msg_spool.front().length()),
+        [this, self](boost::system::error_code /*error*/, std::size_t /*transmitted*/) {
+            /*#########################################################################################
+            ### This function will be called once the asynchronous write is complete.                ##
+            ###                                                                                      ##
+            ### Since the message has been sent, it can be removed from the spool.                   ##
+            ###                                                                                      ##
+            ### A mutex is used to avoid race conditions with `PlayerClient::send(std::string msg)`. ##
+            ########################################################################################*/
 
-                spool_lock.lock();  //*** begin cirical zone ***
+            spool_lock.lock();  //*** begin cirical zone ***
 
-                //if (!write_msg_spool.empty())
-                write_msg_spool.pop_front();    // remove the message from the spool
+            write_msg_spool.pop_front();    // remove the message from the spool
 
-                if (!write_msg_spool.empty()) { // if there are more unwritten/unsent messages
-                    write();                    // do another asynchronous write
-                }
+            if (!write_msg_spool.empty()) { // if there are more unwritten/unsent messages
+                write();                    // do another asynchronous write
+            }
 
-                spool_lock.unlock();//*** end cirical zone ***
-                //write();
-            });
-    //}
+            spool_lock.unlock();//*** end cirical zone ***
+        });
 }

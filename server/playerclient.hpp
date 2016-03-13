@@ -52,8 +52,6 @@ class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
 
         std::deque<std::string> write_msg_spool;    // spool of messages (data buffers) to be written/sent
         std::mutex spool_lock;                      // a mutex to prevent race condition with data buffers
-
-        const char* temp_msg = "Message!";
 };
 
 using PlayerClientList = std::vector<std::shared_ptr<PlayerClient>>;
