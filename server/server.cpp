@@ -10,6 +10,8 @@ Description:  The games communication server.
 
 // c++ standard libraries
 #include <utility>
+#include <exception>
+#include <iostream>
 
 // boost libraries
 #include <boost/asio.hpp>
@@ -59,13 +61,18 @@ accepts connections from player clients and communicates with them
 void server(PlayerSpool& client_spool, MessageSpool& msg_spool, unsigned short port) {
     using boost::asio::ip::tcp;
 
-    // create a boost io_service object (provides the core functionalities for asynchronous IO)
-    boost::asio::io_service io_service;
+    try {
+        // create a boost io_service object (provides the core functionalities for asynchronous IO)
+        boost::asio::io_service io_service;
 
-    // create a tcp connection acceptor object
-    auto acceptor = ConnectionAcceptor{io_service, port, client_spool, msg_spool};
+        // create a tcp connection acceptor object
+        auto acceptor = ConnectionAcceptor{io_service, port, client_spool, msg_spool};
 
 
-    // run the asynchronous I/O
-    io_service.run();
+        // run the asynchronous I/O
+        io_service.run();
+    }
+    catch (std::exception e) {
+        std::cerr << "Exception: " << e.what() << "\n";
+    }
 }
