@@ -193,6 +193,7 @@ def print_tiles(tile_properties):
                 print("@", end="")
         print()
 
+# main function
 if __name__ == "__main__":
 
     # create a list of files to generate
@@ -228,7 +229,7 @@ if __name__ == "__main__":
 
     else:
         # print usage message
-        print("Usage: map_gen.py <tmx-map-file-path> [--debug]")
+        print("Usage: map_gen.py <tmx-map-file-path>... [--debug]")
 
     # iterate over queued input files
     for input_file_name in gen_queue:
