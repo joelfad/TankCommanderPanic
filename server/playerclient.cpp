@@ -63,7 +63,8 @@ void PlayerClient::send(std::string msg) {
     ### simplicity, the entire function body is treaded as the critical zone.        ##
     #################################################################################*/
 
-    spool_lock.lock();  //*** begin cirical zone ***
+    //spool_lock.lock();  //*** begin cirical zone ***
+    auto lock = std::lock_guard<std::mutex>{spool_lock};
 
     bool not_writing = write_msg_spool.empty(); // check if there are current asynchronous write
     write_msg_spool.push_back(msg);             // add new message buffer
@@ -71,7 +72,7 @@ void PlayerClient::send(std::string msg) {
         write();
     }
 
-    spool_lock.unlock();//*** end cirical zone ***
+    //spool_lock.unlock();//*** end cirical zone ***
 }
 
 
@@ -109,7 +110,8 @@ void PlayerClient::write() {
             ### A mutex is used to avoid race conditions with `PlayerClient::send(std::string msg)`. ##
             ########################################################################################*/
 
-            spool_lock.lock();  //*** begin cirical zone ***
+            //spool_lock.lock();  //*** begin cirical zone ***
+            auto lock = std::lock_guard<std::mutex>{spool_lock};
 
             write_msg_spool.pop_front();    // remove the message from the spool
 
@@ -117,6 +119,6 @@ void PlayerClient::write() {
                 write();                    // do another asynchronous write
             }
 
-            spool_lock.unlock();//*** end cirical zone ***
+            //spool_lock.unlock();//*** end cirical zone ***
         });
 }
