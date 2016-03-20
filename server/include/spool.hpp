@@ -51,7 +51,7 @@ template <typename T>
 template <typename G>
 auto spool<T>::add(G&& msg) -> void {
     //mutex.lock();
-    auto lock = std::lock_guard<std::mutex>{mutex};
+    std::lock_guard<std::mutex> lock{mutex};
     queue.push_back(std::forward<T>(msg));
     //mutex.unlock();
 }
@@ -63,7 +63,7 @@ template <typename T>
 auto spool<T>::get() -> maybe_item {
     auto item = maybe_item{};
     //mutex.lock();
-    auto lock = std::lock_guard<std::mutex>{mutex};
+    std::lock_guard<std::mutex> lock{mutex};
     if (!queue.empty()) {
         item = maybe_item{queue.front()};
         queue.pop_front();
