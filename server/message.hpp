@@ -1,8 +1,8 @@
 /*
 Project:  Tank Commander Panic
-File:  messagespool.hpp
+File:  message.hpp
 Author:  Leonardo Banderali
-Description:  A synchronized spool for passing messages between a PlayerClient the GameDriver.
+Description:  Simple type for representing communication messages.
 */
 
 #ifndef MESSAGESPOOL_HPP
@@ -10,11 +10,16 @@ Description:  A synchronized spool for passing messages between a PlayerClient t
 
 // project headers
 #include "spool.hpp"
-#include "playerclient.hpp"
 
 // c++ standard libraries
 #include <string>
 
-using MessageSpool = spool<std::string>;
+namespace protocol {
+
+using Message = std::string;
+
+using MessageSpool = spool<Message>;
+
+}
 
 #endif // MESSAGESPOOL_HPP

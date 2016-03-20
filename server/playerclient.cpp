@@ -14,7 +14,7 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 //~constructors~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PlayerClient::PlayerClient(boost::asio::ip::tcp::socket _socket, MessageSpool& _receive_msg_spool)
+PlayerClient::PlayerClient(boost::asio::ip::tcp::socket _socket, protocol::MessageSpool& _receive_msg_spool)
 : socket{std::move(_socket)}, receive_msg_spool{_receive_msg_spool} {}
 
 /*

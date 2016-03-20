@@ -29,9 +29,9 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
     public:
-        PlayerClient(boost::asio::ip::tcp::socket _socket, MessageSpool& _receive_msg_spool);
+        PlayerClient(boost::asio::ip::tcp::socket _socket, protocol::MessageSpool& _receive_msg_spool);
 
-        void send(std::string msg);
+        void send(std::string protocol);
         /*  adds message to buffer and performs asynchronous write */
 
         void start();
@@ -47,7 +47,7 @@ class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
 
         boost::asio::ip::tcp::socket socket;        // the communication socket
 
-        MessageSpool& receive_msg_spool;            // spool for the messages recieved
+        protocol::MessageSpool& receive_msg_spool;            // spool for the messages recieved
         char_array<16> read_buffer;                 // buffer in which to read messages
 
         std::deque<std::string> write_msg_spool;    // spool of messages (data buffers) to be written/sent
