@@ -13,7 +13,7 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 #include "server.hpp"
 #include "gamedriver.hpp"
 #include "playerclient.hpp"
-#include "messagespool.hpp"
+#include "message.hpp"
 
 // c++ standard libraries
 #include <thread>

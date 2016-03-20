@@ -13,7 +13,7 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 
 // project headers
-#include "messagespool.hpp"
+#include "message.hpp"
 #include "char_array.hpp"
 
 // c++ standard libraries
