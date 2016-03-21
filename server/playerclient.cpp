@@ -64,7 +64,7 @@ void PlayerClient::send(std::string msg) {
     #################################################################################*/
 
     //spool_lock.lock();  //*** begin cirical zone ***
-    auto lock = std::lock_guard<std::mutex>{spool_lock};
+    std::lock_guard<std::mutex> lock{spool_lock};
 
     bool not_writing = write_msg_spool.empty(); // check if there are current asynchronous write
     write_msg_spool.push_back(msg);             // add new message buffer
@@ -111,7 +111,7 @@ void PlayerClient::write() {
             ########################################################################################*/
 
             //spool_lock.lock();  //*** begin cirical zone ***
-            auto lock = std::lock_guard<std::mutex>{spool_lock};
+            std::lock_guard<std::mutex> lock{spool_lock};
 
             write_msg_spool.pop_front();    // remove the message from the spool
 
