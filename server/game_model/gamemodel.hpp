@@ -12,6 +12,7 @@
 
 #include "tile.hpp"
 #include "gamepiece.hpp"
+#include "gameplayer.hpp"
 
 class GameModel {
 public:
@@ -23,8 +24,8 @@ private:
     std::vector<std::vector<Tile>> map;
     /* 2D vector of tiles composes the map of the battlefield */
 
-    std::vector<GamePiece> pieces;
-    /* collection of game pieces on the battlefield */
+    std::vector<std::vector<GamePiece>> pieces;
+    /* 2D vector of game pieces on the battlefield */
 
     std::vector<GamePlayer> players;
     /* collection of players */

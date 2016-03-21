@@ -15,10 +15,10 @@ public:
 
     GamePiece();
 
-    virtual void collide(TankPiece tank);
+    virtual void collide(TankPiece tank)=0;
     /* react to being collided into by tank (after occupying the same square) */
 
-    virtual void shot(int damage);
+    virtual void shot(int damage)=0;
     /* react to taking damage */
 
     int getId() const { return id; }
