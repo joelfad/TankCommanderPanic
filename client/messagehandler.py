@@ -3,36 +3,44 @@
 # File: messagehandler.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: March 20, 2016
+# Modified: March 21, 2016
 
 import sys
 import socket
 import select
 import struct
-import time
 
 class MessageHandler:
-    # sock : socket
 
     def __init__(self, server_addr):
         # create tcp socket
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect(server_addr)
         self.poll = select.poll()
-        self.poll.register(sock, select.POLLIN)
-        client_addr = sock.getsockname()
+        self.poll.register(self.sock, select.POLLIN)
+        client_addr = self.sock.getsockname()
         print('Listening on {}'.format(client_addr))
 
     def recv_message(self):
         # read message header (first byte)
-        message_type = self.sock.recv(1)
+        header = self.sock.recv(1)
+
+        # check if the connection is closed
+        if not header:
+            print("Connection closed. Terminating.")
+            self.sock.close()
+            sys.exit()
+
+        # unpack header
+        message_type = struct.unpack('B', header)[0]
 
         # receive and process message body
         message_actions[message_type](self.sock, message_type)
 
     def send_message(self, action_type, direction=0, piece_id=0):
+        start = time.time()
         # pack message into binary
-        message = struct.pack('HBBi', player_id, action_type, direction, piece_id)
+        message = struct.pack('!HBBi', player_id, action_type, direction, piece_id)
 
         # send message
         self.sock.send(message)
@@ -49,17 +57,20 @@ class MessageHandler:
 
     def check_for_messages(self):
         print("Checking for new messages...")
-        fd, event = self.poll.poll()
-        if event & select.POLLIN:
-            recv_message()
+
+        # poll for incoming messages
+        for fd, event in self.poll.poll(250): # wait 250ms for events
+            if event & select.POLLIN:
+                self.recv_message()
 
 def handle_game_state(sock, message_type):
     # receive first three bytes of message
     message_part = sock.recv(5)
-    map_id, map_version, owned_tank_count = struct.unpack('BBhB', message_part)
+    map_id, map_version, player_id, owned_tank_count = struct.unpack('!BBHB', message_part)
 
     # receive remainder of message
-    tank_piece_ids = [sock.recv(4) for i in range(owned_tank_count)]
+    message_part = sock.recv(owned_tank_count * 4)
+    tank_piece_id = struct.unpack('!'+'i'*owned_tank_count, message_part)
 
     # print results
     print('''\
@@ -67,14 +78,15 @@ def handle_game_state(sock, message_type):
     <Game State Message>
     map_id = {}
     map_version = {}
+    player_id = {}
     owned_tank_count = {}
-    tank_piece_ids = {}\
-    '''.format(map_id, map_version, owned_tank_count, tank_piece_ids))
+    tank_piece_id = {}\
+    '''.format(map_id, map_version, player_id, owned_tank_count, tank_piece_id))
 
 def handle_create_piece(sock, piece_type):
     # receive message
     message = sock.recv(10)
-    value, piece_id, piece_coord_x, piece_coord_y = struct.unpack('iiBB', message)
+    value, piece_id, piece_coord_x, piece_coord_y = struct.unpack('!iiBB', message)
 
     # print results
     print('''\
@@ -90,7 +102,7 @@ def handle_create_piece(sock, piece_type):
 def handle_event(sock, event_type):
     # receive message
     message = sock.recv(9)
-    direction, value, piece_id = struct.unpack('Bii', message)
+    direction, value, piece_id = struct.unpack('!Bii', message)
 
     # print results
     print('''\
@@ -107,6 +119,7 @@ message_actions = [None] * 256
 message_actions[1] = handle_game_state
 message_actions[2:32] = [handle_create_piece] * (32 - 2)
 message_actions[64:256] = [handle_event] * (256 - 64)
+message_actions = tuple(message_actions)
 
 # global variable
 player_id = 12345
@@ -117,16 +130,16 @@ if __name__ == '__main__':
         print("Usage: messagehandler.py <host> <port>\n")
         sys.exit()
 
+    # set server address
+    server_addr = (sys.argv[1], int(sys.argv[2]))
+
     # create message handler
-    message_handler = MessageHandler(sys.argv[1:3])
+    message_handler = MessageHandler(server_addr)
 
     try:
         while True:
             # check for messages
             message_handler.check_for_messages()
-
-            # sleep
-            time.sleep(0.100) # seconds
 
     except KeyboardInterrupt:
         print("Exited by user")
