@@ -5,10 +5,13 @@
  * Description: This class models the state of the game.
  */
 
-#ifndef GAMEMODEL_HPP
-#define GAMEMODEL_HPP
+#ifndef SERVER_GAMEMODEL_HPP
+#define SERVER_GAMEMODEL_HPP
 
 #include <vector>
+
+#include "tile.hpp"
+#include "gamepiece.hpp"
 
 class GameModel {
 public:
@@ -28,4 +31,4 @@ private:
 
 };
 
-#endif // GAMEMODEL_HPP
+#endif // SERVER_GAMEMODEL_HPP
