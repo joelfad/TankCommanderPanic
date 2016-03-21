@@ -12,11 +12,29 @@ Description:  Simple type for representing communication messages.
 #include "spool.hpp"
 
 // c++ standard libraries
-#include <string>
+#include <vector>
 
 namespace protocol {
 
-using Message = std::string;
+class Message {
+    public:
+        Message(char* bytes, int _size) {
+            msg_content.reserve(_size);
+            for (int i = 0; i < _size; i++)
+                msg_content.push_back(bytes[i]);
+        }
+
+        auto size() {
+            return msg_content.size();
+        }
+
+        const unsigned char* data() const {
+            return msg_content.data();
+        }
+
+    private:
+        std::vector<unsigned char> msg_content;
+};
 
 using MessageSpool = spool<Message>;
 

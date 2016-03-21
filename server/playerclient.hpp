@@ -31,7 +31,7 @@ class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
     public:
         PlayerClient(boost::asio::ip::tcp::socket _socket, protocol::MessageSpool& _receive_msg_spool);
 
-        void send(std::string protocol);
+        void send(protocol::Message msg);
         /*  adds message to buffer and performs asynchronous write */
 
         void start();
@@ -50,7 +50,7 @@ class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
         protocol::MessageSpool& receive_msg_spool;            // spool for the messages recieved
         char_array<16> read_buffer;                 // buffer in which to read messages
 
-        std::deque<std::string> write_msg_spool;    // spool of messages (data buffers) to be written/sent
+        std::deque<protocol::Message> write_msg_spool;    // spool of messages (data buffers) to be written/sent
         std::mutex spool_lock;                      // a mutex to prevent race condition with data buffers
 };
 

@@ -31,7 +31,7 @@ void PlayerClient::start() {
 /*
 adds message to buffer and performs asynchronous write
 */
-void PlayerClient::send(std::string msg) {
+void PlayerClient::send(protocol::Message msg) {
     /*#################################################################################
     ### This function does not perform the actual write (send) operation. Instead,   ##
     ### it adds the new message to the spool of messages to be written, letting      ##
@@ -87,7 +87,8 @@ void PlayerClient::read() {
     socket.async_read_some(boost::asio::buffer(read_buffer.data(), read_buffer.size()),
         [this, self](boost::system::error_code error, std::size_t /*length*/) {
             if (!error) {
-                auto msg = std::string(read_buffer.data());
+                //auto msg = std::string(read_buffer.data());
+                auto msg = protocol::Message(read_buffer.data(), read_buffer.size());
                 receive_msg_spool.add(msg);
             }
             read();
@@ -100,7 +101,7 @@ performs asynchronous write on the socket
 */
 void PlayerClient::write() {
     auto self(shared_from_this());
-    boost::asio::async_write(socket, boost::asio::buffer(write_msg_spool.front().data(), write_msg_spool.front().length()),
+    boost::asio::async_write(socket, boost::asio::buffer(write_msg_spool.front().data(), write_msg_spool.front().size()),
         [this, self](boost::system::error_code /*error*/, std::size_t /*transmitted*/) {
             /*#########################################################################################
             ### This function will be called once the asynchronous write is complete.                ##
