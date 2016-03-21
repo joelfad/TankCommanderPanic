@@ -13,6 +13,7 @@ Description:  Simple type for representing communication messages.
 
 // c++ standard libraries
 #include <vector>
+#include <tuple>
 
 namespace protocol {
 
@@ -27,7 +28,7 @@ class Message {
                 msg_content.push_back(bytes[i]);
         }
 
-        auto size() -> size_type {
+        auto size() const noexcept -> size_type {
             return msg_content.size();
         }
 
@@ -37,15 +38,6 @@ class Message {
 
         auto byte(size_type index) const noexcept -> unsigned char {
             return msg_content[index];
-        }
-
-        template <typename TargetT, unsigned int start_index>
-        auto reinterpret_bytes() {
-            constexpr auto size = sizeof(TargetT);
-            TargetT r = 0;
-            for (int i = 0; i < size; i++)
-                r |= byte(start_index + i) << 8*(size - 1 - i);
-            return r;
         }
 
     private:

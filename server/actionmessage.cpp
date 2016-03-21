@@ -14,60 +14,48 @@ Description:  Simple type representing a message sent by a client.
 
 //~constructor~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-protocol::ActionMessage::ActionMessage(const field_types::PlayerID& _player, const field_types::Action& action, const field_types::Direction& _direction, const field_types::field_types::PieceID& _piece)
-    : player_id{_player}, act{_action}, dir{_direction}, piece_id{_piece} {}
+protocol::ActionMessage::ActionMessage(const field_types::PlayerID& _player, const field_types::Action& _action, const field_types::Direction& _direction, const field_types::PieceID& _piece)
+    : msg_fields{_player, _action, _direction, _piece} {}
+
+
+
+//~private constructor~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+protocol::ActionMessage::ActionMessage()
+    : msg_fields{0, field_types::Action::MOVE, field_types::Direction::NONE, 0} {}
 
 
 
 //~getters~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 auto protocol::ActionMessage::player() const noexcept -> field_types::PlayerID {
-    return player_id;
+    return msg_fields.player;
 }
 
 auto protocol::ActionMessage::action() const noexcept -> field_types::Action {
-    return act;
+    return msg_fields.action;
 }
 
 auto protocol::ActionMessage::direction() const noexcept -> field_types::Direction {
-    return dir;
+    return msg_fields.direction;
 }
 
 auto protocol::ActionMessage::piece() const noexcept -> field_types::PieceID {
-    return piece_id;
+    return msg_fields.piece;
 }
 
 
 
-//~non-member functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~static functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+auto protocol::ActionMessage::make_from_msg(const Message& msg) -> ActionMessage {
+    if (msg.size() < ActionMessage::size)
+        throw MessageLengthError("message is too short for `ActionMessage` type", msg);
+    else if (msg.size() > ActionMessage::size)
+        throw MessageLengthError("message is too long for `ActionMessage` type", msg);
 
-/*
-given a message `msg`, attempts to construct a corresponding `ActionMessage`, setting the fields appropriatly
-@throws `protocol::MessageFormatError` if `msg` is not formated as an `ActionMessage`
-@trhows `protocol::MessageLengthError` if `ms` is incorrect length for being an `ActionMessage`
-*/
-auto protocol::make_action_msg(const Message& msg) -> ActionMessage {
-    if (msg.size() != ActionMessage::size)
-        throw MessageLengthError{std::string{}, msg};
-
-    /*
-    field_types::PlayerID player = 0;
-    player |= msg.byte(0) << 8;
-    player |= msg.byte(1);
-    field_types::Action action = msg.byte(2);
-    field_types::Direction direction = msg.byte(3);
-    field_types::PieceID piece = 0;
-    piece |= msg.byte(4) << 8*3;
-    piece |= msg.byte(5) << 8*2;
-    piece |= msg.byte(6) << 8*1;
-    piece |= msg.byte(7);
-    */
-
-    auto player = msg.reinterpret_bytes<field_types::PlayerID, 0>();
-    auto action = msg.reinterpret_bytes<field_types::Action, 2>();
-    auto direction = msg.reinterpret_bytes<field_types::Direction, 3>();
-    auto piece = msg.reinterpret_bytes<field_types::PieceID, 4>();
-
-    return ActionMessage{player, action, direction, piece};
+    auto am = ActionMessage{};
+    for (int i = 0; i < msg.size(); i++)
+        am.msg_data[i] = msg.byte(i);
+    return am;
 }

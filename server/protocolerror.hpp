@@ -23,8 +23,8 @@ class ProtocolError : public std::runtime_error {
 
 class MessageFormatError : public ProtocolError {
     public:
-        ProtocolError(const std::string& _error, const Message& _message) : ProtocolError{_error}, msg{_message} {}
-        ProtocolError(const char* _error, const Message& _message) : ProtocolError{_error}, msg{_message} {}
+        MessageFormatError(const std::string& _error, const Message& _message) : ProtocolError{_error}, msg{_message} {}
+        MessageFormatError(const char* _error, const Message& _message) : ProtocolError{_error}, msg{_message} {}
 
         auto message() const noexcept -> Message {
             return msg;
@@ -36,8 +36,8 @@ class MessageFormatError : public ProtocolError {
 
 class MessageLengthError : public MessageFormatError {
     public:
-        ProtocolError(const std::string& _error, const Message& _message) : ProtocolError{_error}, msg{_message} {}
-        ProtocolError(const char* _error, const Message& _message) : ProtocolError{_error}, msg{_message} {}
+        MessageLengthError(const std::string& _error, const Message& _message) : MessageFormatError{_error, _message} {}
+        MessageLengthError(const char* _error, const Message& _message) : MessageFormatError{_error, _message} {}
 };
 
 }
