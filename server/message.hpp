@@ -18,18 +18,34 @@ namespace protocol {
 
 class Message {
     public:
+        using size_type = std::vector<unsigned char>::size_type;
+
         Message(char* bytes, int _size) {
             msg_content.reserve(_size);
+
             for (int i = 0; i < _size; i++)
                 msg_content.push_back(bytes[i]);
         }
 
-        auto size() {
+        auto size() -> size_type {
             return msg_content.size();
         }
 
-        const unsigned char* data() const {
+        auto data() const noexcept -> const unsigned char* {
             return msg_content.data();
+        }
+
+        auto byte(size_type index) const noexcept -> unsigned char {
+            return msg_content[index];
+        }
+
+        template <typename TargetT, unsigned int start_index>
+        auto reinterpret_bytes() {
+            constexpr auto size = sizeof(TargetT);
+            TargetT r = 0;
+            for (int i = 0; i < size; i++)
+                r |= byte(start_index + i) << 8*(size - 1 - i);
+            return r;
         }
 
     private:
