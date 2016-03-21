@@ -9,34 +9,29 @@ Description:  Simple type representing a message sent by a client.
 #define ACTIONMESSAGE_HPP
 
 #include "message.hpp"
-
-#include <cstdint>
+#include "protocolfields.hpp"
 
 namespace protocol {
 
 class ActionMessage {
     public:
 
-        // member types
-        using PlayerID = std::uint16_t;
-        enum class Action: char {MOVE, SHOOT, QUIT};
-        enum class Direction: char {NORTH, SOUTH, EAST, WEST, NONE};
-        using PieceID = std::uint32_t;
-        static constexpr auto size = sizeof(PlayerID) + sizeof(Action) + sizeof(Direction) + sizeof(PieceID);
+        // member types and constants
+        static constexpr auto size = sizeof(field_types::PlayerID) + sizeof(field_types::Action) + sizeof(field_types::Direction) + sizeof(PieceID);
 
         // constructor
-        ActionMessage(const PlayerID& _player, const Action& action, const Direction& _direction, const PieceID& _piece);
+        ActionMessage(const field_types::PlayerID& _player, const field_types::Action& action, const field_types::Direction& _direction, const PieceID& _piece);
 
         // getters
-        auto player() const noexcept -> PlayerID;
-        auto action() const noexcept -> Action;
-        auto direction() const noexcept -> Direction;
+        auto player() const noexcept -> field_types::PlayerID;
+        auto action() const noexcept -> field_types::Action;
+        auto direction() const noexcept -> field_types::Direction;
         auto piece() const noexcept -> PieceID;
 
     private:
-        PlayerID player_id;
-        Action act;
-        Direction dir;
+        field_types::PlayerID player_id;
+        field_types::Action act;
+        field_types::Direction dir;
         PieceID piece_id;
 };
 

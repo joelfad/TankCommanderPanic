@@ -14,26 +14,26 @@ Description:  Simple type representing a message sent by a client.
 
 //~constructor~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-protocol::ActionMessage::ActionMessage(const PlayerID& _player, const Action& action, const Direction& _direction, const PieceID& _piece)
+protocol::ActionMessage::ActionMessage(const field_types::PlayerID& _player, const field_types::Action& action, const field_types::Direction& _direction, const field_types::field_types::PieceID& _piece)
     : player_id{_player}, act{_action}, dir{_direction}, piece_id{_piece} {}
 
 
 
 //~getters~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-auto protocol::ActionMessage::player() const noexcept -> PlayerID {
+auto protocol::ActionMessage::player() const noexcept -> field_types::PlayerID {
     return player_id;
 }
 
-auto protocol::ActionMessage::action() const noexcept -> Action {
+auto protocol::ActionMessage::action() const noexcept -> field_types::Action {
     return act;
 }
 
-auto protocol::ActionMessage::direction() const noexcept -> Direction {
+auto protocol::ActionMessage::direction() const noexcept -> field_types::Direction {
     return dir;
 }
 
-auto protocol::ActionMessage::piece() const noexcept -> PieceID {
+auto protocol::ActionMessage::piece() const noexcept -> field_types::PieceID {
     return piece_id;
 }
 
@@ -52,22 +52,22 @@ auto protocol::make_action_msg(const Message& msg) -> ActionMessage {
         throw MessageLengthError{std::string{}, msg};
 
     /*
-    ActionMessage::PlayerID player = 0;
+    field_types::PlayerID player = 0;
     player |= msg.byte(0) << 8;
     player |= msg.byte(1);
-    ActionMessage::Action action = msg.byte(2);
-    ActionMessage::Direction direction = msg.byte(3);
-    ActionMessage::PieceID piece = 0;
+    field_types::Action action = msg.byte(2);
+    field_types::Direction direction = msg.byte(3);
+    field_types::PieceID piece = 0;
     piece |= msg.byte(4) << 8*3;
     piece |= msg.byte(5) << 8*2;
     piece |= msg.byte(6) << 8*1;
     piece |= msg.byte(7);
     */
 
-    auto player = msg.reinterpret_bytes<ActionMessage::PlayerID, 0>();
-    auto action = msg.reinterpret_bytes<ActionMessage::Action, 2>();
-    auto direction = msg.reinterpret_bytes<ActionMessage::Direction, 3>();
-    auto piece = msg.reinterpret_bytes<ActionMessage::PieceID, 4>();
+    auto player = msg.reinterpret_bytes<field_types::PlayerID, 0>();
+    auto action = msg.reinterpret_bytes<field_types::Action, 2>();
+    auto direction = msg.reinterpret_bytes<field_types::Direction, 3>();
+    auto piece = msg.reinterpret_bytes<field_types::PieceID, 4>();
 
     return ActionMessage{player, action, direction, piece};
 }
