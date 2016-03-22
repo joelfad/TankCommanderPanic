@@ -1,8 +1,8 @@
 /*
 Project:  Tank Commander Panic
-File:  protocolfieldtypes.hpp
+File:  protocoldefs.hpp
 Author:  Leonardo Banderali
-Description:  Simple type for representing fields in protocol messages.
+Description:  Definitions of simple types for the game protocol.
 */
 
 #ifndef PROTOCOL_FIELD_TYPES_HPP

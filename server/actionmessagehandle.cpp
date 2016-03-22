@@ -1,11 +1,11 @@
 /*
 Project:  Tank Commander Panic
-File:  actionmessage.cpp
+File:  actionmessagehandle.cpp
 Author:  Leonardo Banderali
-Description:  Simple type representing a message sent by a client.
+Description:  A handle for messages sent by clients.
 */
 
-#include "actionmessage.hpp"
+#include "actionmessagehandle.hpp"
 #include "protocolerror.hpp"
 
 #include <string>
