@@ -1,4 +1,4 @@
-# .map file format specification
+# .map File Format Specification
 
 This document specifies the format and content of `.map` files for the Tank
 Commander Panic game server program. These files are created by the `map_gen.py`
@@ -6,10 +6,10 @@ tool and imported by the game server.
 
 ## About Map Generator
 
-This tool takes a `.tmx` file saved from Tiled, the open-source game map
-creation tool, and creates a `.map` file formatted for import by the server
-program. The server program uses this file to set up the stage at the start of a
-game.
+This tool takes a `.tmx` file saved from the open-source game map creation tool
+[Tiled](https://github.com/bjorn/tiled) and creates a `.map` file formatted for
+import by the server program. The server program uses this file to set up the
+stage at the start of a game.
 
 ## File Format
 
