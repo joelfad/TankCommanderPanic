@@ -1,8 +1,8 @@
 /*
 Project:  Tank Commander Panic
-File:  messagespool.hpp
+File:  message.hpp
 Author:  Leonardo Banderali
-Description:  A synchronized spool for passing messages between a PlayerClient the GameDriver.
+Description:  Simple type for representing communication messages.
 */
 
 #ifndef MESSAGESPOOL_HPP
@@ -10,11 +10,42 @@ Description:  A synchronized spool for passing messages between a PlayerClient t
 
 // project headers
 #include "spool.hpp"
-#include "playerclient.hpp"
 
 // c++ standard libraries
-#include <string>
+#include <vector>
+#include <tuple>
 
-using MessageSpool = spool<std::string>;
+namespace protocol {
+
+class Message {
+    public:
+        using size_type = std::vector<unsigned char>::size_type;
+
+        Message(char* bytes, int _size) {
+            msg_content.reserve(_size);
+
+            for (int i = 0; i < _size; i++)
+                msg_content.push_back(bytes[i]);
+        }
+
+        auto size() const noexcept -> size_type {
+            return msg_content.size();
+        }
+
+        auto data() const noexcept -> const unsigned char* {
+            return msg_content.data();
+        }
+
+        auto byte(size_type index) const noexcept -> unsigned char {
+            return msg_content[index];
+        }
+
+    private:
+        std::vector<unsigned char> msg_content;
+};
+
+using MessageSpool = spool<Message>;
+
+}
 
 #endif // MESSAGESPOOL_HPP

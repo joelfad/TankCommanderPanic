@@ -16,7 +16,7 @@ Description:  The games communication server.
 #include <memory>
 #include <vector>
 
-void server(PlayerSpool& client_spool, MessageSpool& msg_spool, unsigned short port);
+void server(PlayerSpool& client_spool, protocol::MessageSpool& msg_spool, unsigned short port);
 /*  accepts connections from player clients and communicates with them */
 
 #endif // SERVER_HPP

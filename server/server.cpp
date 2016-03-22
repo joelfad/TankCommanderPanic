@@ -26,7 +26,7 @@ An asynchronous connection acceptort class
 */
 class ConnectionAcceptor {
     public:
-        ConnectionAcceptor(boost::asio::io_service& io_service, unsigned short port, PlayerSpool& _client_spool, MessageSpool& _msg_spool)
+        ConnectionAcceptor(boost::asio::io_service& io_service, unsigned short port, PlayerSpool& _client_spool, protocol::MessageSpool& _msg_spool)
             : acceptor(io_service, tcp::endpoint(tcp::v4(), port)), socket(io_service), client_spool{_client_spool}, msg_spool{_msg_spool}
         {
             do_accept();
@@ -52,13 +52,13 @@ class ConnectionAcceptor {
         tcp::socket socket;
 
         PlayerSpool& client_spool;  // spool for groups of clients to play together
-        MessageSpool& msg_spool;    // spool for messages comming from clients
+        protocol::MessageSpool& msg_spool;    // spool for messages comming from clients
 };
 
 /*
 accepts connections from player clients and communicates with them
 */
-void server(PlayerSpool& client_spool, MessageSpool& msg_spool, unsigned short port) {
+void server(PlayerSpool& client_spool, protocol::MessageSpool& msg_spool, unsigned short port) {
     using boost::asio::ip::tcp;
 
     try {

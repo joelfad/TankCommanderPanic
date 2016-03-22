@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
     }
 
     PlayerSpool players;
-    MessageSpool messages;
+    protocol::MessageSpool messages;
 
     // run the communication server on a separate thread
     auto com_server = std::thread{server, std::ref(players), std::ref(messages), std::atoi(argv[1])};
