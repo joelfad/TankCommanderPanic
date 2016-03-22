@@ -10,13 +10,13 @@ Description:  The games communication server.
 
 // project headers
 #include "playerclient.hpp"
-#include "messagespool.hpp"
+#include "message.hpp"
 
 // c++ standard libraries
 #include <memory>
 #include <vector>
 
-void server(std::vector<std::shared_ptr<PlayerClient>>& clients, MessageSpool& msg_spool, unsigned short port);
+void server(PlayerSpool& client_spool, protocol::MessageSpool& msg_spool, unsigned short port);
 /*  accepts connections from player clients and communicates with them */
 
 #endif // SERVER_HPP

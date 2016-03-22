@@ -10,23 +10,14 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 
 // project headers
-//#include "simple_servers.hpp"
-//#include "async_tcp.hpp"
-//#include "async_udp.hpp"
 #include "server.hpp"
 #include "gamedriver.hpp"
 #include "playerclient.hpp"
-#include "messagespool.hpp"
+#include "message.hpp"
 
 // c++ standard libraries
-#include <exception>
-#include <iostream>
 #include <thread>
-#include <vector>
-#include <memory>
-
-// boost libraries
-//#include <boost/asio.hpp>
+#include <functional>
 
 
 
@@ -40,37 +31,15 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    try
-    {
-        // create a boost io_service object (provides the core functionalities for asynchronous IO)
-        //boost::asio::io_service io_service;
+    PlayerSpool players;
+    protocol::MessageSpool messages;
 
-        // start the server
-        //simple_tcp_server(io_service, std::atoi(argv[1]));
-        //simple_udp_server(io_service, std::atoi(argv[1]));
+    // run the communication server on a separate thread
+    auto com_server = std::thread{server, std::ref(players), std::ref(messages), std::atoi(argv[1])};
 
-        // create asynchronous server objects
-        //async_tcp_server s_tcp(io_service, std::atoi(argv[1]));
-        //async_udp_server s_udp(io_service, std::atoi(argv[1]));
+    // run instance of the game
+    game_driver(players, messages);
 
-        //io_service.run();
-
-        std::vector<std::shared_ptr<PlayerClient>> players;
-        MessageSpool messages;
-
-        // run the communication server on a separate thread
-        std::thread com_server([&](){
-            server(players, messages, std::atoi(argv[1]));
-        });
-
-        // run the game
-        game_driver(players, messages);
-
-        // wait for communication to finish
-        com_server.join();
-    }
-    catch (std::exception& e)
-    {
-        std::cerr << "Exception: " << e.what() << "\n";
-    }
+    // wait for communication to finish
+    com_server.join();
 }
