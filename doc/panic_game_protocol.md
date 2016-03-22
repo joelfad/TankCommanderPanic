@@ -22,8 +22,8 @@ action such as move, shoot, or quit. The message format is as follows.
 |---------------|---------|---------|-----------------------------------------------------|
 | `player_id`   | u short | 2 bytes | player's id number, identifies the client           |
 | `action_type` | u char  | 1 byte  | enum: `attempt to move`, `attempt to shoot`, `quit` |
-| `direction`   | u char  | 1 byte  | enum: `N`, `S`, `E`, `W` (not used when quitting)   |
-| `piece_id`    | s int   | 4 bytes | `GamePiece` id number (not used when quitting)      |
+| `direction`   | u char  | 1 byte  | enum: `N`, `E`, `S`, `W` (not used when quitting)   |
+| `piece_id`    | u int   | 4 bytes | `GamePiece` id number (not used when quitting)      |
 | **Total**     |         | 8 bytes |                                                     |
 
 The enums in this message format are defined as follows:
@@ -59,7 +59,7 @@ discarded by the client when this type of message is received.
 | `map_version`      | u char  | 1 byte             | the version number of the map              |
 | `player_id`        | u short | 2 bytes            | player's id number, identifies the client  |
 | `owned_tank_count` | u char  | 1 byte             | number of tanks controlled by this user, N |
-| `tank_piece_id`    | s int   | 4 bytes (xN tanks) | `GamePiece` id number of the tank(s)       |
+| `tank_piece_id`    | u int   | 4 bytes (xN tanks) | `GamePiece` id number of the tank(s)       |
 | **Total**          |         | 6 + 4N bytes       |                                            |
 
 #### Create Piece Message
@@ -71,7 +71,7 @@ the creation of a new `GamePiece`.
 |-------------------------------|---------|----------|-------------------------------------|
 | `message_type` / `piece_type` | u char  | 1 byte   | `2` - `31` (see below)              |
 | `value`                       | s int   | 4 bytes  | (see below)                         |
-| `piece_id`                    | s int   | 4 bytes  | `GamePiece` id number               |
+| `piece_id`                    | u int   | 4 bytes  | `GamePiece` id number               |
 | `piece_coord_x`               | u char  | 1 byte   | x coordinate of the new `GamePiece` |
 | `piece_coord_y`               | u char  | 1 byte   | y coordinate of the new `GamePiece` |
 | **Total**                     |         | 11 bytes |                                     |
@@ -82,45 +82,49 @@ type of `GamePiece`:
 
 | `piece_type` value | `piece_type` name | `piece_type` meaning    | `value` meaning                                                  |
 |--------------------|-------------------|-------------------------|------------------------------------------------------------------|
-| 2 - 17             | Tank              | team color and model    | health (used to determine sprite and display health bars in HUD) |
-| 18 - 21            | Brick             | style (stone, block...) | health (used to determine sprite)                                |
-| 22                 | Health            | -                       | amount (used to determine sprite)                                |
-| 23                 | Ammo              | -                       | amount (used to determine sprite)                                |
-| 24                 | Decoration        | -                       | style/sprite                                                     |
+| 2 - 7              | Brick             | style (stone, block...) | health (used to determine sprite)                                |
+| 8                  | Health            | -                       | amount (used to determine sprite)                                |
+| 9                  | Ammo              | -                       | amount (used to determine sprite)                                |
+| 10                 | Decoration        | -                       | style/sprite                                                     |
+| 11 - 15            | *unreserved*      | -                       | -                                                                |
+| 16 - 31            | Tank              | team color and model    | health (used to determine sprite and display health bars in HUD) |
 
-Specific tank colors and models are designated as follows:
+Specific tank colors and models are designated with `piece_type`s in the 16-31
+range (mask `0x1f`). The bits in the mask `0x0c` specify the team color and the
+bits under `0x03` specify the tank model as shown:
 
-| `piece_type` | Red | Blue | Yellow | Green |
-|--------------|:---:|:----:|:------:|:-----:|
-| Commander    | 2   | 3    | 4      | 5     |
-| Interceptor  | 6   | 7    | 8      | 9     |
-| Eliminator   | 10  | 11   | 12     | 13    |
-| Negotiator   | 14  | 15   | 16     | 17    |
+| `piece_type` | Commander      | Interceptor    | Eliminator     | Negotiator     |
+|-------------:|:--------------:|:--------------:|:--------------:|:--------------:|
+| **Red**      | 0001_0000 = 16 | 0001_0001 = 17 | 0001_0010 = 18 | 0001_0011 = 19 |
+| **Blue**     | 0001_0100 = 20 | 0001_0101 = 21 | 0001_0110 = 22 | 0001_0111 = 23 |
+| **Yellow**   | 0001_1000 = 24 | 0001_1001 = 25 | 0001_1010 = 26 | 0001_1011 = 27 |
+| **Green**    | 0001_1100 = 28 | 0001_1101 = 29 | 0001_1110 = 30 | 0001_1111 = 31 |
 
 ![Tanks](img/tanks.png)
 
 #### Event Message
 
-This format is identified by a `message_type` value of `64` - `255`.
+This format is identified by a `message_type` value of `32` - `47`.
 
 | field                         | c type  | size     | description                          |
 |-------------------------------|---------|----------|--------------------------------------|
-| `message_type` / `event_type` | u char  | 1 byte   | `64` - `255` (see below)             |
-| `direction`                   | u char  | 1 byte   | enum: `N`, `S`, `E`, `W` (see below) |
+| `message_type` / `event_type` | u char  | 1 byte   | `32` - `47` (see below)              |
+| `direction`                   | u char  | 1 byte   | enum: `N`, `E`, `S`, `W` (see below) |
 | `value`                       | s int   | 4 bytes  | (see below)                          |
-| `piece_id`                    | s int   | 4 bytes  | `GamePiece` id number                |
+| `piece_id`                    | u int   | 4 bytes  | `GamePiece` id number                |
 | **Total**                     |         | 10 bytes |                                      |
 
 `event_type` is an enum of the type of event (from the following table). The
 `value` field's meaning differs depending of the type of event:
 
-| event type          | meaning of `value`             | other notes                        |
-|---------------------|--------------------------------|------------------------------------|
-| Update Ammo         | new ammo count                 | `piece_id` is not specified        |
-| Update Health       | new health value               | -                                  |
-| Destroy `GamePiece` | `0` (not used)                 | -                                  |
-| Move `GamePiece`    | distance `GamePiece` is moved  | Only time `direction` is specified |
-| Game Over           | enum: `you win`, `you loose`   | `piece_id` is not specified        |
+| `event_type` value | `event_type` name   | `value` meaning                | other notes                        |
+|-------------------:|---------------------|--------------------------------|------------------------------------|
+| 32                 | Update Ammo         | new ammo count                 | `piece_id` is not specified        |
+| 33                 | Update Health       | new health value               | -                                  |
+| 34                 | Destroy `GamePiece` | `0` (not used)                 | -                                  |
+| 35                 | Move `GamePiece`    | distance `GamePiece` is moved  | Only time `direction` is specified |
+| 36                 | Game Over           | enum: `you win`, `you loose`   | `piece_id` is not specified        |
+| 37 - 47            | *unreserved*        | -                              | -                                  |
 
 ### Message Field Sizes
 
@@ -132,8 +136,9 @@ chose the numbers of bytes to match the size of corresponding existing variables
 in the server system for some fields and for others we based it on a realistic
 number of possibilities.
 
-We left the `32` - `63` range of the `message_type` field free so that it could
-be used for some sort of new message type with a different format in the future.
+We left the `48` - `255` range of the `message_type` field unreserved so that it
+could be used for some sort of new message type with a different format in the
+future.
 
 ## Message Order
 
