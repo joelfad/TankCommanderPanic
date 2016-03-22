@@ -27,7 +27,7 @@ using EventType = ServerMsgType;    // must be the same size
 
 using PlayerID = std::uint16_t;
 
-enum class Action: char {MOVE, SHOOT, QUIT};
+enum class Action: char {NONE, MOVE, SHOOT, QUIT};
 enum class Direction: char {NONE, NORTH, EAST, SOUTH, WEST};
 
 struct ActionMessage {
