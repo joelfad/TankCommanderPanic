@@ -14,33 +14,33 @@ Description:  Simple type representing a message sent by a client.
 
 //~constructor~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-protocol::ActionMessage::ActionMessage(const field_types::PlayerID& _player, const field_types::Action& _action, const field_types::Direction& _direction, const field_types::PieceID& _piece)
+protocol::ActionMessageHandle::ActionMessageHandle(const PlayerID& _player, const Action& _action, const Direction& _direction, const PieceID& _piece)
     : msg_fields{_player, _action, _direction, _piece} {}
 
 
 
 //~private constructor~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-protocol::ActionMessage::ActionMessage()
-    : msg_fields{0, field_types::Action::MOVE, field_types::Direction::NONE, 0} {}
+protocol::ActionMessageHandle::ActionMessageHandle()
+    : msg_fields{0, Action::MOVE, Direction::NONE, 0} {}
 
 
 
 //~getters~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-auto protocol::ActionMessage::player() const noexcept -> field_types::PlayerID {
+auto protocol::ActionMessageHandle::player() const noexcept -> PlayerID {
     return msg_fields.player;
 }
 
-auto protocol::ActionMessage::action() const noexcept -> field_types::Action {
+auto protocol::ActionMessageHandle::action() const noexcept -> Action {
     return msg_fields.action;
 }
 
-auto protocol::ActionMessage::direction() const noexcept -> field_types::Direction {
+auto protocol::ActionMessageHandle::direction() const noexcept -> Direction {
     return msg_fields.direction;
 }
 
-auto protocol::ActionMessage::piece() const noexcept -> field_types::PieceID {
+auto protocol::ActionMessageHandle::piece() const noexcept -> PieceID {
     return msg_fields.piece;
 }
 
@@ -48,13 +48,13 @@ auto protocol::ActionMessage::piece() const noexcept -> field_types::PieceID {
 
 //~static functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-auto protocol::ActionMessage::make_from_msg(const Message& msg) -> ActionMessage {
-    if (msg.size() < ActionMessage::size)
+auto protocol::ActionMessageHandle::make_from_msg(const Message& msg) -> ActionMessageHandle {
+    if (msg.size() < ActionMessageHandle::size)
         throw MessageLengthError("message is too short for `ActionMessage` type", msg);
-    else if (msg.size() > ActionMessage::size)
+    else if (msg.size() > ActionMessageHandle::size)
         throw MessageLengthError("message is too long for `ActionMessage` type", msg);
 
-    auto am = ActionMessage{};
+    auto am = ActionMessageHandle{};
     for (int i = 0; i < msg.size(); i++)
         am.msg_data[i] = msg.byte(i);
     return am;

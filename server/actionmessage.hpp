@@ -13,36 +13,28 @@ Description:  Simple type representing a message sent by a client.
 
 namespace protocol {
 
-class ActionMessage {
-        // a struct defining the fields of this message type
-        struct fields_t {
-            field_types::PlayerID player;
-            field_types::Action action;
-            field_types::Direction direction;
-            field_types::PieceID piece;
-        };
-
+class ActionMessageHandle {
     public:
 
         // constant and type members
-        static constexpr auto size = sizeof(fields_t);
+        static constexpr auto size = sizeof(ActionMessage);
 
         // constructor
-        ActionMessage(const field_types::PlayerID& _player, const field_types::Action& action, const field_types::Direction& _direction, const field_types::PieceID& _piece);
+        ActionMessageHandle(const PlayerID& _player, const Action& action, const Direction& _direction, const PieceID& _piece);
 
         // getters
-        auto player() const noexcept -> field_types::PlayerID;
-        auto action() const noexcept -> field_types::Action;
-        auto direction() const noexcept -> field_types::Direction;
-        auto piece() const noexcept -> field_types::PieceID;
+        auto player() const noexcept -> PlayerID;
+        auto action() const noexcept -> Action;
+        auto direction() const noexcept -> Direction;
+        auto piece() const noexcept -> PieceID;
 
         // static functions
-        static auto make_from_msg(const Message& msg) -> ActionMessage;
+        static auto make_from_msg(const Message& msg) -> ActionMessageHandle;
 
     private:
 
         // private default constructor
-        ActionMessage();
+        ActionMessageHandle();
 
         /*###############################################################################################
         ### To serialize and deserialize the fields in a message, a union of a struct and an array     ##
@@ -54,8 +46,8 @@ class ActionMessage {
 
         // anonymous union used for serializing the fields of this message type
         union {
-            fields_t msg_fields;
-            unsigned char msg_data[sizeof(fields_t)];
+            ActionMessage msg_fields;
+            unsigned char msg_data[sizeof(ActionMessage)];
         };
 };
 
