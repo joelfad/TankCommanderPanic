@@ -172,10 +172,10 @@ def combine(existing, new):
 
 """"Represent a tile's properties as a character for output."""
 def tilechar(tile):
-    result = 48 # offset
-    if tile[0]:
+    result = 48     # offset to get ascii '0' - '3'
+    if tile[0]:     # cleardrive
         result += 2
-    if tile[1]:
+    if tile[1]:     # clearshot
         result += 1
     return str(chr(result))
 
