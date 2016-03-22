@@ -15,7 +15,7 @@ Description:  The main game logic driver.
 /*
 runs the game
 */
-void game_driver(PlayerSpool& client_spool, MessageSpool& msg_spool) {
+void game_driver(PlayerSpool& client_spool, protocol::MessageSpool& msg_spool) {
     PlayerClientList players;
     while (true) {
         PlayerSpool::maybe_item client = client_spool.get();
@@ -23,7 +23,7 @@ void game_driver(PlayerSpool& client_spool, MessageSpool& msg_spool) {
             players.push_back(*client);
         }
 
-        MessageSpool::maybe_item message = msg_spool.get();
+        protocol::MessageSpool::maybe_item message = msg_spool.get();
         if (message) {
             for (auto&& player : players) {
                 player->send(*message);
