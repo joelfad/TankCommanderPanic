@@ -21,13 +21,15 @@ public:
     virtual void shot(int damage)=0;
     /* react to taking damage */
 
-    int getId() const { return id; }
+    int getId() const noexcept { return id; }
 
-    bool isClearshot() const { return clearshot; }
+    bool isClearshot() const noexcept { return clearshot; }
     /* designates that the piece can be fired through, otherwise a round impacts on the piece */
 
-    bool isCleardrive() const { return cleardrive; }
+    bool isCleardrive() const noexcept { return cleardrive; }
     /* designates that the piece can be driven on, otherwise the piece blocks movement */
+
+    virtual ~GamePiece() noexcept {}
 
 private:
 

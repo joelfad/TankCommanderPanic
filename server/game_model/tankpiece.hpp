@@ -28,7 +28,7 @@ private:
     int power;
     int range;
 
-    GamePlayer commander;
+    GamePlayer& commander;
     /* The GamePlayer that commands this tank */
 
 };

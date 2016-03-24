@@ -16,7 +16,7 @@ public:
 
     SolidPiece();
 
-    void shot(int damage);
+    void shot(int damage) override;
     /* react to taking damage */
 
 private:
