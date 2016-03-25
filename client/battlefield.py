@@ -17,6 +17,12 @@ class BattleField:
     def load_texture(self):
         # load texture from file
 
+    def load_map_data(self, id, version):
+        # load map data from file
+
+    def create_map(self, map_sprite_ids):
+        # create map from map data
+
     def get_piece(self, id):
         # get piece with given id
 
