@@ -172,10 +172,10 @@ def combine(existing, new):
 
 """"Represent a tile's properties as a character for output."""
 def tilechar(tile):
-    result = 48 # offset
-    if tile[0]:
+    result = 48     # offset to get ascii '0' - '3'
+    if tile[0]:     # cleardrive
         result += 2
-    if tile[1]:
+    if tile[1]:     # clearshot
         result += 1
     return str(chr(result))
 
@@ -193,6 +193,7 @@ def print_tiles(tile_properties):
                 print("@", end="")
         print()
 
+# main function
 if __name__ == "__main__":
 
     # create a list of files to generate
@@ -228,7 +229,7 @@ if __name__ == "__main__":
 
     else:
         # print usage message
-        print("Usage: map_gen.py <tmx-map-file-path> [--debug]")
+        print("Usage: map_gen.py <tmx-map-file-path>... [--debug]")
 
     # iterate over queued input files
     for input_file_name in gen_queue:
