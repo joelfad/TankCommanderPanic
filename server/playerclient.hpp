@@ -45,13 +45,13 @@ class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
         void write();
         /*  performs asynchronous write on the socket */
 
-        boost::asio::ip::tcp::socket socket;        // the communication socket
+        boost::asio::ip::tcp::socket socket;            // the communication socket
 
-        protocol::MessageSpool& receive_msg_spool;            // spool for the messages recieved
-        char_array<16> read_buffer;                 // buffer in which to read messages
+        protocol::MessageSpool& receive_msg_spool;      // spool for the messages recieved
+        std::array<unsigned char, 16> read_buffer;      // buffer in which to read messages
 
-        std::deque<protocol::Message> write_msg_spool;    // spool of messages (data buffers) to be written/sent
-        std::mutex spool_lock;                      // a mutex to prevent race condition with data buffers
+        std::deque<protocol::Message> write_msg_spool;  // spool of messages (data buffers) to be written/sent
+        std::mutex spool_lock;                          // a mutex to prevent race condition with data buffers
 };
 
 using PlayerClientList = std::vector<std::shared_ptr<PlayerClient>>;

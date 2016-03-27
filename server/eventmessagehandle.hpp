@@ -16,7 +16,8 @@ namespace protocol {
 class EventMessageHandle : public ServerMessageHandle {
     public:
         EventMessageHandle(ServerMsgType msg_type, Direction dir, std::int32_t val, PieceID pid);
-        EventMessageHandle(EventType evt_type, Direction dir, std::int32_t val, PieceID pid);
+        //EventMessageHandle(EventType evt_type, Direction dir, std::int32_t val, PieceID pid);
+        /* cannot overload because `EventType` and `ServerMsgType` are the same type */
         EventMessageHandle();
 
         Message to_msg() const override;

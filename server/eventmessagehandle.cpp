@@ -12,17 +12,18 @@ Description:  A handle for messages sent by clients.
 protocol::EventMessageHandle::EventMessageHandle(ServerMsgType msg_type, Direction dir, std::int32_t val, PieceID pid)
     : msg_fields{msg_type, dir, val, pid} {}
 
-protocol::EventMessageHandle::EventMessageHandle(EventType evt_type, Direction dir, std::int32_t val, PieceID pid)
-    : msg_fields{evt_type, dir, val, pid} {}
+//protocol::EventMessageHandle::EventMessageHandle(EventType evt_type, Direction dir, std::int32_t val, PieceID pid)
+//    : msg_fields{evt_type, dir, val, pid} {}
+/* cannot overload because `EventType` and `ServerMsgType` are the same type */
 
 protocol::EventMessageHandle::EventMessageHandle()
-    : msg_fields{0, 0, 0, 0} {}
+    : msg_fields{0, protocol::Direction::NONE, 0, 0} {}
 
 
 
 //~overriden functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-protocol::Message protocol::EventMessageHandle::to_msg() const override {
+protocol::Message protocol::EventMessageHandle::to_msg() const {
     return Message{msg_data, sizeof(msg_data)};
 }
 

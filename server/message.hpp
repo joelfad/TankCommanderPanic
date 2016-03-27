@@ -26,7 +26,7 @@ class Message {
             msg_content = bytes;
         }
 
-        Message(char* bytes, int _size) {
+        Message(const unsigned char* bytes, int _size) {
             msg_content.reserve(_size);
 
             for (int i = 0; i < _size; i++)
