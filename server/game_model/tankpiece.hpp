@@ -17,17 +17,20 @@ enum class TankModel: char {COMMANDER, INTERCEPTOR, ELIMINATOR, NEGOTIATOR};
 class TankPiece : public SolidPiece {
 public:
 
-    TankPiece(GamePlayer& commander);
-    /* Tank with default properties */
-
-    // TankPiece(GamePlayer& commander, TankModel model);
-    /* Tanks will have different properties based on their model */
+    TankPiece(GamePlayer& commander, TankModel model);
 
 private:
 
-    int speed;
+    static constexpr int model_max_health[] = { 50,  30, 100,  20}; // hit points
+    static constexpr int model_power[]      = { 30,  30,  80,  50}; // hit points
+    static constexpr int model_range[]      = {  6,   6,   3,  12}; // tiles
+    static constexpr int model_speed[]      = {  2,   4,   1,   1}; // tiles per second
+
+    TankModel model;
+
     int power;
     int range;
+    int speed;
 
     GamePlayer& commander;
     /* The GamePlayer that commands this tank */
