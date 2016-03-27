@@ -8,6 +8,7 @@
 #ifndef SERVER_GAMEPIECE_HPP
 #define SERVER_GAMEPIECE_HPP
 
+class TankPiece;
 
 class GamePiece {
 
@@ -15,7 +16,7 @@ public:
 
     GamePiece();
 
-    virtual void collide(TankPiece tank)=0;
+    virtual void collide(TankPiece& tank)=0;
     /* react to being collided into by tank (after occupying the same square) */
 
     virtual void shot(int damage)=0;
@@ -33,7 +34,7 @@ public:
 
 private:
 
-    static int count = 0;
+    static int count;
     /* counter for assigning unique ids */
 
     int id;

@@ -30,7 +30,7 @@ public:
 
 private:
 
-    static int count = 0;
+    static int count;
     /* counter for assigning unique ids */
 
     std::string name;       // Display Name

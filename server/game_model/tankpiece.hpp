@@ -8,14 +8,14 @@
 #ifndef SERVER_TANKPIECE_HPP
 #define SERVER_TANKPIECE_HPP
 
-
 #include "solidpiece.hpp"
-#include "gameplayer.hpp"
 
-class TankPiece : public SolidPiece{
+class GamePlayer;
+
+class TankPiece : public SolidPiece {
 public:
 
-    TankPiece(GamePlayer commander);
+    TankPiece(GamePlayer& commander);
     /* Tank with default properties */
 
     // TankPiece(GamePlayer commander, int model);

@@ -7,9 +7,12 @@
 
 #include "gameplayer.hpp"
 
-GamePlayer::GamePlayer(std::string name) {
+int GamePlayer::count = 0;
+/* set initial count to 0 */
 
-    // assign id and increment counter
-    this->id = count++;
+GamePlayer::GamePlayer(std::string name): name(name) {
+
+    // assign id and increment counter, don't assign 0 as an id
+    this->id = ++count;
 }
 

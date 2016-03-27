@@ -7,9 +7,7 @@
 
 #include "solidpiece.hpp"
 
-SolidPiece::SolidPiece() : clearshot(false), cleardrive(false) {
-    // TODO define starting health
-}
+SolidPiece::SolidPiece() : clearshot(false), cleardrive(false), health(100) {}
 
 void SolidPiece::shot(int damage) {
     this->health -= damage;

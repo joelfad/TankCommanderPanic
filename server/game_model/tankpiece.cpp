@@ -7,5 +7,5 @@
 
 #include "tankpiece.hpp"
 
-TankPiece::TankPiece(GamePlayer commander) : health(), speed(), power(), range(), commander(commander) {}
+TankPiece::TankPiece(GamePlayer& commander) : health(), speed(), power(), range(), commander(commander) {}
 
