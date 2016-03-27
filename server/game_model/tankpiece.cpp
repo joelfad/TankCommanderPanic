@@ -7,9 +7,8 @@
 
 #include "tankpiece.hpp"
 
-TankPiece::TankPiece(GamePlayer& commander, TankModel model) :
-        SolidPiece(model_max_health[static_cast<char>(model)]),
-        power(model_power[static_cast<char>(model)]),
-        range(model_range[static_cast<char>(model)]),
-        speed(model_speed[static_cast<char>(model)]),
-        commander(commander), model(model) {}
+TankPiece::TankPiece(GamePlayer& commander, TankModel model) : commander(commander), model(model) {
+    set_max_health(TankPiece::model_max_health[static_cast<char>(model)]);
+}
+
+constexpr int TankPiece::model_max_health[];

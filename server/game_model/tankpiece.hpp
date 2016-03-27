@@ -19,21 +19,23 @@ public:
 
     TankPiece(GamePlayer& commander, TankModel model);
 
-private:
+    int getPower() const noexcept { return model_power[static_cast<char>(model)]; }
 
+    int getRange() const noexcept { return model_range[static_cast<char>(model)]; }
+
+    int getSpeed() const noexcept { return model_speed[static_cast<char>(model)]; }
+
+private:
     static constexpr int model_max_health[] = { 50,  30, 100,  20}; // hit points
     static constexpr int model_power[]      = { 30,  30,  80,  50}; // hit points
     static constexpr int model_range[]      = {  6,   6,   3,  12}; // tiles
     static constexpr int model_speed[]      = {  2,   4,   1,   1}; // tiles per second
 
     TankModel model;
-
-    int power;
-    int range;
-    int speed;
+    /* the model of the tank determines its gameplay characteristics */
 
     GamePlayer& commander;
-    /* The GamePlayer that commands this tank */
+    /* the GamePlayer that commands this tank */
 
 };
 
