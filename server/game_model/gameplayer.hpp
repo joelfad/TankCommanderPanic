@@ -16,21 +16,21 @@ public:
     GamePlayer(std::string name);
 
     const std::string &getName() const { return name; }
-    /* Display name of player */
+    /* display name of player */
 
     int getId() const { return id; }
 
     int getAmmo() const { return ammo; }
     void setAmmo(int ammo) { GamePlayer::ammo = ammo; }
-    /* Ammo is shared for the player's tanks */
+    /* ammo is shared for the player's tanks */
 
     int getDeaths() const { return deaths; }
     void death() { GamePlayer::deaths--; }
-    /* Number of tanks lost */
+    /* number of tanks lost */
 
 private:
 
-    static int count = 0;
+    static int count;
     /* counter for assigning unique ids */
 
     std::string name;       // Display Name

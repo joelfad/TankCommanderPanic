@@ -8,30 +8,33 @@
 #ifndef SERVER_GAMEPIECE_HPP
 #define SERVER_GAMEPIECE_HPP
 
+class TankPiece;
 
 class GamePiece {
 
 public:
 
-    GamePiece();
+    GamePiece(bool clearshot, bool cleardrive);
 
-    virtual void collide(TankPiece tank)=0;
+    virtual void collide(TankPiece& tank) = 0;
     /* react to being collided into by tank (after occupying the same square) */
 
-    virtual void shot(int damage)=0;
+    virtual void shot(int damage) = 0;
     /* react to taking damage */
 
-    int getId() const { return id; }
+    int getId() const noexcept { return id; }
 
-    bool isClearshot() const { return clearshot; }
+    bool isClearshot() const noexcept { return clearshot; }
     /* designates that the piece can be fired through, otherwise a round impacts on the piece */
 
-    bool isCleardrive() const { return cleardrive; }
+    bool isCleardrive() const noexcept { return cleardrive; }
     /* designates that the piece can be driven on, otherwise the piece blocks movement */
 
-private:
+    virtual ~GamePiece() noexcept {}
 
-    static int count = 0;
+protected:
+
+    static int count;
     /* counter for assigning unique ids */
 
     int id;
