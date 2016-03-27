@@ -29,6 +29,8 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
     public:
+        using Ptr = std::shared_ptr<PlayerClient>;
+
         PlayerClient(boost::asio::ip::tcp::socket _socket, protocol::MessageSpool& _receive_msg_spool);
 
         void send(protocol::Message msg);
@@ -54,8 +56,6 @@ class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
         std::mutex spool_lock;                          // a mutex to prevent race condition with data buffers
 };
 
-using PlayerClientList = std::vector<std::shared_ptr<PlayerClient>>;
-
-using PlayerSpool = spool<std::shared_ptr<PlayerClient>>;
+using PlayerSpool = spool<PlayerClient::Ptr>;
 
 #endif // PLAYERCLIENT_HPP
