@@ -32,9 +32,7 @@ void game_driver(PlayerSpool& client_spool, protocol::MessageSpool& msg_spool) {
     }
 
     // send all players the initial game state and game start messages
-    //for (auto&& player : players) {
-    //    player->send();
-    //}
+    //players.send_all();
 
     // run the game
     while (true) {
@@ -51,28 +49,22 @@ void game_driver(PlayerSpool& client_spool, protocol::MessageSpool& msg_spool) {
             switch (action.action()) {
             case protocol::Action::MOVE :
                 // notify all clients of move
-                //for (auto&& player : players) {
-                //    player->send();
-                //}
+                //players.send_all();
                 break;
             case protocol::Action::SHOOT :
                 // notify all clients of shot
-                //for (auto&& player : players) {
-                //    player->send();
-                //}
+                //players.send_all();
                 break;
             case protocol::Action::QUIT :
                 //players[player_id]->disconnect();
-                players.erase(players.cbegin() + player_id);
+                players.erase(player_id);
                 if (players.size() == 1) {
                     // send win message
                     //players.back()->send();
                 }
                 else if (players.size() > 1) {
                     // notify all clients of update
-                    //for (auto&& player : players) {
-                    //    player->send();
-                    //}
+                    //players.send_all();
                 }
                 break;
             default:
