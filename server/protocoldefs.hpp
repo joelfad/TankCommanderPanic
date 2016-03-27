@@ -75,7 +75,7 @@ struct CreatePieceMessage {
 };
 
 struct EventMessage {
-    union { ServerMsgType message_type; EventType piece_type;};
+    union { ServerMsgType message_type; EventType event_type;};
     Direction direction;
     std::int32_t value;
     PieceID piece_id;
