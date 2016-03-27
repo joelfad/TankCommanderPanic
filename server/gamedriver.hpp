@@ -12,10 +12,6 @@ Description:  The main game logic driver.
 #include "playerclient.hpp"
 #include "message.hpp"
 
-// c++ standard libraries
-#include <vector>
-#include <memory>
-
 void game_driver(PlayerSpool& client_spool, protocol::MessageSpool& msg_spool);
 /*  runs the game */
 
