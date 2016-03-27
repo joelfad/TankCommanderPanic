@@ -19,7 +19,12 @@ namespace protocol {
 
 class Message {
     public:
+        using byte_vector = std::vector<unsigned char>;
         using size_type = std::vector<unsigned char>::size_type;
+
+        explicit Message(const byte_vector& bytes) {
+            msg_content = bytes;
+        }
 
         Message(char* bytes, int _size) {
             msg_content.reserve(_size);
@@ -41,7 +46,7 @@ class Message {
         }
 
     private:
-        std::vector<unsigned char> msg_content;
+        byte_vector msg_content;
 };
 
 using MessageSpool = spool<Message>;
