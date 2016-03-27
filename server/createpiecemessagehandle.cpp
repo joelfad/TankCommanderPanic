@@ -14,8 +14,9 @@ Description:  A handle for messages sent by clients.
 protocol::CreatePieceMessageHandle::CreatePieceMessageHandle(ServerMsgType _message_type, std::int32_t _value, PieceID _piece_id, CoordinateX _piece_coord_x, CoordinateY _piece_coord_y)
     : msg_fields{_message_type, _value, _piece_id, _piece_coord_x, _piece_coord_y} {}
 
-protocol::CreatePieceMessageHandle::CreatePieceMessageHandle(PieceType _piece_type, std::int32_t _value, PieceID _piece_id, CoordinateX _piece_coord_x, CoordinateY _piece_coord_y)
-    : msg_fields{_piece_type, _value, _piece_id, _piece_coord_x, _piece_coord_y} {}
+/*protocol::CreatePieceMessageHandle::CreatePieceMessageHandle(PieceType _piece_type, std::int32_t _value, PieceID _piece_id, CoordinateX _piece_coord_x, CoordinateY _piece_coord_y)
+    : msg_fields{_piece_type, _value, _piece_id, _piece_coord_x, _piece_coord_y} {}*/
+/* cannot overload because `PieceType` and `ServerMsgType` are the same type */
 
 protocol::CreatePieceMessageHandle::CreatePieceMessageHandle()
     : msg_fields{0,0,0,0,0} {}
@@ -24,7 +25,7 @@ protocol::CreatePieceMessageHandle::CreatePieceMessageHandle()
 
 //~overriden functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-protocol::Message protocol::CreatePieceMessageHandle::to_msg() const override {
+protocol::Message protocol::CreatePieceMessageHandle::to_msg() const {
     return Message{msg_data, sizeof(msg_data)};
 }
 

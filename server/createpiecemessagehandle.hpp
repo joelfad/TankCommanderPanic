@@ -16,7 +16,8 @@ namespace protocol {
 class CreatePieceMessageHandle : public ServerMessageHandle {
     public:
         CreatePieceMessageHandle(ServerMsgType _message_type, std::int32_t _value, PieceID _piece_id, CoordinateX _piece_coord_x, CoordinateY _piece_coord_y);
-        CreatePieceMessageHandle(PieceType _piece_type, std::int32_t _value, PieceID _piece_id, CoordinateX _piece_coord_x, CoordinateY _piece_coord_y);
+        //CreatePieceMessageHandle(PieceType _piece_type, std::int32_t _value, PieceID _piece_id, CoordinateX _piece_coord_x, CoordinateY _piece_coord_y);
+        /* cannot overload because `PieceType` and `ServerMsgType` are the same type */
         CreatePieceMessageHandle();
 
         Message to_msg() const override;
