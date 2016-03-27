@@ -30,6 +30,18 @@ using PlayerID = std::uint16_t;
 enum class Action: char {NONE, MOVE, SHOOT, QUIT};
 enum class Direction: char {NONE, NORTH, EAST, SOUTH, WEST};
 
+//~message structures~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/*#########################################################################################
+### The following structures are a representation of how fields are ordered and sized in ##
+### for different message formats/types. They do not provide any form of abstraction and ##
+### should therefore only be accessed inderectly. Using resource handles for these is    ##
+### highly recommended.                                                                  ##
+###                                                                                      ##
+### In the future, these message formats may be encapsulated into more complex classes   ##
+### in order to provide better abstraction.                                              ##
+#########################################################################################*/
+
 struct ActionMessage {
     PlayerID player;
     Action action;
@@ -37,13 +49,21 @@ struct ActionMessage {
     PieceID piece;
 };
 
+/*###############################################################################
+### For the `GameStateMessage`, it is impossible to predict how many tanks     ##
+### the player being messaged will own. It is also not possible to dynamically ##
+### resize arrays. So, `tank_piece_ids[]` is forcibly made empty. The field    ##
+### is left preset for the sake of agreeing with the protocol documentation.   ##
+### It is therefore crucial that instances of this structure never be accessed ##
+### directly.                                                                  ##
+###############################################################################*/
 struct GameStateMessage {
     ServerMsgType message_type;
     MapID map_id;
     MapVersion map_version;
     PlayerID player_id;
     TankCount owned_tank_count;
-    PieceID tank_piece_ids[];
+    PieceID tank_piece_ids[] = {};  // force array to be empty
 };
 
 struct CreatePieceMessage {

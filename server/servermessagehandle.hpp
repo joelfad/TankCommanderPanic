@@ -17,7 +17,7 @@ class ServerMessageHandle {
         ServerMessageHandle();
         ~ServerMessageHandle() noexcept {}
 
-        virtual auto to_msg() const = 0 -> Message;
+        virtual Message to_msg() const = 0;
         /*  return message containing the fields specified by this handle */
 
     private:
