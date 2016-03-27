@@ -12,18 +12,19 @@
 
 class GamePlayer;
 
+enum class TankModel: char {COMMANDER, INTERCEPTOR, ELIMINATOR, NEGOTIATOR};
+
 class TankPiece : public SolidPiece {
 public:
 
     TankPiece(GamePlayer& commander);
     /* Tank with default properties */
 
-    // TankPiece(GamePlayer commander, int model);
+    // TankPiece(GamePlayer& commander, TankModel model);
     /* Tanks will have different properties based on their model */
 
 private:
 
-    int health;
     int speed;
     int power;
     int range;

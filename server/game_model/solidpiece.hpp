@@ -14,18 +14,20 @@
 class SolidPiece: public GamePiece {
 public:
 
-    SolidPiece();
+    SolidPiece(int max_health);
+
+    void collide(TankPiece& tank) override;
 
     void shot(int damage) override;
     /* react to taking damage */
 
-private:
+protected:
 
     int health;
     /* Amount of damage that can be sustained */
 
-    int clearshot;
-    int cleardrive;
+    int max_health;
+    /* Maximum value of health */
 
 };
 

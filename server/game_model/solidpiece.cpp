@@ -7,11 +7,18 @@
 
 #include "solidpiece.hpp"
 
-SolidPiece::SolidPiece() : clearshot(false), cleardrive(false), health(100) {}
+SolidPiece::SolidPiece(int max_health) :
+        GamePiece(false, false), max_health(max_health) {
 
-void SolidPiece::shot(int damage) {
-    this->health -= damage;
+    // start with the maximum health
+    this->health = this->max_health;
 }
 
+void SolidPiece::collide(TankPiece& tank) {
+    GamePiece::collide(tank);
+}
 
-
+void SolidPiece::shot(int damage) {
+    GamePiece::shot(damage);
+    this->health -= damage;
+}

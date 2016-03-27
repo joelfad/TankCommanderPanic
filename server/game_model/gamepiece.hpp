@@ -14,12 +14,12 @@ class GamePiece {
 
 public:
 
-    GamePiece();
+    GamePiece(bool clearshot, bool cleardrive);
 
-    virtual void collide(TankPiece& tank)=0;
+    virtual void collide(TankPiece& tank) = 0;
     /* react to being collided into by tank (after occupying the same square) */
 
-    virtual void shot(int damage)=0;
+    virtual void shot(int damage) = 0;
     /* react to taking damage */
 
     int getId() const noexcept { return id; }
@@ -32,7 +32,7 @@ public:
 
     virtual ~GamePiece() noexcept {}
 
-private:
+protected:
 
     static int count;
     /* counter for assigning unique ids */
