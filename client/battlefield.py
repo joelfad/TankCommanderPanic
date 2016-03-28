@@ -37,24 +37,25 @@ class BattleField:
 
     # create map from loaded data
     def create_map(self):
-        # we want to store the map as [z][x][y] instead of [z][y][x]
-        map_sprite_ids = self.load_map_data(self.id, self.version)
-        map_sprite_ids = swapaxes(map_sprite_ids, 1, 2).tolist()
+        # rotate map data from [z][x][y] to [z][y][x]
+        map_data = self.load_map_data(self.id, self.version)
+        map_data = swapaxes(map_data, 1, 2).tolist()
 
-        self.map = []   # map to store battlefield sprites
-        for layer in map_sprite_ids:                # for each layer
-            l = []
-            for x, col in enumerate(layer):         # for each column
-                c = []
-                for y, sprite_id in enumerate(col): # for each row
-                    if sprite_id:   # a tile is found (non-zero sprite_id)
-                        t = Tile(self.texture)
-                        t.texture_rectangle = self.get_rect(sprite_id)
-                        t.position = (x * self.tilewidth, y * self.tileheight)
-                        c.append(t) # add new tile to column
-                if c:
-                    l.append(c)     # add column to layer if not empty
-            self.map.append(l)      # add layer to map
+        # generate map (from map data) to store battlefield tiles
+        self.map = []
+        for layer_data in map_data:
+            layer = []
+            for x, col_data in enumerate(layer_data):
+                col = []
+                for y, tile_id in enumerate(col_data):
+                    if tile_id:             # a tile is found (non-zero tile_id)
+                        tile = Tile(self.texture)
+                        tile.texture_rectangle = self.get_texture_rect(tile_id)
+                        tile.position = (x * self.tilewidth, y * self.tileheight)
+                        col.append(tile)    # add new tile to column
+                if col:
+                    layer.append(col)       # add column to layer if not empty
+            self.map.append(layer)          # add layer to battlefield map
 
     # get piece with given id
     def get_piece(self, id):
@@ -67,17 +68,11 @@ class BattleField:
                 for tile in col:
                     self.game.window.draw(tile)
 
-    #######################
-    # temporary functions #
-    #######################
-
-    def get_rect(self, sprite_id):
-        left = ((sprite_id - 1) % self.columns) * self.tilewidth
-        top = ((sprite_id - 1) // self.columns) * self.tileheight
+    # calculates the location of a tile in the texture file from its id
+    def get_texture_rect(self, tile_id):
+        left = ((tile_id - 1) % self.columns) * self.tilewidth
+        top = ((tile_id - 1) // self.columns) * self.tileheight
         return sf.Rect((left, top), (self.tilewidth, self.tileheight))
-
-    # >>> w = sf.RenderWindow(sf.VideoMode(640, 480), "View Test")`
-    # >>> w.view.viewport = sf.Rect((16,16), (640,480))
 
     ##################
     # temporary data #
