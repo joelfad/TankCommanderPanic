@@ -3,17 +3,13 @@
 # File: battlefield.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: March 20, 2016
+# Modified: March 28, 2016
 
 import sfml as sf
 from numpy import swapaxes
 Tile = sf.Sprite
 
 class BattleField:
-    # map : Tile[][][]
-    # pieces : GamePiece[]
-    # piece_layer : byte
-    # texture : Texture
     GRAPHICS_DIR = "../resources/graphics/"
 
     # initialize the battlefield
@@ -22,6 +18,8 @@ class BattleField:
         # TODO: Load map id and map version from Game State Message
         self.load_texture()
         self.create_map()
+        # TODO: Load pieces from Create Piece Message
+        self.pieces = self.mock_tank_data()
 
     # load texture data from file
     def load_texture(self):
@@ -33,7 +31,7 @@ class BattleField:
 
     # load map data from file
     def load_map_data(self, id, version):
-        return self.fourbase_sprite_ids # TODO: Remove when function is implemented
+        return self.fourbase_tile_ids   # TODO: Remove when function is implemented
 
     # create map from loaded data
     def create_map(self):
@@ -63,10 +61,17 @@ class BattleField:
 
     # draw the battlefield
     def draw(self):
-        for layer in self.map:
+        for z, layer in enumerate(self.map):
             for col in layer:
                 for tile in col:
                     self.game.window.draw(tile)
+            if z == self.piece_layer:
+                self.draw_pieces()
+
+    # draw game pieces
+    def draw_pieces(self):
+        for piece in self.pieces:
+            self.game.window.draw(piece)
 
     # calculates the location of a tile in the texture file from its id
     def get_texture_rect(self, tile_id):
@@ -91,8 +96,24 @@ class BattleField:
     tilecount = 567     # total number of tiles in texture
     columns = 21        # columns in texture
 
-    # mock data
-    fourbase_sprite_ids = \
+    # mock three red tanks
+    def mock_tank_data(self):
+        commander = sf.Sprite(self.texture)
+        commander.texture_rectangle = self.get_texture_rect(484)
+        commander.position = (1 * self.tilewidth, 1 * self.tileheight)
+
+        interceptor = sf.Sprite(self.texture)
+        interceptor.texture_rectangle = self.get_texture_rect(485)
+        interceptor.position = (3 * self.tilewidth, 2 * self.tileheight)
+
+        eliminator = sf.Sprite(self.texture)
+        eliminator.texture_rectangle = self.get_texture_rect(486)
+        eliminator.position = (2 * self.tilewidth, 3 * self.tileheight)
+
+        return [commander, interceptor, eliminator]
+
+    # mock map data
+    fourbase_tile_ids = \
     [
         [   # layer: back
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,68,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
