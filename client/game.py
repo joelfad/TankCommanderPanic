@@ -5,6 +5,12 @@
 # Created: March 20, 2016
 # Modified: March 20, 2016
 
+import sfml as sf
+from battlefield import *
+
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
+
 class Game:
     # state : Enum('playing', 'observing')
     # window : Window
@@ -19,13 +25,27 @@ class Game:
     # key_actions : {KeyEvent : function}
 
     def __init__(self):
-        # initialize here
+        self.window = self.create_window()
+        self.battlefield = BattleField(self)
+        self.window.clear()
+        self.battlefield.draw()
+        self.window.display()
+        input("Press enter to quit...")
 
     def process_events(self):
         # process events here
+        pass
 
     def render(self):
         # render the game
+        pass
 
     def run(self):
         # run the game
+        pass
+
+    def create_window(self):
+        w = sf.RenderWindow(sf.VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Tank Commander Panic")
+        w.view.size = (WINDOW_WIDTH, WINDOW_HEIGHT)
+        w.view.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
+        return w
