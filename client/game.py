@@ -27,8 +27,7 @@ class Game:
     def __init__(self):
         self.window = self.create_window()
         self.battlefield = BattleField(self)
-        self.window.clear(sf.Color.BLUE)
-        self.window.display()
+        self.window.clear()
         self.battlefield.draw()
         self.window.display()
         input("Press enter to quit...")
@@ -47,5 +46,6 @@ class Game:
 
     def create_window(self):
         w = sf.RenderWindow(sf.VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Tank Commander Panic")
-        w.view.viewport = sf.Rect((0,0), (WINDOW_WIDTH, WINDOW_HEIGHT))
+        w.view.size = (WINDOW_WIDTH, WINDOW_HEIGHT)
+        w.view.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
         return w
