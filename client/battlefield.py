@@ -5,38 +5,83 @@
 # Created: March 20, 2016
 # Modified: March 20, 2016
 
+import sfml as sf
 from numpy import swapaxes
+Tile = sf.Sprite
 
 class BattleField:
     # map : Tile[][][]
     # pieces : GamePiece[]
     # piece_layer : byte
     # texture : Texture
+    GRAPHICS_DIR = "../resources/graphics/"
 
-    def __init__(self):
-        # initialize here
-        pass
+    def __init__(self, game):
+        self.game = game
+        # TODO: Load map id and map version from Game State Message
+        self.load_texture()
+        self.load_map_data(self.id, self.version)
+        self.create_map()
 
     def load_texture(self):
-        # load texture from file
-        pass
+        try:
+            self.texture = sf.Texture.from_file(self.GRAPHICS_DIR + self.image_source)
+        except IOError:
+            print("Unable to load battlefield texture from {}".format(self.image_source))
+            raise
 
     def load_map_data(self, id, version):
-        # load map data from file
-        pass
+        return self.fourbase_sprite_ids # TODO: Remove when function is implemented
 
-    def create_map(self, map_sprite_ids):
+    def create_map(self):
         # create map from map data
         # we want to store the map as [z][x][y] instead of [z][y][x]
-        map_sprite_ids = swapaxes(map_sprite_ids, 1, 2)
+        map_sprite_ids = self.load_map_data(self.id, self.version)
+        map_sprite_ids = swapaxes(map_sprite_ids, 1, 2).tolist()
 
+        self.map_layers = len(map_sprite_ids)
+        self.map_width = len(map_sprite_ids[0])
+        self.map_height = len(map_sprite_ids[0][0])
+
+        print("map_layers: {}".format(self.map_layers))
+        print("map_width: {}".format(self.map_width))
+        print("map_height: {}".format(self.map_height))
+
+        self.map = [[[None] * self.map_height] * self.map_width] * self.map_layers
+        for z, layer in enumerate(map_sprite_ids):  # for each layer
+            for x, col in enumerate(layer):         # for each column
+                for y, val in enumerate(col):       # for each row
+                    if val:
+                        t = sf.Sprite(self.texture)
+                        t.texture_rectangle = self.get_rect(val)
+                        t.position = (x * self.tilewidth, y * self.tileheight)
+                        self.map[z][x][y] = t
+
+    # get piece with given id
     def get_piece(self, id):
-        # get piece with given id
         pass
 
+    # draw the battlefield
     def draw(self):
-        # draw the battlefield
-        pass
+        #self.game.window.draw(self.map[1][3][3])
+        for z in range(self.map_layers):
+            for x in range(self.map_width):
+                for y in range(self.map_height):
+                    if self.map[z][x][y]:
+                        print("got here")
+                        self.game.window.draw(self.map[z][x][y])
+
+    #######################
+    # temporary functions #
+    #######################
+
+    def get_rect(self, sprite_id):
+        left = ((sprite_id - 1) % self.columns) * self.tilewidth
+        top = ((sprite_id - 1) // self.columns) * self.tileheight
+        return sf.Rect((left, top), (self.tilewidth, self.tileheight))
+
+    # >>> w = sf.RenderWindow(sf.VideoMode(640, 480), "View Test")`
+    # >>> w.view.viewport = sf.Rect((16,16), (640,480))
 
     ##################
     # temporary data #
