@@ -8,7 +8,7 @@ Description:  The main game logic driver.
 // project headers
 #include "playerclientlist.hpp"
 #include "gamedriver.hpp"
-#include "actionmessagehandle.hpp"
+#include "protocol/actionmessagehandle.hpp"
 
 // c++ standard libraries
 #include <chrono>

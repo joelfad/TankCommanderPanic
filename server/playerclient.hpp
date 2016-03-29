@@ -13,7 +13,7 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 
 // project headers
-#include "message.hpp"
+#include "protocol/message.hpp"
 
 // c++ standard libraries
 #include <deque>

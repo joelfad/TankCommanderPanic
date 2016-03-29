@@ -13,7 +13,7 @@
 #include "tile.hpp"
 #include "gamepiece.hpp"
 #include "gameplayer.hpp"
-#include "../protocoldefs.hpp"
+#include "../protocol/protocoldefs.hpp"
 
 namespace game_model {
 

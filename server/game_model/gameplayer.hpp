@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include "../protocoldefs.hpp"
+#include "../protocol/protocoldefs.hpp"
 
 namespace game_model {
 

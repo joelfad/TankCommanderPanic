@@ -8,7 +8,7 @@
 #ifndef SERVER_GAMEPIECE_HPP
 #define SERVER_GAMEPIECE_HPP
 
-#include "../protocoldefs.hpp"
+#include "../protocol/protocoldefs.hpp"
 
 class TankPiece;
 
