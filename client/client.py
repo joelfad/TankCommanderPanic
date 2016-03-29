@@ -13,4 +13,5 @@
 from game import *
 
 if __name__ == '__main__':
-    g = Game()
+    game = Game()
+    game.run()
