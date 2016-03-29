@@ -10,6 +10,8 @@
 
 #include <string>
 
+#include "../protocoldefs.hpp"
+
 class GamePlayer {
 public:
 
@@ -18,25 +20,27 @@ public:
     const std::string &getName() const { return name; }
     /* display name of player */
 
-    int getId() const { return id; }
+    auto getId() const noexcept { return id; }
 
-    int getAmmo() const { return ammo; }
+    auto getAmmo() const  noexcept { return ammo; }
     void setAmmo(int ammo) { GamePlayer::ammo = ammo; }
     /* ammo is shared for the player's tanks */
 
-    int getDeaths() const { return deaths; }
-    void death() { GamePlayer::deaths--; }
-    /* number of tanks lost */
+    auto getTankCount() const { return tank_count; }
+    /* number of tanks */
+
+    void looseTank() { GamePlayer::tank_count--; }
+    /* register a loss of a tank */
 
 private:
 
-    static int count;
+    static protocol::PlayerID next_id;
     /* counter for assigning unique ids */
 
-    std::string name;       // Display Name
-    int id;                 // Id
-    int ammo;               // Ammo count
-    int deaths;             // Number of tanks lost
+    std::string name;               // Display Name
+    protocol::PlayerID id;          // Id
+    int ammo;                       // Ammo next_id
+    protocol::TankCount tank_count; // Number of tanks
 
 };
 

@@ -7,9 +7,8 @@
 
 #include "gamemodel.hpp"
 
-GameModel::GameModel(int map_id, int map_version) {
-    /* TODO this whole function
-     * - find .map file in ../resources/graphics/maps/ based on id and version
-     * - import .map data and populate fields
-     */
+GameModel::GameModel(protocol::MapID map_id, protocol::MapVersion map_version) {
+    // TODO find .map file in ../resources/graphics/maps/ based on id and version
+    // TODO import .map data and populate fields
+    // TODO create starting gamepieces based on map data
 }

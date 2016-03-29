@@ -15,7 +15,6 @@ namespace protocol {
 using ServerMsgType = std::uint8_t;
 
 using PieceID = std::uint32_t;
-using PieceType = ServerMsgType;    // must be the same size
 using TankCount = std::uint8_t;
 
 using MapID = std::uint8_t;
@@ -23,12 +22,13 @@ using MapVersion = std::uint8_t;
 using CoordinateX = std::uint8_t;
 using CoordinateY = std::uint8_t;
 
-using EventType = ServerMsgType;    // must be the same size
 
 using PlayerID = std::uint16_t;
 
 enum class Action: char {NONE, MOVE, SHOOT, QUIT};
 enum class Direction: char {NONE, NORTH, EAST, SOUTH, WEST};
+enum class PieceType: ServerMsgType {}; // TODO
+enum class EventType: ServerMsgType {}; // TODO
 
 //~message structures~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -53,7 +53,7 @@ struct ActionMessage {
 ### For the `GameStateMessage`, it is impossible to predict how many tanks     ##
 ### the player being messaged will own. It is also not possible to dynamically ##
 ### resize arrays. So, `tank_piece_ids[]` is forcibly made empty. The field    ##
-### is left preset for the sake of agreeing with the protocol documentation.   ##
+### is left present for the sake of agreeing with the protocol documentation.  ##
 ### It is therefore crucial that instances of this structure never be accessed ##
 ### directly.                                                                  ##
 ###############################################################################*/

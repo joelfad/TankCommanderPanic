@@ -16,16 +16,16 @@ public:
 
     // --getters--
 
-    bool isClearshot() const noexcept { return clearshot; }
+    bool isClearShot() const noexcept { return clear_shot; }
     /* designates that the tile can be fired through, otherwise a round impacts on the tile */
 
-    bool isCleardrive() const noexcept { return cleardrive; }
+    bool isClearDrive() const noexcept { return clear_drive; }
     /* designates that the tile can be driven on, otherwise the tile blocks movement */
 
 private:
 
-    bool clearshot;
-    bool cleardrive;
+    bool clear_shot;
+    bool clear_drive;
 
 };
 

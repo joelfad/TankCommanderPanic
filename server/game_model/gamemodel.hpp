@@ -13,11 +13,12 @@
 #include "tile.hpp"
 #include "gamepiece.hpp"
 #include "gameplayer.hpp"
+#include "../protocoldefs.hpp"
 
 class GameModel {
 public:
 
-    GameModel(int map_id, int map_version);
+    GameModel(protocol::MapID map_id, protocol::MapVersion map_version);
 
 private:
 

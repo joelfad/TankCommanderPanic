@@ -25,7 +25,7 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 int main(int argc, char *argv[]) {
 
-    // validate the argument count
+    // validate the argument next_id
     if (argc != 2) {
         std::cerr << "Usage: server <port>\n";
         return 1;

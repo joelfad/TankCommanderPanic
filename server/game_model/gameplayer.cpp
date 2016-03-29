@@ -7,12 +7,12 @@
 
 #include "gameplayer.hpp"
 
-int GamePlayer::count = 0;
-/* set initial count to 0 */
+protocol::PlayerID GamePlayer::next_id = 1;
+/* set initial next_id to 1 */
 
 GamePlayer::GamePlayer(std::string name): name(name) {
 
-    // assign id and increment counter, don't assign 0 as an id
-    this->id = ++count;
+    // assign id and next_id
+    this->id = next_id++;
 }
 

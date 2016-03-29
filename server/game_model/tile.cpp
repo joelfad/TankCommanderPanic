@@ -13,7 +13,7 @@ Tile::Tile(char property_code) {
     unsigned char normalized_code = static_cast<unsigned char>(property_code - '0');
 
     // assign values to parameters
-    this->cleardrive = static_cast<bool>(0x2 & normalized_code);
-    this->clearshot = static_cast<bool>(0x1 & normalized_code);
+    this->clear_drive = static_cast<bool>(0x2 & normalized_code);
+    this->clear_shot = static_cast<bool>(0x1 & normalized_code);
 }
 

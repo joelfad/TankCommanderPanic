@@ -8,13 +8,15 @@
 #ifndef SERVER_GAMEPIECE_HPP
 #define SERVER_GAMEPIECE_HPP
 
+#include "../protocoldefs.hpp"
+
 class TankPiece;
 
 class GamePiece {
 
 public:
 
-    GamePiece(bool clearshot, bool cleardrive);
+    GamePiece(bool clear_shot, bool clear_drive);
 
     virtual void collide(TankPiece& tank) = 0;
     /* react to being collided into by tank (after occupying the same square) */
@@ -22,24 +24,24 @@ public:
     virtual void shot(int damage) = 0;
     /* react to taking damage */
 
-    int getId() const noexcept { return id; }
+    auto getId() const noexcept { return id; }
 
-    bool isClearshot() const noexcept { return clearshot; }
+    auto isClearShot() const noexcept { return clear_shot; }
     /* designates that the piece can be fired through, otherwise a round impacts on the piece */
 
-    bool isCleardrive() const noexcept { return cleardrive; }
+    auto isClearDrive() const noexcept { return clear_drive; }
     /* designates that the piece can be driven on, otherwise the piece blocks movement */
 
     virtual ~GamePiece() noexcept {}
 
 protected:
 
-    static int count;
+    static protocol::PieceID next_id;
     /* counter for assigning unique ids */
 
-    int id;
-    bool clearshot;
-    bool cleardrive;
+    protocol::PieceID id;
+    bool clear_shot;
+    bool clear_drive;
 
 };
 

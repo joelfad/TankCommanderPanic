@@ -9,23 +9,23 @@
 
 #include "gamepiece.hpp"
 
-int GamePiece::count = 0;
-/* set initial count to 0 */
+protocol::PieceID GamePiece::next_id = 1;
+/* set initial next_id to 1 */
 
-GamePiece::GamePiece(bool clearshot, bool cleardrive) : clearshot(clearshot), cleardrive(cleardrive) {
+GamePiece::GamePiece(bool clearshot, bool cleardrive) : clear_shot(clearshot), clear_drive(cleardrive) {
 
-    // assign id and increment counter, don't assign 0 as an id
-    this->id = ++count;
+    // assign id and increment next_id
+    this->id = next_id++;
 }
 
 void GamePiece::collide(TankPiece &tank) {
 
     // if this driven over, it had better be clear to drive on
-    assert(this->isCleardrive());
+    assert(this->isClearDrive());  // TODO replace with exception ModelEventError
 }
 
 void GamePiece::shot(int damage) {
 
     // if this was shot, it had better not be clear to shoot through
-    assert(!this->isClearshot());
+    assert(!this->isClearShot());  // TODO replace with exception ModelEventError
 }

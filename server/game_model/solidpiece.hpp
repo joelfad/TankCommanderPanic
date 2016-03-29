@@ -17,13 +17,15 @@ public:
     SolidPiece();
     SolidPiece(int max_health);
 
-    void set_max_health(int max_health);
+    void setMaxHealth(int max_health);
     /* sets max_health and sets to full health */
 
     void collide(TankPiece& tank) override;
 
     void shot(int damage) override;
     /* react to taking damage */
+
+    auto getHealth() const noexcept { return health; }
 
 protected:
 
