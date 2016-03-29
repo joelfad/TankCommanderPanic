@@ -18,7 +18,7 @@ protocol::GameStateMessageHandle::GameStateMessageHandle(ServerMsgType _message_
     msg_fields.map_id = _map_id;
     msg_fields.map_version = _map_version;
     msg_fields.player_id = _player_id;
-    msg_fields.owned_tank_count = tank_ids.size();
+    msg_fields.owned_tank_count = static_cast<TankCount>(tank_ids.size());
     tank_ids = _tank_ids;
 }
 
@@ -32,7 +32,7 @@ protocol::Message protocol::GameStateMessageHandle::to_msg() const {
     ### the tank ID's have to be inserted into the message manually.                           ##
     ###########################################################################################*/
 
-    auto msg = Message::byte_vector{};   // temporarly stores the message data
+    auto msg = Message::byte_vector{};   // temporarily stores the message data
 
     // reserve enough bytes for the message and
     msg.reserve(sizeof(GameStateMessage) + tank_ids.size());
@@ -44,7 +44,7 @@ protocol::Message protocol::GameStateMessageHandle::to_msg() const {
     // put tank IDs into returned message
     for (auto&& id : tank_ids) {
         for (int i = sizeof(id) - 1; i >= 0; i-- ) {
-            msg.push_back(id >> 8*i);
+            msg.push_back(static_cast<unsigned char>(id >> 8*i));
         }
     }
 
@@ -73,12 +73,12 @@ void protocol::GameStateMessageHandle::player_id(PlayerID id) noexcept {
 
 void protocol::GameStateMessageHandle::tank_piece_ids(const std::vector<PieceID>& pids) {
     tank_ids = pids;
-    msg_fields.owned_tank_count = tank_ids.size();
+    msg_fields.owned_tank_count = static_cast<TankCount>(tank_ids.size());
 }
 
 void protocol::GameStateMessageHandle::append_tank(PieceID pid) {
     tank_ids.push_back(pid);
-    msg_fields.owned_tank_count = tank_ids.size();
+    msg_fields.owned_tank_count = static_cast<TankCount>(tank_ids.size());
 }
 
 
