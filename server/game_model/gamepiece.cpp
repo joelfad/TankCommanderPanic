@@ -8,6 +8,7 @@
 #include <cassert>
 
 #include "gamepiece.hpp"
+#include "gamemodelerror.hpp"
 
 protocol::PieceID game_model::GamePiece::next_id = 1;
 /* set initial next_id to 1 */
@@ -21,11 +22,13 @@ game_model::GamePiece::GamePiece(bool clearshot, bool cleardrive) : clear_shot(c
 void game_model::GamePiece::collide(TankPiece &tank) {
 
     // if this driven over, it had better be clear to drive on
-    assert(this->is_clear_drive());  // TODO replace with exception ModelEventError
+    if (!this->is_clear_drive())
+        throw GameModelEventError("collision with non-collide-able (not clear-drive) game piece");
 }
 
 void game_model::GamePiece::shot(int damage) {
 
     // if this was shot, it had better not be clear to shoot through
-    assert(!this->is_clear_shot());  // TODO replace with exception ModelEventError
+    if (this->is_clear_shot())
+        throw GameModelEventError("non-shoot-able (clear-shot) game piece was shot");
 }
