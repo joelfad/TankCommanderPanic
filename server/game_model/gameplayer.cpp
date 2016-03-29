@@ -7,10 +7,10 @@
 
 #include "gameplayer.hpp"
 
-protocol::PlayerID GamePlayer::next_id = 1;
+protocol::PlayerID game_model::GamePlayer::next_id = 1;
 /* set initial next_id to 1 */
 
-GamePlayer::GamePlayer(std::string name): name(name) {
+game_model::GamePlayer::GamePlayer(std::string name): name(name) {
 
     // assign id and next_id
     this->id = next_id++;

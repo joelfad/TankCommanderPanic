@@ -12,6 +12,8 @@
 
 #include "../protocoldefs.hpp"
 
+namespace game_model {
+
 class GamePlayer {
 public:
 
@@ -22,7 +24,7 @@ public:
 
     auto get_id() const noexcept { return id; }
 
-    auto get_ammo() const  noexcept { return ammo; }
+    auto get_ammo() const noexcept { return ammo; }
     void set_ammo(int ammo) { GamePlayer::ammo = ammo; }
     /* ammo is shared for the player's tanks */
 
@@ -44,5 +46,6 @@ private:
 
 };
 
+}
 
 #endif //SERVER_GAMEPLAYER_HPP

@@ -15,6 +15,8 @@
 #include "gameplayer.hpp"
 #include "../protocoldefs.hpp"
 
+namespace game_model {
+
 class GameModel {
 public:
 
@@ -33,4 +35,5 @@ private:
 
 };
 
+}
 #endif // SERVER_GAMEMODEL_HPP

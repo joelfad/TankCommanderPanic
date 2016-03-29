@@ -12,6 +12,8 @@
 
 class GamePlayer;
 
+namespace game_model {
+
 enum class TankModel: char {COMMANDER, INTERCEPTOR, ELIMINATOR, NEGOTIATOR};
 
 class TankPiece : public SolidPiece {
@@ -39,5 +41,6 @@ private:
 
 };
 
+}
 
 #endif //SERVER_TANKPIECE_HPP

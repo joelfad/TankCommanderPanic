@@ -12,13 +12,15 @@
 
 class TankPiece;
 
+namespace game_model {
+
 class GamePiece {
 
 public:
 
     GamePiece(bool clear_shot, bool clear_drive);
 
-    virtual void collide(TankPiece& tank) = 0;
+    virtual void collide(TankPiece &tank) = 0;
     /* react to being collided into by tank (after occupying the same square) */
 
     virtual void shot(int damage) = 0;
@@ -32,7 +34,7 @@ public:
     auto is_clear_drive() const noexcept { return clear_drive; }
     /* designates that the piece can be driven on, otherwise the piece blocks movement */
 
-    virtual ~GamePiece() noexcept {}
+    virtual ~GamePiece() noexcept { }
 
 protected:
 
@@ -45,5 +47,6 @@ protected:
 
 };
 
+}
 
 #endif //SERVER_GAMEPIECE_HPP

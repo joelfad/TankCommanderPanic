@@ -8,6 +8,7 @@
 #ifndef SERVER_TILE_HPP
 #define SERVER_TILE_HPP
 
+namespace game_model {
 
 class Tile {
 public:
@@ -27,5 +28,6 @@ private:
 
 };
 
+}
 
 #endif //SERVER_TILE_HPP
