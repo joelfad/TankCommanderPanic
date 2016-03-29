@@ -21,11 +21,11 @@ GamePiece::GamePiece(bool clearshot, bool cleardrive) : clear_shot(clearshot), c
 void GamePiece::collide(TankPiece &tank) {
 
     // if this driven over, it had better be clear to drive on
-    assert(this->isClearDrive());  // TODO replace with exception ModelEventError
+    assert(this->is_clear_drive());  // TODO replace with exception ModelEventError
 }
 
 void GamePiece::shot(int damage) {
 
     // if this was shot, it had better not be clear to shoot through
-    assert(!this->isClearShot());  // TODO replace with exception ModelEventError
+    assert(!this->is_clear_shot());  // TODO replace with exception ModelEventError
 }

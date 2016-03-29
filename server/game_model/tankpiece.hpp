@@ -19,11 +19,11 @@ public:
 
     TankPiece(GamePlayer& commander, TankModel model);
 
-    auto getPower() const noexcept { return model_power[static_cast<char>(model)]; }
+    auto get_power() const noexcept { return model_power[static_cast<char>(model)]; }
 
-    auto getRange() const noexcept { return model_range[static_cast<char>(model)]; }
+    auto get_range() const noexcept { return model_range[static_cast<char>(model)]; }
 
-    auto getSpeed() const noexcept { return model_speed[static_cast<char>(model)]; }
+    auto get_speed() const noexcept { return model_speed[static_cast<char>(model)]; }
 
 private:
     static constexpr int model_max_health[] = { 50,  30, 100,  20}; // hit points

@@ -14,12 +14,10 @@ public:
 
     Tile(char property_code);
 
-    // --getters--
-
-    bool isClearShot() const noexcept { return clear_shot; }
+    bool is_clear_shot() const noexcept { return clear_shot; }
     /* designates that the tile can be fired through, otherwise a round impacts on the tile */
 
-    bool isClearDrive() const noexcept { return clear_drive; }
+    bool is_clear_drive() const noexcept { return clear_drive; }
     /* designates that the tile can be driven on, otherwise the tile blocks movement */
 
 private:

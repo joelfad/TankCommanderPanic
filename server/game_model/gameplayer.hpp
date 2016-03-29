@@ -17,19 +17,19 @@ public:
 
     GamePlayer(std::string name);
 
-    const std::string &getName() const { return name; }
+    const std::string &get_name() const { return name; }
     /* display name of player */
 
-    auto getId() const noexcept { return id; }
+    auto get_id() const noexcept { return id; }
 
-    auto getAmmo() const  noexcept { return ammo; }
-    void setAmmo(int ammo) { GamePlayer::ammo = ammo; }
+    auto get_ammo() const  noexcept { return ammo; }
+    void set_ammo(int ammo) { GamePlayer::ammo = ammo; }
     /* ammo is shared for the player's tanks */
 
-    auto getTankCount() const { return tank_count; }
+    auto get_tank_count() const { return tank_count; }
     /* number of tanks */
 
-    void looseTank() { GamePlayer::tank_count--; }
+    void loose_tank() { GamePlayer::tank_count--; }
     /* register a loss of a tank */
 
 private:

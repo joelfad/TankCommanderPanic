@@ -24,7 +24,7 @@ void SolidPiece::shot(int damage) {
     this->health -= damage;
 }
 
-void SolidPiece::setMaxHealth(int max_health)  {
+void SolidPiece::set_max_health(int max_health)  {
     this->max_health = max_health;
 
     // continue with the maximum health

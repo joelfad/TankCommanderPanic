@@ -8,7 +8,7 @@
 #include "tankpiece.hpp"
 
 TankPiece::TankPiece(GamePlayer& commander, TankModel model) : commander(commander), model(model) {
-    setMaxHealth(TankPiece::model_max_health[static_cast<char>(model)]);
+    set_max_health(TankPiece::model_max_health[static_cast<char>(model)]);
 }
 
 constexpr int TankPiece::model_max_health[];

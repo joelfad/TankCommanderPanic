@@ -24,12 +24,12 @@ public:
     virtual void shot(int damage) = 0;
     /* react to taking damage */
 
-    auto getId() const noexcept { return id; }
+    auto get_id() const noexcept { return id; }
 
-    auto isClearShot() const noexcept { return clear_shot; }
+    auto is_clear_shot() const noexcept { return clear_shot; }
     /* designates that the piece can be fired through, otherwise a round impacts on the piece */
 
-    auto isClearDrive() const noexcept { return clear_drive; }
+    auto is_clear_drive() const noexcept { return clear_drive; }
     /* designates that the piece can be driven on, otherwise the piece blocks movement */
 
     virtual ~GamePiece() noexcept {}
