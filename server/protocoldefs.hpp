@@ -14,6 +14,20 @@ namespace protocol {
 
 using ServerMsgType = std::uint8_t;
 
+enum class PieceType: ServerMsgType {
+    // 2 - 7 brick types
+    HEALTH=8, AMMO=9, DECORATION=10,
+    // 11 - 15 unreserved
+    RED_COMMANDER       = 16, RED_INTERCEPTOR       = 17, RED_ELIMINATOR    = 18, RED_NEGOTIATOR    = 19,
+    BLUE_COMMANDER      = 20, BLUE_INTERCEPTOR      = 21, BLUE_ELIMINATOR   = 22, BLUE_NEGOTIATOR   = 23,
+    YELLOW_COMMANDER    = 24, YELLOW_INTERCEPTOR    = 25, YELLOW_ELIMINATOR = 26, YELLOW_NEGOTIATOR = 27,
+    GREEN_COMMANDER     = 28, GREEN_INTERCEPTOR     = 29, GREEN_ELIMINATOR  = 30, GREEN_NEGOTIATOR  = 31
+};
+
+enum class EventType: ServerMsgType {
+    UPDATE_AMMO = 32, UPDATE_HEALTH = 33, DESTROY_GAME_PIECE = 34, MOVE_GAME_PIECE = 35, GAME_OVER = 36
+};
+
 using PieceID = std::uint32_t;
 using TankCount = std::uint8_t;
 
@@ -22,13 +36,11 @@ using MapVersion = std::uint8_t;
 using CoordinateX = std::uint8_t;
 using CoordinateY = std::uint8_t;
 
-
 using PlayerID = std::uint16_t;
 
 enum class Action: char {NONE, MOVE, SHOOT, QUIT};
 enum class Direction: char {NONE, NORTH, EAST, SOUTH, WEST};
-enum class PieceType: ServerMsgType {}; // TODO
-enum class EventType: ServerMsgType {}; // TODO
+
 
 //~message structures~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
