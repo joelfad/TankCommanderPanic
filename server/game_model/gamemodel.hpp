@@ -20,9 +20,18 @@ namespace game_model {
 class GameModel {
 public:
 
-    GameModel(protocol::MapID map_id, protocol::MapVersion map_version);
+    GameModel(std::string map_name);
+
+    auto get_player_count() const noexcept { return player_count; }
 
 private:
+
+    int player_count;
+    int map_width;
+    int map_height;
+
+    protocol::MapID map_id;
+    protocol::MapVersion map_version;
 
     std::vector<std::vector<Tile>> map;
     /* 2D vector of tiles composes the map of the battlefield */

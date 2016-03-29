@@ -1,8 +1,8 @@
 /*
- * Project: server
- * File: $PATH
+ * Project: Tank Commander Panic
+ * File: gamemodelerror.hpp
  * Author: Kurtis Jantzen
- * Description: 
+ * Description: Types representing game model errors.
  */
 
 #ifndef SERVER_GAMEMODELERROR_HPP
