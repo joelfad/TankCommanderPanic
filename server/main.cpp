@@ -17,6 +17,7 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 // c++ standard libraries
 #include <thread>
+#include <iostream>
 #include <functional>
 
 
