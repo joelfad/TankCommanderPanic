@@ -10,7 +10,7 @@ Description:  The games communication server.
 
 // project headers
 #include "playerclient.hpp"
-#include "message.hpp"
+#include "protocol/message.hpp"
 
 // c++ standard libraries
 #include <memory>

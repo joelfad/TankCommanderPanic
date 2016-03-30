@@ -41,7 +41,7 @@ class GameStateMessageHandle : public ServerMessageHandle {
     private:
         union {
             GameStateMessage msg_fields;
-            char msg_data[sizeof(GameStateMessage)];
+            unsigned char msg_data[sizeof(GameStateMessage)];
         };
 
         /*###########################################################################################

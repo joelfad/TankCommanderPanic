@@ -8,7 +8,7 @@ Description:  The main game logic driver.
 // project headers
 #include "playerclientlist.hpp"
 #include "gamedriver.hpp"
-#include "actionmessagehandle.hpp"
+#include "protocol/actionmessagehandle.hpp"
 
 // c++ standard libraries
 #include <chrono>
@@ -48,22 +48,22 @@ void game_driver(PlayerSpool& client_spool, protocol::MessageSpool& msg_spool) {
             // perfrom action
             switch (action.action()) {
             case protocol::Action::MOVE :
-                // notify all clients of move
+                // TODO notify all clients of move
                 //players.send_all();
                 break;
             case protocol::Action::SHOOT :
-                // notify all clients of shot
+                // TODO notify all clients of shot
                 //players.send_all();
                 break;
             case protocol::Action::QUIT :
                 //players[player_id]->disconnect();
                 players.erase(player_id);
                 if (players.size() == 1) {
-                    // send win message
+                    // TODO send win message
                     //players.back()->send();
                 }
                 else if (players.size() > 1) {
-                    // notify all clients of update
+                    // TODO notify all clients of update
                     //players.send_all();
                 }
                 break;

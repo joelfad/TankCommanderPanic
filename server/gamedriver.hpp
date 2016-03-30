@@ -10,7 +10,7 @@ Description:  The main game logic driver.
 
 // project headers
 #include "playerclient.hpp"
-#include "message.hpp"
+#include "protocol/message.hpp"
 
 void game_driver(PlayerSpool& client_spool, protocol::MessageSpool& msg_spool);
 /*  runs the game */

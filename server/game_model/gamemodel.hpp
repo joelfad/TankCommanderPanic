@@ -13,13 +13,26 @@
 #include "tile.hpp"
 #include "gamepiece.hpp"
 #include "gameplayer.hpp"
+#include "../protocol/protocoldefs.hpp"
+
+namespace game_model {
 
 class GameModel {
 public:
 
-    GameModel(int map_id, int map_version);
+    GameModel(std::string map_file_path);
+
+    auto get_player_count() const noexcept { return player_count; }
 
 private:
+
+    int player_count;
+    int map_width;
+    int map_height;
+
+    std::string map_name;
+    protocol::MapID map_id;
+    protocol::MapVersion map_version;
 
     std::vector<std::vector<Tile>> map;
     /* 2D vector of tiles composes the map of the battlefield */
@@ -32,4 +45,5 @@ private:
 
 };
 
+}
 #endif // SERVER_GAMEMODEL_HPP

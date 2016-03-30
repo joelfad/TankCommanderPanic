@@ -10,35 +10,46 @@
 
 #include <string>
 
+#include "../protocol/protocoldefs.hpp"
+
+namespace game_model {
+
 class GamePlayer {
 public:
 
-    GamePlayer(std::string name);
+    GamePlayer();
 
-    const std::string &getName() const { return name; }
+    const std::string &get_name() const noexcept { return name; }
+    void set_name(std::string name) { this->name = name; }
     /* display name of player */
 
-    int getId() const { return id; }
+    auto get_id() const noexcept { return id; }
 
-    int getAmmo() const { return ammo; }
-    void setAmmo(int ammo) { GamePlayer::ammo = ammo; }
+    auto get_ammo() const noexcept { return ammo; }
+    void set_ammo(int ammo) { GamePlayer::ammo = ammo; }
     /* ammo is shared for the player's tanks */
 
-    int getDeaths() const { return deaths; }
-    void death() { GamePlayer::deaths--; }
-    /* number of tanks lost */
+    auto get_tank_count() const noexcept { return tank_count; }
+    /* number of tanks */
+
+    void loose_tank() { GamePlayer::tank_count--; }
+    /* register a loss of a tank */
+
+    auto get_team_color() const noexcept { return team_color; }
 
 private:
 
-    static int count;
+    static protocol::PlayerID next_id;
     /* counter for assigning unique ids */
 
-    std::string name;       // Display Name
-    int id;                 // Id
-    int ammo;               // Ammo count
-    int deaths;             // Number of tanks lost
+    std::string name;               // Display Name
+    protocol::PlayerID id;          // Id
+    int ammo;                       // Ammo next_id
+    protocol::TankCount tank_count; // Number of tanks
+    protocol::TeamColor team_color; // Team color
 
 };
 
+}
 
 #endif //SERVER_GAMEPLAYER_HPP
