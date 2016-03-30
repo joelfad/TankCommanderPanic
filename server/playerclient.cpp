@@ -24,6 +24,17 @@ void PlayerClient::start() {
     read();
 }
 
+/*
+closes the connection to the client; all async operations are cancelled
+*/
+void PlayerClient::disconnect() {
+    using boost::asio::ip::tcp;
+
+    auto error = boost::system::error_code{};
+    socket.shutdown(tcp::socket::shutdown_both, error);
+    socket.close(error);
+}
+
 
 
 //~public functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

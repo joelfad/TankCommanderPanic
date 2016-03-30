@@ -38,6 +38,9 @@ class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
         void start();
         /*  starts the server */
 
+        void disconnect();
+        /*  closes the connection to the client; all async operations are cancelled */
+
     private:
 
         void read();
