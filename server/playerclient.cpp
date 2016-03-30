@@ -24,6 +24,17 @@ void PlayerClient::start() {
     read();
 }
 
+/*
+closes the connection to the client; all async operations are cancelled
+*/
+void PlayerClient::disconnect() {
+    using boost::asio::ip::tcp;
+
+    auto error = boost::system::error_code{};
+    socket.shutdown(tcp::socket::shutdown_both, error);
+    socket.close(error);
+}
+
 
 
 //~public functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,16 +74,14 @@ void PlayerClient::send(protocol::Message msg) {
     ### simplicity, the entire function body is treaded as the critical zone.        ##
     #################################################################################*/
 
-    //spool_lock.lock();  //*** begin cirical zone ***
     std::lock_guard<std::mutex> lock{spool_lock};
-
+    //*** begin cirical zone ***
     bool not_writing = write_msg_spool.empty(); // check if there are current asynchronous write
     write_msg_spool.push_back(msg);             // add new message buffer
     if (not_writing) {                          // if there are no asynchronous writes, do a new write
         write();
     }
-
-    //spool_lock.unlock();//*** end cirical zone ***
+    //*** end cirical zone ***
 }
 
 
@@ -87,7 +96,6 @@ void PlayerClient::read() {
     socket.async_read_some(boost::asio::buffer(read_buffer.data(), read_buffer.size()),
         [this, self](boost::system::error_code error, std::size_t /*length*/) {
             if (!error) {
-                //auto msg = std::string(read_buffer.data());
                 auto msg = protocol::Message(read_buffer.data(), read_buffer.size());
                 receive_msg_spool.add(msg);
             }
@@ -111,15 +119,13 @@ void PlayerClient::write() {
             ### A mutex is used to avoid race conditions with `PlayerClient::send(std::string msg)`. ##
             ########################################################################################*/
 
-            //spool_lock.lock();  //*** begin cirical zone ***
             std::lock_guard<std::mutex> lock{spool_lock};
-
+            //*** begin cirical zone ***
             write_msg_spool.pop_front();    // remove the message from the spool
 
             if (!write_msg_spool.empty()) { // if there are more unwritten/unsent messages
                 write();                    // do another asynchronous write
             }
-
             //spool_lock.unlock();//*** end cirical zone ***
         });
 }

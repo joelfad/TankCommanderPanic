@@ -56,7 +56,7 @@ void game_driver(PlayerSpool& client_spool, protocol::MessageSpool& msg_spool) {
                 //players.send_all();
                 break;
             case protocol::Action::QUIT :
-                //players[player_id]->disconnect();
+                players[player_id]->disconnect();
                 players.erase(player_id);
                 if (players.size() == 1) {
                     // TODO send win message
