@@ -21,6 +21,8 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 #include <iostream>
 #include <functional>
 
+// debug flag
+#define DEBUG
 
 
 //~main program~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,7 +35,15 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+#ifdef DEBUG
+    std::cout << "argument '" << argv[1] << "'" << std::endl;
+#endif
+
+    // initialize game model
     game_model::GameModel model(argv[1]);
+#ifdef DEBUG
+    std::cout << "game model initialized" << std::endl;
+#endif
 
     PlayerSpool players;
     protocol::MessageSpool messages;
