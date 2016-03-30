@@ -5,20 +5,68 @@
  * Description: This class models the state of the game.
  */
 
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+
 #include "gamemodel.hpp"
-#include "maplist.hpp"
+#include "tankpiece.hpp"
 
-game_model::GameModel::GameModel(std::string map_name) {
 
-    // get the map's id from the name
-    this->map_id = game_model::map_list::map_id_from_name(map_name);
+game_model::GameModel::GameModel(std::string map_file_path) {
 
-    // get the latest version num of the map
-    this->map_version = game_model::map_list::map_version_from_id(this->map_id);
+    // open the .map file
+    std::ifstream map_file(map_file_path);
+    if (map_file.is_open()) {
 
-    // TODO find .map file in ../resources/graphics/maps/ based on id and version
-    std::string path = map_list::map_file_path(this->map_id, this->map_version, map_name);
+        // collect basic info
+        map_file >> this->map_name;     // map name
+        map_file >> this->map_id;       // map id
+        map_file >> this->map_version;  // map version
+        map_file >> this->player_count; // player count
 
-    // TODO import .map data and populate fields
-    // TODO create starting gamepieces based on map data
+        // create game players
+        this->players = std::vector<GamePlayer>(static_cast<unsigned long>(this->player_count));
+
+        // collect player's starting positions
+        for (int i = 0; i < this->player_count; i++) {
+
+            // coordinates for the player's three tanks
+            int t1x, t1y, t2x, t2y, t3x, t3y;
+
+            // capture the line
+            std::string line;
+            std::getline(map_file, line);
+
+            // collect the coordinates
+            std::sscanf(line.c_str(), "%d,%d;%d,%d;%d,%d", &t1x, &t1y, &t2x, &t2y, &t3x, &t3y);
+
+            // create tanks at the coordinates // TODO make them not all commanders
+            this->pieces[t1x][t1y] = TankPiece(this->players[i], protocol::TankModel::COMMANDER);
+            this->pieces[t2x][t2y] = TankPiece(this->players[i], protocol::TankModel::COMMANDER);
+            this->pieces[t3x][t3y] = TankPiece(this->players[i], protocol::TankModel::COMMANDER);
+        }
+
+        // collect map dimensions
+        map_file >> this->map_width;    // map width
+        map_file >> this->map_height;   // map height
+
+        // collect tile properties and build map
+        for (int i = 0; i < this->map_height; i++) {
+            for (int j = 0; j < this->map_width; j++) {
+                char tile;
+                map_file >> tile;
+                this->map[i][j] = Tile(tile);
+            }
+        }
+
+        // close the file
+        map_file.close();
+
+    } else {
+
+        // file is not opened
+        // TODO fail appropriately
+    }
 }

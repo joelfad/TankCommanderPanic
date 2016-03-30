@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 
     // validate the argument count
     if (argc != 2) {
-        std::cerr << "Usage: server <STAGE NAME>\n";
+        std::cerr << "Usage: server <MAP>\n";
         return 1;
     }
 

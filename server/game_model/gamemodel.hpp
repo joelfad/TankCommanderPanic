@@ -20,7 +20,7 @@ namespace game_model {
 class GameModel {
 public:
 
-    GameModel(std::string map_name);
+    GameModel(std::string map_file_path);
 
     auto get_player_count() const noexcept { return player_count; }
 
@@ -30,6 +30,7 @@ private:
     int map_width;
     int map_height;
 
+    std::string map_name;
     protocol::MapID map_id;
     protocol::MapVersion map_version;
 

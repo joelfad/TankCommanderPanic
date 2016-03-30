@@ -26,7 +26,9 @@ public:
     virtual void shot(int damage) = 0;
     /* react to taking damage */
 
-    auto get_id() const noexcept { return id; }
+    auto get_id() const noexcept -> protocol::PieceID { return id; }
+
+    virtual protocol::PieceType get_piece_type() const noexcept = 0;
 
     auto is_clear_shot() const noexcept { return clear_shot; }
     /* designates that the piece can be fired through, otherwise a round impacts on the piece */

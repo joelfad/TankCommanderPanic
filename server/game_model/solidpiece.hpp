@@ -28,6 +28,8 @@ public:
     void shot(int damage) override;
     /* react to taking damage */
 
+    virtual protocol::PieceType get_piece_type() const noexcept override = 0;
+
     auto get_health() const noexcept { return health; }
 
 protected:

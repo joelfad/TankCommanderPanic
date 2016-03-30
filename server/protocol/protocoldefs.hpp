@@ -24,6 +24,12 @@ enum class PieceType: ServerMsgType {
     GREEN_COMMANDER     = 28, GREEN_INTERCEPTOR     = 29, GREEN_ELIMINATOR  = 30, GREEN_NEGOTIATOR  = 31
 };
 
+enum class TeamColor: ServerMsgType {RED=0, BLUE=4, YELLOW=8, GREEN=12};
+enum class TankModel: ServerMsgType {COMMANDER=0, INTERCEPTOR=1, ELIMINATOR=2, NEGOTIATOR=3};
+
+PieceType tank_type(TeamColor color, TankModel model);
+/* calculate the PieceType from the TeamColor and TankModel (defined in tankpiece.cpp) */
+
 enum class EventType: ServerMsgType {
     UPDATE_AMMO = 32, UPDATE_HEALTH = 33, DESTROY_GAME_PIECE = 34, MOVE_GAME_PIECE = 35, GAME_OVER = 36
 };
