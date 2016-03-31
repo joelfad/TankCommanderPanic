@@ -90,8 +90,9 @@ game_model::GameModel::GameModel(std::string map_file_path) {
             this->pieces.at(t2y).at(t2x) = std::make_unique<TankPiece>(TankPiece(this->players.at(i), protocol::TankModel::COMMANDER));
             this->pieces.at(t3y).at(t3x) = std::make_unique<TankPiece>(TankPiece(this->players.at(i), protocol::TankModel::COMMANDER));
 #ifdef DEBUG
-            std::cerr << "tank 1";
-            std::cerr << this->pieces.at(t1y).at(t1x)->get_id();
+            std::cerr << "tank " << this->pieces.at(t1y).at(t1x)->get_id() << std::endl;
+            std::cerr << "tank " << this->pieces.at(t2y).at(t2x)->get_id() << std::endl;
+            std::cerr << "tank " << this->pieces.at(t3y).at(t3x)->get_id() << std::endl;
 #endif
         }
 
