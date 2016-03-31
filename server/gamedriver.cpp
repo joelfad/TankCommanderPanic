@@ -17,11 +17,11 @@ Description:  The main game logic driver.
 /*
 runs the game
 */
-void game_driver(PlayerSpool& client_spool, protocol::MessageSpool& msg_spool) {
+void game_driver(PlayerSpool& client_spool, int player_count, protocol::MessageSpool& msg_spool) {
     PlayerClientList players;
 
-    // wait for 2 clients to connect
-    while (players.size() < 2) {
+    // wait for clients to connect
+    while (players.size() < player_count) {
         PlayerSpool::maybe_item client = client_spool.get();
         if (client) {
             players.push_back(*client);

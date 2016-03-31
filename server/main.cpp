@@ -54,8 +54,7 @@ int main(int argc, char *argv[]) {
     auto com_server = std::thread{server, std::ref(players), std::ref(messages), protocol::port};
 
     // run instance of the game
-    // TODO pass expected player count as argument
-    game_driver(players, messages);
+    game_driver(players, model.get_player_count(), messages);
 
     // wait for communication to finish
     com_server.join();
