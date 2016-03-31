@@ -46,6 +46,8 @@ sprite_map = \
 # received from server
 id = 2              # map id
 version = 1         # map version
+ammo = 500          # ammo count
+tank_piece_id = [1000, 2000, 3000] # ids of owned tanks
 
 # determined from load_map_data
 name = "Fourbase"   # map name
