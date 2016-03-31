@@ -54,11 +54,11 @@ game_model::GameModel::GameModel(std::string map_file_path) {
 
         // resize 2D map vectors
         this->map.resize(this->map_height);
-        for (auto&& row : this->map) {
+        for (auto& row : this->map) {
             row.resize(this->map_width);
         }
         this->pieces.resize(this->map_height);
-        for (auto&& row : this->pieces) {
+        for (auto& row : this->pieces) {
             row.resize(this->map_width);
         }
 #ifdef DEBUG
@@ -86,9 +86,9 @@ game_model::GameModel::GameModel(std::string map_file_path) {
 #endif
 
             // create tanks at the coordinates // TODO make them not all commanders
-            this->pieces.at(t1y).at(t1x) = std::make_unique<TankPiece>(TankPiece(this->players.at(i), protocol::TankModel::COMMANDER));
-            this->pieces.at(t2y).at(t2x) = std::make_unique<TankPiece>(TankPiece(this->players.at(i), protocol::TankModel::COMMANDER));
-            this->pieces.at(t3y).at(t3x) = std::make_unique<TankPiece>(TankPiece(this->players.at(i), protocol::TankModel::COMMANDER));
+            this->pieces.at(t1y).at(t1x) = std::make_unique<TankPiece>(this->players.at(i), protocol::TankModel::COMMANDER);
+            this->pieces.at(t2y).at(t2x) = std::make_unique<TankPiece>(this->players.at(i), protocol::TankModel::COMMANDER);
+            this->pieces.at(t3y).at(t3x) = std::make_unique<TankPiece>(this->players.at(i), protocol::TankModel::COMMANDER);
 #ifdef DEBUG
             std::cerr << "tank " << this->pieces.at(t1y).at(t1x)->get_id() << std::endl;
             std::cerr << "tank " << this->pieces.at(t2y).at(t2x)->get_id() << std::endl;
@@ -96,16 +96,22 @@ game_model::GameModel::GameModel(std::string map_file_path) {
 #endif
         }
 
-
-
         // collect tile properties and build map
-//        for (int i = 0; i < this->map_height; i++) {
-//            for (int j = 0; j < this->map_width; j++) {
-//                char tile;
-//                map_file >> tile;
-//                this->map[i][j] = Tile(tile);
-//            }
-//        }
+        for (auto& row : this->map) {
+            for (auto& tile : row) {
+                char t;
+                map_file >> t;
+                tile = std::make_unique<Tile>(t);
+            }
+        }
+#ifdef DEBUG
+        for (auto& row : this->map) {
+            for (auto& tile : row) {
+                std::cerr << tile->is_clear_drive();
+            }
+            std::cerr << std::endl;
+        }
+#endif
 
         // close the file
         map_file.close();
