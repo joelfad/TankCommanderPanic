@@ -12,6 +12,8 @@ Description:  Definitions of simple types for the game protocol.
 
 namespace protocol {
 
+constexpr unsigned short port = 4410;
+
 using ServerMsgType = std::uint8_t;
 
 enum class PieceType: ServerMsgType {

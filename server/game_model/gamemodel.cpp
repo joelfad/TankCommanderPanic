@@ -14,7 +14,7 @@
 #include "tankpiece.hpp"
 
 // debug flag
-#define DEBUG
+//#define DEBUG
 
 game_model::GameModel::GameModel(std::string map_file_path) {
 #ifdef DEBUG

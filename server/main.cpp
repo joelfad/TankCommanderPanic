@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
     // TODO helpfully print this server's public IP to the screen
 
     // run the communication server on a separate thread
-    auto com_server = std::thread{server, std::ref(players), std::ref(messages), 4410};
+    auto com_server = std::thread{server, std::ref(players), std::ref(messages), protocol::port};
 
     // run instance of the game
     // TODO pass expected player count as argument
