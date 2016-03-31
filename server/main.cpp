@@ -36,13 +36,13 @@ int main(int argc, char *argv[]) {
     }
 
 #ifdef DEBUG
-    std::cout << "argument '" << argv[1] << "'" << std::endl;
+    std::cerr << "argument '" << argv[1] << "'" << std::endl;
 #endif
 
     // initialize game model
     game_model::GameModel model(argv[1]);
 #ifdef DEBUG
-    std::cout << "game model initialized" << std::endl;
+    std::cerr << "game model initialized" << std::endl;
 #endif
 
     PlayerSpool players;

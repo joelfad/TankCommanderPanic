@@ -9,6 +9,7 @@
 #define SERVER_GAMEMODEL_HPP
 
 #include <vector>
+#include <memory>
 
 #include "tile.hpp"
 #include "gamepiece.hpp"
@@ -24,6 +25,9 @@ public:
 
     auto get_player_count() const noexcept { return player_count; }
 
+    template<class T>
+    using map_vector = std::vector<std::vector<std::unique_ptr<T>>>;
+
 private:
 
     int player_count;
@@ -34,10 +38,10 @@ private:
     protocol::MapID map_id;
     protocol::MapVersion map_version;
 
-    std::vector<std::vector<Tile>> map;
+    map_vector<Tile> map;
     /* 2D vector of tiles composes the map of the battlefield */
 
-    std::vector<std::vector<GamePiece>> pieces;
+    map_vector<GamePiece> pieces;
     /* 2D vector of game pieces on the battlefield */
 
     std::vector<GamePlayer> players;

@@ -18,14 +18,14 @@
 
 game_model::GameModel::GameModel(std::string map_file_path) {
 #ifdef DEBUG
-    std::cout << "map file '" << map_file_path << "'...";
+    std::cerr << "map file '" << map_file_path << "'...";
 #endif
 
     // open the .map file
     std::ifstream map_file(map_file_path);
     if (map_file.is_open()) {
 #ifdef DEBUG
-        std::cout << "opened successfully" << std::endl;
+        std::cerr << "opened successfully" << std::endl;
 #endif
 
         // collect basic info
@@ -33,15 +33,38 @@ game_model::GameModel::GameModel(std::string map_file_path) {
         map_file >> this->map_id;       // map id
         map_file >> this->map_version;  // map version
         map_file >> this->player_count; // player count
+        map_file >> this->map_width;    // map width
+        map_file >> this->map_height;   // map height
 #ifdef DEBUG
-        std::cout << "map name:     " << this->map_name << std::endl;
-        std::cout << "map id:       " << this->map_id << std::endl;
-        std::cout << "map version:  " << this->map_version << std::endl;
-        std::cout << "player count: " << this->player_count << std::endl;
+        std::cerr << "map name:     " << this->map_name     << std::endl;
+        std::cerr << "map id:       " << this->map_id       << std::endl;
+        std::cerr << "map version:  " << this->map_version  << std::endl;
+        std::cerr << "player count: " << this->player_count << std::endl;
+        std::cerr << "map width:    " << this->map_width    << std::endl;
+        std::cerr << "map height:   " << this->map_height   << std::endl;
 #endif
 
         // create game players
         this->players = std::vector<GamePlayer>(static_cast<unsigned long>(this->player_count));
+#ifdef DEBUG
+        for (GamePlayer player: this->players) {
+            std::cerr << "player " << player.get_id() << std::endl;
+        }
+#endif
+
+        // resize 2D map vectors
+        this->map.resize(this->map_height);
+        for (auto&& row : this->map) {
+            row.resize(this->map_width);
+        }
+        this->pieces.resize(this->map_height);
+        for (auto&& row : this->pieces) {
+            row.resize(this->map_width);
+        }
+#ifdef DEBUG
+        std::cerr << "map" << this->map.size() << ", " << this->map.at(0).size() << std::endl;
+        std::cerr << "pieces" << this->pieces.size() << ", " << this->pieces.at(0).size() << std::endl;
+#endif
 
         // collect player's starting positions
         for (int i = 0; i < this->player_count; i++) {
@@ -51,35 +74,37 @@ game_model::GameModel::GameModel(std::string map_file_path) {
 
             // capture the line
             std::string line;
-            std::getline(map_file, line);
+            map_file >> line;
 #ifdef DEBUG
-            std::cout << "tank coordinate line '" << line << "'" << std::endl;
+            std::cerr << "tank coordinate line '" << line << "'" << std::endl;
 #endif
 
             // collect the coordinates
             std::sscanf(line.c_str(), "%d,%d;%d,%d;%d,%d", &t1x, &t1y, &t2x, &t2y, &t3x, &t3y);
 #ifdef DEBUG
-            std::cout << "player " << i << " tank coordinates " << t1x << "," << t1y << "\t" << t2x << "," << t2y << "\t" << t3x << "," << t3y << std::endl;
+            std::cerr << "player " << i << " tank coordinates " << t1x << "," << t1y << "\t" << t2x << "," << t2y << "\t" << t3x << "," << t3y << std::endl;
 #endif
 
             // create tanks at the coordinates // TODO make them not all commanders
-            this->pieces[t1x][t1y] = TankPiece(this->players[i], protocol::TankModel::COMMANDER);
-            this->pieces[t2x][t2y] = TankPiece(this->players[i], protocol::TankModel::COMMANDER);
-            this->pieces[t3x][t3y] = TankPiece(this->players[i], protocol::TankModel::COMMANDER);
+            this->pieces.at(t1y).at(t1x) = std::make_unique<TankPiece>(TankPiece(this->players.at(i), protocol::TankModel::COMMANDER));
+            this->pieces.at(t2y).at(t2x) = std::make_unique<TankPiece>(TankPiece(this->players.at(i), protocol::TankModel::COMMANDER));
+            this->pieces.at(t3y).at(t3x) = std::make_unique<TankPiece>(TankPiece(this->players.at(i), protocol::TankModel::COMMANDER));
+#ifdef DEBUG
+            std::cerr << "tank 1";
+            std::cerr << this->pieces.at(t1y).at(t1x)->get_id();
+#endif
         }
 
-        // collect map dimensions
-        map_file >> this->map_width;    // map width
-        map_file >> this->map_height;   // map height
+
 
         // collect tile properties and build map
-        for (int i = 0; i < this->map_height; i++) {
-            for (int j = 0; j < this->map_width; j++) {
-                char tile;
-                map_file >> tile;
-                this->map[i][j] = Tile(tile);
-            }
-        }
+//        for (int i = 0; i < this->map_height; i++) {
+//            for (int j = 0; j < this->map_width; j++) {
+//                char tile;
+//                map_file >> tile;
+//                this->map[i][j] = Tile(tile);
+//            }
+//        }
 
         // close the file
         map_file.close();
