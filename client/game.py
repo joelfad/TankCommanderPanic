@@ -3,27 +3,27 @@
 # File: game.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: March 29, 2016
+# Modified: March 30, 2016
 
 import sfml as sf
 from battlefield import *
 from texturehandler import *
 from inputhandler import *
+from gamestate import GameState as gs
+from const import ammo # TODO: Remove after Event Messages can be received
+from random import randint # TODO: Remove after Game State Message can be received
+from hud import HUD
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 
 class Game:
-    # state : Enum('playing', 'observing')
-    # hud : HUD
-    # tanks : GamePiece[]
-    # active_tank : byte
-    # ammo : int
-    # player_name : str
 
     def __init__(self):
+        self.state = gs.wait
         self.window = self.create_window()
         self.battlefield = BattleField(self)
+        self.hud = HUD(self)
         self.inputhandler = InputHandler(self)
         # self.messagehandler = MessageHandler(self)
 
@@ -33,6 +33,7 @@ class Game:
     def render(self):
         self.window.clear()
         self.battlefield.draw()
+        self.hud.draw()
         self.window.display()
 
     def run(self):
@@ -61,3 +62,11 @@ class Game:
 
     def get_texture_rect(self, tile_id):
         return self.texturehandler.get_rect(tile_id)
+
+    # set the state of the game
+    def set_state(self):
+        self.player_id = randint(0, 32767) # TODO: Receive this value from Game State Message
+        self.ammo = const.ammo # TODO: Receive this value from Event Message (Update Ammo)
+        self.tanks = const.tank_piece_id # TODO: Receive this value from Game State Message
+        self.active_tank = self.tanks[0]
+        self.state = gs.play
