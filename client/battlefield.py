@@ -3,7 +3,7 @@
 # File: battlefield.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: March 29, 2016
+# Modified: March 31, 2016
 
 import sfml as sf
 from numpy import swapaxes

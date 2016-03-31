@@ -3,16 +3,12 @@
 # File: inputhandler.py
 # Author: Joel McFadden
 # Created: March 26, 2016
-# Modified: March 30, 2016
+# Modified: March 31, 2016
 
 import sfml as sf
 from gamestate import GameState as gs
 
 class InputHandler:
-    up_count    = 0 # TODO: Remove these lines after key_event functions are implemented
-    right_count = 0 #
-    down_count  = 0 #
-    left_count  = 0 #
 
     def __init__(self, game):
         self.game = game
@@ -26,7 +22,6 @@ class InputHandler:
                 if (self.game.state, event.code) in self.key_actions:
                     self.key_actions[(self.game.state, event.code)](self)
 
-
     # toggle pan
     def set_pan_on(self):
         self.game.state = gs.pan
@@ -38,63 +33,79 @@ class InputHandler:
 
     # pan the map
     def pan_north(self):
-        pass
+        print("Pan UP")
 
     def pan_east(self):
-        pass
+        print("Pan RIGHT")
 
     def pan_south(self):
-        pass
+        print("Pan DOWN")
 
     def pan_west(self):
-        pass
+        print("Pan LEFT")
 
     # switch tanks
     def next_tank(self):
-        pass
+        i = self.game.tanks.index(self.game.active_tank)
+        self.game.active_tank = self.game.tanks[(i + 1) % len(self.game.tanks)]
 
     def set_tank_1(self):
-        pass
+        self.game.active_tank = self.game.tanks[0]
 
     def set_tank_2(self):
-        pass
+        if len(self.game.tanks) > 1:
+            self.game.active_tank = self.game.tanks[1]
 
     def set_tank_3(self):
-        pass
+        if len(self.game.tanks) > 2:
+            self.game.active_tank = self.game.tanks[2]
 
     def set_tank_4(self):
-        pass
+        if len(self.game.tanks) > 3:
+            self.game.active_tank = self.game.tanks[3]
+
+    # move active tank
+    def move_north(self, units):
+        self.game.active_tank.move(0, -units).rotation = 0
+
+    def move_east(self, units):
+        self.game.active_tank.move(units, 0).rotation = 90
+
+    def move_south(self, units):
+        self.game.active_tank.move(0, units).rotation = 180
+
+    def move_west(self, units):
+        self.game.active_tank.move(-units, 0).rotation = 270
 
     # move requests
     def request_move_north(self):
-        # self.game.active_tank
-        self.up_count += 1
-        print("{} UP pressed".format(self.up_count))
+        self.move_north(1)
 
     def request_move_east(self):
-        self.right_count += 1
-        print("{} RIGHT pressed".format(self.right_count))
+        self.move_east(1)
 
     def request_move_south(self):
-        self.down_count += 1
-        print("{} DOWN pressed".format(self.down_count))
+        self.move_south(1)
 
     def request_move_west(self):
-        self.left_count += 1
-        print("{} LEFT pressed".format(self.left_count))
+        self.move_west(1)
 
     # shoot requests
     def request_shoot_north(self):
-        pass
+        print("Shoot UP")
+        self.game.active_tank.rotation = 0
 
     def request_shoot_east(self):
-        pass
+        print("Shoot RIGHT")
+        self.game.active_tank.rotation = 90
 
     def request_shoot_south(self):
-        pass
+        print("Shoot DOWN")
+        self.game.active_tank.rotation = 180
 
     def request_shoot_west(self):
-        pass
+        print("Shoot LEFT")
+        self.game.active_tank.rotation = 270
 
     # map game state and user input to functions
     key_actions = \
@@ -127,8 +138,8 @@ class InputHandler:
         (gs.play, sf.Keyboard.LEFT):    request_move_west,
 
         # shoot requests
-        (gs.play, sf.Keyboard.W):       request_move_north,
-        (gs.play, sf.Keyboard.S):       request_move_east,
-        (gs.play, sf.Keyboard.R):       request_move_south,
-        (gs.play, sf.Keyboard.A):       request_move_west,
+        (gs.play, sf.Keyboard.W):       request_shoot_north,
+        (gs.play, sf.Keyboard.S):       request_shoot_east,
+        (gs.play, sf.Keyboard.R):       request_shoot_south,
+        (gs.play, sf.Keyboard.A):       request_shoot_west,
     }

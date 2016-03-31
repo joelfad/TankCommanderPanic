@@ -28,6 +28,7 @@ class Game:
         # self.messagehandler = MessageHandler(self)
 
     def process_events(self):
+        # handle messages first (in case the last tank is destroyed)
         self.inputhandler.check_for_input()
 
     def render(self):
@@ -67,6 +68,6 @@ class Game:
     def set_state(self):
         self.player_id = randint(0, 32767) # TODO: Receive this value from Game State Message
         self.ammo = const.ammo # TODO: Receive this value from Event Message (Update Ammo)
-        self.tanks = const.tank_piece_id # TODO: Receive this value from Game State Message
+        self.tanks = [self.battlefield.get_piece(id) for id in const.tank_piece_id] # TODO: Receive this value from Game State Message
         self.active_tank = self.tanks[0]
         self.state = gs.play
