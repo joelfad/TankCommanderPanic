@@ -20,6 +20,11 @@ class InputHandler:
             if type(event) is sf.CloseEvent:
                 self.game.window.close()
             if type(event) is sf.KeyEvent and event.pressed:
+                # quit if ctrl+Q is pressed
+                if sf.Keyboard.is_key_pressed(sf.Keyboard.Q) and \
+                   (sf.Keyboard.is_key_pressed(sf.Keyboard.R_CONTROL) or \
+                   sf.Keyboard.is_key_pressed(sf.Keyboard.L_CONTROL)):
+                    self.game.window.close()
                 # call mapped function
                 if (self.game.state, event.code) in self.key_pressed_actions:
                     self.key_pressed_actions[(self.game.state, event.code)](self)
