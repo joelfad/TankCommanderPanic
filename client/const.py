@@ -3,7 +3,7 @@
 # File: const.py
 # Author: Joel McFadden
 # Created: March 29, 2016
-# Modified: March 29, 2016
+# Modified: April 1, 2016
 
 #############
 # Constants #
@@ -44,7 +44,7 @@ sprite_map = \
 #############
 
 # received from server
-id = 2              # map id
+id_ = 2              # map id
 version = 1         # map version
 ammo = 500          # ammo count
 tank_piece_id = [1000, 2000, 3000] # ids of owned tanks
