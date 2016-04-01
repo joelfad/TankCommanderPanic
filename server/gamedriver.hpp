@@ -12,7 +12,7 @@ Description:  The main game logic driver.
 #include "playerclient.hpp"
 #include "protocol/message.hpp"
 
-void game_driver(PlayerSpool& client_spool, int player_count, protocol::MessageSpool& msg_spool);
+void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol::MessageSpool& msg_spool);
 /*  runs the game */
 
 #endif // GAMEDRIVER_HPP

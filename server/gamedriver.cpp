@@ -9,29 +9,40 @@ Description:  The main game logic driver.
 #include "playerclientlist.hpp"
 #include "gamedriver.hpp"
 #include "protocol/actionmessagehandle.hpp"
+#include "game_model/gamemodel.hpp"
 
 // c++ standard libraries
 #include <chrono>
 #include <thread>
+#include <iostream>
+
+#define DEBUG
 
 /*
 runs the game
 */
-void game_driver(PlayerSpool& client_spool, int player_count, protocol::MessageSpool& msg_spool) {
+void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol::MessageSpool& msg_spool) {
+
+    // initialize game model
+    game_model::GameModel model(map_file_path);
+#ifdef DEBUG
+    std::cerr << "game model initialized" << std::endl;
+#endif
+
     PlayerClientList players;
 
     // wait for clients to connect
-    while (players.size() < player_count) {
+    while (players.size() < model.get_player_count()) {
         PlayerSpool::maybe_item client = client_spool.get();
         if (client) {
             players.push_back(*client);
-            //client->send(); // send welcome message (with player ID etc.)
+            //client->send(); // TODO send welcome message (with player ID etc.)
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
-    // send all players the initial game state and game start messages
+    // TODO send all players the initial game state and game start messages
     //players.send_all();
 
     // run the game

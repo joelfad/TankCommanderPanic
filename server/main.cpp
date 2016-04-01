@@ -12,17 +12,14 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 // project headers
 #include "server.hpp"
 #include "gamedriver.hpp"
-#include "playerclient.hpp"
-#include "protocol/message.hpp"
-#include "game_model/gamemodel.hpp"
+#include "protocol/protocoldefs.hpp"
 
 // c++ standard libraries
 #include <thread>
 #include <iostream>
-#include <functional>
 
 // debug flag
-#define DEBUG
+//#define DEBUG
 
 
 //~main program~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,12 +36,6 @@ int main(int argc, char *argv[]) {
     std::cerr << "argument '" << argv[1] << "'" << std::endl;
 #endif
 
-    // initialize game model
-    game_model::GameModel model(argv[1]);
-#ifdef DEBUG
-    std::cerr << "game model initialized" << std::endl;
-#endif
-
     PlayerSpool players;
     protocol::MessageSpool messages;
 
@@ -54,7 +45,7 @@ int main(int argc, char *argv[]) {
     auto com_server = std::thread{server, std::ref(players), std::ref(messages), protocol::port};
 
     // run instance of the game
-    game_driver(players, model.get_player_count(), messages);
+    game_driver(players, argv[1], messages);
 
     // wait for communication to finish
     com_server.join();
