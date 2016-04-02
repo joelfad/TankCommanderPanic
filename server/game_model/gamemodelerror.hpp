@@ -19,6 +19,12 @@ class GameModelEventError : public std::logic_error {
         explicit GameModelEventError(const char* _error) : std::logic_error{_error} {}
 };
 
+class GamePieceNotFoundError : public std::logic_error {
+public:
+    explicit GamePieceNotFoundError(const std::string& _error) : std::logic_error{_error} {}
+    explicit GamePieceNotFoundError(const char* _error) : std::logic_error{_error} {}
+};
+
 }
 
 #endif //SERVER_GAMEMODELERROR_HPP

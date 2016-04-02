@@ -12,6 +12,7 @@
 
 #include "gamemodel.hpp"
 #include "tankpiece.hpp"
+#include "gamemodelerror.hpp"
 
 // debug flag
 //#define DEBUG
@@ -133,5 +134,12 @@ void game_model::GameModel::attempt_to_shoot(protocol::PieceID piece, protocol::
 
 void game_model::GameModel::game_piece_coordinates(protocol::PieceID id, protocol::CoordinateX &x,
                                                    protocol::CoordinateY &y) {
-
+    for (y = 0; y < this->pieces.size(); y++) {
+        auto row = this->pieces.at(y);
+        for (x = 0; x < row.size(); x++) {
+            if (row.at(x) && row.at(x)->get_id() == id)
+                return;
+        }
+    }
+    throw GamePieceNotFoundError(std::string("game piece with id ").append(std::to_string(id)).append(" not found"));
 }
