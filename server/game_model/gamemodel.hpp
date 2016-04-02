@@ -28,6 +28,10 @@ public:
     template<class T>
     using map_vector = std::vector<std::vector<std::unique_ptr<T>>>;
 
+    void attempt_to_move(protocol::PieceID piece, protocol::Direction direction);
+    void attempt_to_shoot(protocol::PieceID piece, protocol::Direction direction);
+    /* handle game actions */
+
 private:
 
     int player_count;
@@ -46,6 +50,9 @@ private:
 
     std::vector<GamePlayer> players;
     /* collection of players */
+
+    void game_piece_coordinates(protocol::PieceID id, protocol::CoordinateX& x, protocol::CoordinateY& y);
+    /* find the coordinates of a game piece based on its id */
 
 };
 

@@ -59,10 +59,12 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
             // perfrom action
             switch (action.action()) {
             case protocol::Action::MOVE :
+                model.attempt_to_move(action.piece(), action.direction());
                 // TODO notify all clients of move
                 //players.send_all();
                 break;
             case protocol::Action::SHOOT :
+                model.attempt_to_shoot(action.piece(), action.direction());
                 // TODO notify all clients of shot
                 //players.send_all();
                 break;

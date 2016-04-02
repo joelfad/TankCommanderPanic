@@ -122,3 +122,16 @@ game_model::GameModel::GameModel(std::string map_file_path) {
         // TODO fail appropriately
     }
 }
+
+void game_model::GameModel::attempt_to_move(protocol::PieceID piece, protocol::Direction direction) {
+
+}
+
+void game_model::GameModel::attempt_to_shoot(protocol::PieceID piece, protocol::Direction direction) {
+
+}
+
+void game_model::GameModel::game_piece_coordinates(protocol::PieceID id, protocol::CoordinateX &x,
+                                                   protocol::CoordinateY &y) {
+
+}
