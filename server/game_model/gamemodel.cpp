@@ -87,8 +87,8 @@ game_model::GameModel::GameModel(std::string map_file_path) {
 
             // create tanks at the coordinates // TODO make them not all commanders
             this->pieces.at(t1y).at(t1x) = std::make_unique<TankPiece>(this->players.at(i), protocol::TankModel::COMMANDER);
-            this->pieces.at(t2y).at(t2x) = std::make_unique<TankPiece>(this->players.at(i), protocol::TankModel::COMMANDER);
-            this->pieces.at(t3y).at(t3x) = std::make_unique<TankPiece>(this->players.at(i), protocol::TankModel::COMMANDER);
+            this->pieces.at(t2y).at(t2x) = std::make_unique<TankPiece>(this->players.at(i), protocol::TankModel::INTERCEPTOR);
+            this->pieces.at(t3y).at(t3x) = std::make_unique<TankPiece>(this->players.at(i), protocol::TankModel::ELIMINATOR);
 #ifdef DEBUG
             std::cerr << "tank " << this->pieces.at(t1y).at(t1x)->get_id() << std::endl;
             std::cerr << "tank " << this->pieces.at(t2y).at(t2x)->get_id() << std::endl;
