@@ -3,9 +3,10 @@
 # File: game.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: March 30, 2016
+# Modified: April 1, 2016
 
 import sfml as sf
+from numpy import clip
 from battlefield import *
 from texturehandler import *
 from inputhandler import *
@@ -15,7 +16,9 @@ from random import randint # TODO: Remove after Game State Message can be receiv
 from hud import HUD
 
 WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_HEIGHT = 608
+VIEW_WIDTH = 800
+VIEW_HEIGHT = 608
 
 class Game:
 
@@ -64,10 +67,28 @@ class Game:
     def get_texture_rect(self, tile_id):
         return self.texturehandler.get_rect(tile_id)
 
+    # center view on active tank
+    def center_view(self):
+        self.set_view(*self.active_tank.position)
+
+    # move view by offset
+    def pan_view(self, delta_x, delta_y):
+        self.set_view(self.window.view.center.x + delta_x, self.window.view.center.y + delta_y)
+
+    def set_view(self, x, y):
+        # calculate center_x
+        center_x = clip(x, 0.5 * VIEW_WIDTH, -0.5 * VIEW_WIDTH + self.battlefield.mapwidth)
+
+        # calculate center_y
+        center_y = clip(y, 0.5 * VIEW_HEIGHT, -0.5 * VIEW_HEIGHT + self.battlefield.mapwidth)
+
+        # update view
+        self.window.view.center = (center_x, center_y)
+
     # set the state of the game
     def set_state(self):
         self.player_id = randint(0, 32767) # TODO: Receive this value from Game State Message
         self.ammo = const.ammo # TODO: Receive this value from Event Message (Update Ammo)
-        self.tanks = [self.battlefield.get_piece(id) for id in const.tank_piece_id] # TODO: Receive this value from Game State Message
+        self.tanks = [self.battlefield.get_piece(id_) for id_ in const.tank_piece_id] # TODO: Receive this value from Game State Message
         self.active_tank = self.tanks[0]
         self.state = gs.play
