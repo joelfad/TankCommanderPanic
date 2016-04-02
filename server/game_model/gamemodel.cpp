@@ -87,9 +87,12 @@ game_model::GameModel::GameModel(std::string map_file_path) {
 #endif
 
             // create tanks at the coordinates // TODO make them not all commanders
-            this->pieces.at(t1y).at(t1x) = std::make_unique<TankPiece>(this->players.at(i), protocol::TankModel::COMMANDER);
-            this->pieces.at(t2y).at(t2x) = std::make_unique<TankPiece>(this->players.at(i), protocol::TankModel::INTERCEPTOR);
-            this->pieces.at(t3y).at(t3x) = std::make_unique<TankPiece>(this->players.at(i), protocol::TankModel::ELIMINATOR);
+            this->pieces.at(t1y).at(t1x) = std::make_unique<TankPiece>(this->players.at(i),
+                                                                       protocol::TankModel::COMMANDER);
+            this->pieces.at(t2y).at(t2x) = std::make_unique<TankPiece>(this->players.at(i),
+                                                                       protocol::TankModel::INTERCEPTOR);
+            this->pieces.at(t3y).at(t3x) = std::make_unique<TankPiece>(this->players.at(i),
+                                                                       protocol::TankModel::ELIMINATOR);
 #ifdef DEBUG
             std::cerr << "tank " << this->pieces.at(t1y).at(t1x)->get_id() << std::endl;
             std::cerr << "tank " << this->pieces.at(t2y).at(t2x)->get_id() << std::endl;
@@ -124,16 +127,58 @@ game_model::GameModel::GameModel(std::string map_file_path) {
     }
 }
 
-void game_model::GameModel::attempt_to_move(protocol::PieceID piece, protocol::Direction direction) {
+void game_model::GameModel::attempt_to_move(protocol::PieceID piece_id, protocol::Direction direction) {
 
+    // get coordinates of the piece_id
+    protocol::CoordinateX x;
+    protocol::CoordinateY y;
+    game_piece_coordinates(piece_id, x, y);
+
+    // get target coordinates
+    protocol::CoordinateX to_x = x;
+    protocol::CoordinateY to_y = y;
+    switch (direction) {
+        case protocol::Direction::NORTH :
+            to_y--;
+            break;
+        case protocol::Direction::EAST :
+            to_x++;
+            break;
+        case protocol::Direction::SOUTH :
+            to_y++;
+            break;
+        case protocol::Direction::WEST :
+            to_x--;
+            break;
+        default:
+            break;
+    }
+
+    // check that the piece_id is a tank
+    auto type = this->pieces.at(y).at(x)->get_piece_type();
+    if (type < protocol::PieceType::RED_COMMANDER || type > protocol::PieceType::GREEN_NEGOTIATOR)
+        throw GameModelEventError("Only tanks can drive.");
+
+    // check the map tile at the target coordinates
+    if (this->map.at(to_y).at(to_x)->is_clear_drive()) {
+
+        // check the location for solid game pieces
+        if (!this->pieces.at(to_y).at(to_x) || this->pieces.at(to_y).at(to_x)->is_clear_drive()) {
+
+            // move the game piece_id
+            this->pieces.at(to_y).at(to_x) = std::move(this->pieces.at(y).at(x));
+
+            // TODO send appropriate messages
+        }
+    }
 }
 
 void game_model::GameModel::attempt_to_shoot(protocol::PieceID piece, protocol::Direction direction) {
 
 }
 
-void game_model::GameModel::game_piece_coordinates(protocol::PieceID id, protocol::CoordinateX &x,
-                                                   protocol::CoordinateY &y) {
+void game_model::GameModel::game_piece_coordinates(protocol::PieceID id, protocol::CoordinateX& x,
+                                                   protocol::CoordinateY& y) {
     for (y = 0; y < this->pieces.size(); y++) {
         auto row = this->pieces.at(y);
         for (x = 0; x < row.size(); x++) {
