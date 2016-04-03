@@ -199,7 +199,7 @@ std::vector<protocol::Message> game_model::GameModel::attempt_to_shoot(protocol:
     std::vector<protocol::Message> to_send;
 
     // check that the player has ammo
-    if (this->players.at(player - 1).get_ammo() <= 0)
+    if (this->players.at(player - 1).get_ammo() <= 0) // TODO make a better way
         return to_send;
 
     // get coordinates of the tank
