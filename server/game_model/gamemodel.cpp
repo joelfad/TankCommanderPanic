@@ -49,10 +49,13 @@ game_model::GameModel::GameModel(std::string map_file_path) {
 #endif
 
         // create game players
-        this->players = std::vector<GamePlayer>(static_cast<unsigned long>(this->player_count));
+        for (int i = 0; i < this->player_count; i++) {
+            auto player = GamePlayer();
+            this->players[player.get_id()] = player;
+        }
 #ifdef DEBUG
-        for (GamePlayer player: this->players) {
-            std::cerr << "player " << player.get_id() << std::endl;
+        for (auto player: this->players) {
+            std::cerr << "player " << player.second.get_id() << std::endl;
         }
 #endif
 
@@ -200,18 +203,14 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     std::vector<MessageEnvelope> to_send;
 
     // get reference to player
-    GamePlayer* player;
-    for (auto p : this->players) {
-        if (p.get_id() == player_id)
-            player = &p;
-    }
+    GamePlayer& player = this->players[player_id];
 
     // check that the player has ammo
-    if (player->get_ammo() <= 0) // TODO make a better way
+    if (player.get_ammo() <= 0)
         return to_send;
 
     // use up an ammo
-    player->change_ammo(-1);
+    player.change_ammo(-1);
 
     // get coordinates of the tank
     protocol::CoordinateX x;
@@ -276,7 +275,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     auto ammo_message = protocol::EventMessageHandle();
     ammo_message.event_type(protocol::EventType::UPDATE_AMMO);
     ammo_message.direction(protocol::Direction::NONE);
-    ammo_message.value(player->get_ammo());
+    ammo_message.value(player.get_ammo());
     ammo_message.piece_id(0);
     to_send.push_back(MessageEnvelope(Recipient::ACTOR ,ammo_message.to_msg()));
 

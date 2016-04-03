@@ -9,6 +9,7 @@
 #define SERVER_GAMEMODEL_HPP
 
 #include <vector>
+#include <map>
 #include <memory>
 
 #include "tile.hpp"
@@ -50,7 +51,7 @@ private:
     map_vector<GamePiece> pieces;
     /* 2D vector of game pieces on the battlefield */
 
-    std::vector<GamePlayer> players;
+    std::map<protocol::PlayerID, GamePlayer> players;
     /* collection of players */
 
     void game_piece_coordinates(protocol::PieceID id, protocol::CoordinateX& x, protocol::CoordinateY& y);
