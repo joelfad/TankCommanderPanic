@@ -15,10 +15,17 @@ from const import ammo # TODO: Remove after Event Messages can be received
 from random import randint # TODO: Remove after Game State Message can be received
 from hud import HUD
 
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 608
-VIEW_WIDTH = 800
-VIEW_HEIGHT = 608
+# display constants
+TILE_WIDTH      = 32
+TILE_HEIGHT     = 32
+TILES_X         = 15
+TILES_Y         = 11
+RATIO           = 2
+HUD_HEIGHT      = TILE_HEIGHT * RATIO
+VIEW_WIDTH      = TILE_WIDTH  * TILES_X
+VIEW_HEIGHT     = TILE_HEIGHT * TILES_Y
+WINDOW_WIDTH    = VIEW_WIDTH  * RATIO
+WINDOW_HEIGHT   = VIEW_HEIGHT * RATIO + HUD_HEIGHT
 
 class Game:
 
@@ -52,7 +59,8 @@ class Game:
         w = sf.RenderWindow(sf.VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, bpp), "Tank Commander Panic")
 
         # set the window view
-        v = sf.View(sf.Rect((0, 0), (WINDOW_WIDTH, WINDOW_HEIGHT)))
+        v = sf.View(sf.Rect((0, 0), (VIEW_WIDTH, VIEW_HEIGHT)))
+        v.viewport = (0.0, 0.0, 1.0, (WINDOW_HEIGHT - HUD_HEIGHT) / WINDOW_HEIGHT)
         w.view = v
 
         # limit the framerate to 60 fps
