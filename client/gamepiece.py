@@ -3,7 +3,7 @@
 # File: gamepiece.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: April 1, 2016
+# Modified: April 2, 2016
 
 from sfml import Sprite
 from enum import Enum
@@ -11,10 +11,10 @@ from const import sprite_map
 
 class GamePiece(Sprite):
 
-    def __init__(self, id_, position, type, value, texturehandler):
+    def __init__(self, id_, position, type_, value, texturehandler):
         super(self.__class__, self).__init__(texturehandler.texture)
         self.id = id_
-        self.type = type
+        self.type = type_
         self.position = position
         self.value = value
 
