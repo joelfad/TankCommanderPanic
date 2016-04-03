@@ -50,11 +50,14 @@ game_model::GameModel::GameModel(std::string map_file_path) {
 
         // create game players
         for (int i = 0; i < this->player_count; i++) {
-            auto player = GamePlayer();
-            this->players[player.get_id()] = player;
+            auto player = GamePlayer::make_game_player();
+#ifdef DEBUG
+            std::cerr << "new player " << player.get_id() << "; i = " << i << std::endl;
+#endif
+            this->players.insert(std::make_pair(player.get_id(), std::move(player)));
         }
 #ifdef DEBUG
-        for (auto player: this->players) {
+        for (auto& player: this->players) {
             std::cerr << "player " << player.second.get_id() << std::endl;
         }
 #endif

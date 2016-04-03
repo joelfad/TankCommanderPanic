@@ -19,6 +19,12 @@ public:
 
     GamePlayer();
 
+    GamePlayer(GamePlayer&& other);
+
+    GamePlayer& operator=(GamePlayer&& rhs);
+
+    static GamePlayer make_game_player();
+
     const std::string &get_name() const noexcept { return this->name; }
     void set_name(std::string name) { this->name = name; }
     /* display name of player */
@@ -43,11 +49,13 @@ private:
     static protocol::PlayerID next_id;
     /* counter for assigning unique ids */
 
-    std::string name;               // Display Name
-    protocol::PlayerID id;          // Id
-    int ammo;                       // Ammo next_id
-    protocol::TankCount tank_count; // Number of tanks
-    protocol::TeamColor team_color; // Team color
+    static constexpr protocol::PlayerID invalid_id = 0;
+
+    std::string name;                   // Display Name
+    protocol::PlayerID id = invalid_id; // Id
+    int ammo;                           // Ammo next_id
+    protocol::TankCount tank_count;     // Number of tanks
+    protocol::TeamColor team_color;     // Team color
 
 };
 
