@@ -54,7 +54,7 @@ ELIMINATOR_RANGE    = 3
 NEGOTIATOR_RANGE    = 12
 
 # piece_type mapped to tank data
-tank_map = \
+tank_data = \
 {
     16: ("Commander", COMMANDER_RANGE, sf.Color.RED),
     20: ("Commander", COMMANDER_RANGE, sf.Color.BLUE),

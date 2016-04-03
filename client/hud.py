@@ -7,21 +7,28 @@
 
 import sfml as sf
 from gamestate import GameState as gs
-from numpy import swapaxes
+from numpy import swapaxes, clip
 import const
 
 class HUD:
-    # texture : Texture
 
     def __init__(self, game):
         self.game = game
         self.texture = game.texturehandler.texture
+
+        # set useful values for calculations
         self.centerview = (game.window.size.x * 0.5 * game.window.view.viewport.width,
                            game.window.size.y * 0.5 * game.window.view.viewport.height)
         self.tilewidth = game.texturehandler.tilewidth
         self.tileheight = game.texturehandler.tileheight
+        self.min_x = 0.5 * self.tilewidth
+        self.min_y = 0.5 * self.tileheight
+        self.max_x = game.battlefield.mapwidth - (self.tilewidth * 0.5)
+        self.max_y = game.battlefield.mapheight - (self.tileheight * 0.5)
+
+        # load map properties and tank data
         self.map_properties = self.load_properties()
-        self.tank_map = const.tank_map
+        self.tank_data = const.tank_data
 
         # load hud sprites
         self.sprites = {}
@@ -37,7 +44,7 @@ class HUD:
     def update(self):
         # update range of active tank
         center = self.game.active_tank.position
-        active_tank_data = self.tank_map[self.game.active_tank.type]
+        active_tank_data = self.tank_data[self.game.active_tank.type]
         max_range = active_tank_data[1]
 
         if self.game.state is gs.play:
@@ -52,7 +59,8 @@ class HUD:
             self.sprites["pan"].position    = self.game.window.map_pixel_to_coords(self.centerview)
 
     def offset(self, coord, x, y):
-        return (coord.x + (x * self.tilewidth), coord.y + (y * self.tileheight))
+        return (clip(coord.x + (x * self.tilewidth),  self.min_x, self.max_x),
+                clip(coord.y + (y * self.tileheight), self.min_y, self.max_y))
 
     def load_properties(self):
         return swapaxes(const.fourbase_properties, 0, 1).tolist()

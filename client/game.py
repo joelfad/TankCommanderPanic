@@ -98,5 +98,5 @@ class Game:
         self.ammo = const.ammo # TODO: Receive this value from Event Message (Update Ammo)
         self.tanks = [self.battlefield.get_piece(id_) for id_ in const.tank_piece_id] # TODO: Receive this value from Game State Message
         self.active_tank = self.tanks[0]
-        self.hud = HUD(self)
         self.state = gs.play
+        self.hud = HUD(self)
