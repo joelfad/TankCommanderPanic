@@ -3,7 +3,7 @@
 # File: battlefield.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: April 1, 2016
+# Modified: April 3, 2016
 
 import sfml as sf
 from numpy import swapaxes
@@ -30,7 +30,9 @@ class BattleField:
     # load map data from file
     def load_map_file(self, id_, version):
         # load mock map properties
-        self.tilewidth = const.tilewidth        # TODO: Remove when function is implemented
+        self.map_tiles_x = const.width          # TODO: Remove when function is implemented
+        self.map_tiles_y = const.height         #
+        self.tilewidth = const.tilewidth        #
         self.tileheight = const.tileheight      #
         self.piece_layer = const.piece_layer    #
 
@@ -68,7 +70,7 @@ class BattleField:
             map_.append(layer)               # add layer to battlefield map
 
         # map width and height (in pixels) and map
-        return (len(map_data[0]) * self.tilewidth, len(map_data[0][0]) * self.tileheight, map_)
+        return (self.map_tiles_x * self.tilewidth, self.map_tiles_y * self.tileheight, map_)
 
     # optimize drawing by flattening layers below and above gamepieces
     def prerender(self, map_):

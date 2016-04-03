@@ -83,7 +83,6 @@ hud_sprites = \
     "east":     531,
     "south":    530,
     "west":     509,
-    "center":   488,
     "pan":      489,
 }
 
@@ -101,6 +100,8 @@ tank_piece_id = [1000, 2000, 3000] # ids of owned tanks
 name = "Fourbase"   # map name
 piece_layer = 3     # layer (counting from 0) that the game pieces will be drawn on top of
 image_source = "palette.png"    # name of texture file for map
+width = 32          # number of horizontal tiles
+height = 32         # number of vertical tiles
 tilewidth = 32      # pixels wide per tile graphic
 tileheight = 32     # pixels high per tile graphic
 tilecount = 567     # total number of tiles in texture

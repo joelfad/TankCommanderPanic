@@ -3,7 +3,7 @@
 # File: inputhandler.py
 # Author: Joel McFadden
 # Created: March 26, 2016
-# Modified: April 2, 2016
+# Modified: April 3, 2016
 
 import sfml as sf
 from gamestate import GameState as gs
@@ -90,20 +90,24 @@ class InputHandler:
 
     # move active tank
     def move_north(self, units):
-        self.game.active_tank.move(0, -units).rotation = 0
-        self.game.center_view()
+        if self.game.active_tank.coord().y != 0:
+            self.game.active_tank.move(0, -units).rotation = 0
+            self.game.center_view()
 
     def move_east(self, units):
-        self.game.active_tank.move(units, 0).rotation = 90
-        self.game.center_view()
+        if self.game.active_tank.coord().x != self.game.battlefield.map_tiles_x - 1:
+            self.game.active_tank.move(units, 0).rotation = 90
+            self.game.center_view()
 
     def move_south(self, units):
-        self.game.active_tank.move(0, units).rotation = 180
-        self.game.center_view()
+        if self.game.active_tank.coord().y != self.game.battlefield.map_tiles_y - 1:
+            self.game.active_tank.move(0, units).rotation = 180
+            self.game.center_view()
 
     def move_west(self, units):
-        self.game.active_tank.move(-units, 0).rotation = 270
-        self.game.center_view()
+        if self.game.active_tank.coord().x != 0:
+            self.game.active_tank.move(-units, 0).rotation = 270
+            self.game.center_view()
 
     # move requests
     def request_move_north(self):
