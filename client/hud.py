@@ -96,59 +96,46 @@ class HUD:
                         and (p.type in pt.tank.value or p.type in pt.brick.value)
                         }
 
-            # 1 if max range is reached or a game piece is within range
-            clear_north = 1
-            clear_east  = 1
-            clear_south = 1
-            clear_west  = 1
-
             # search north range for obstacles
             for ny in range(active_y - 1, active_y - max_range - 1, -1):
                 if not self.map_properties[active_x][clip(ny, 0, self.max_y)] % 2:
-                    clear_north = 0
                     break
             # search south range for obstacles
             for sy in range(active_y + 1, active_y + max_range + 1):
                 if not self.map_properties[active_x][clip(sy, 0, self.max_y)] % 2:
-                    clear_south = 0
                     break
             # search east range for obstacles
             for ex in range(active_x + 1, active_x + max_range + 1):
                 if not self.map_properties[clip(ex, 0, self.max_x)][active_y] % 2:
-                    clear_east = 0
                     break
             # search west range for obstacles
             for wx in range(active_x - 1, active_x - max_range - 1, -1):
                 if not self.map_properties[clip(wx, 0, self.max_x)][active_y] % 2:
-                    clear_west = 0
                     break
 
             # search north and south ranges for game pieces (tanks or bricks)
             for py in pieces_y:
-                if py.coord().y in range(active_y - 1, ny - 1, -1):
-                    if py.coord().y >= ny:
+                if py.coord().y in range(active_y - 1, ny, -1):
+                    if py.coord().y > ny:
                         ny = py.coord().y
-                        clear_north = 1
-                elif py.coord().y in range(active_y + 1, sy + 1):
-                    if py.coord().y <= sy:
+                elif py.coord().y in range(active_y + 1, sy):
+                    if py.coord().y < sy:
                         sy = py.coord().y
-                        clear_south = 1
             # search east and west ranges for game pieces (tanks or bricks)
             for px in pieces_x:
-                if px.coord().x in range(active_x + 1, ex + 1):
-                    if px.coord().x <= ex:
+                if px.coord().x in range(active_x + 1, ex):
+                    if px.coord().x < ex:
                         ex = px.coord().x
-                        clear_east = 1
-                elif px.coord().x in range(active_x - 1, wx - 1, -1):
-                    if px.coord().x >= wx:
+                elif px.coord().x in range(active_x - 1, wx, -1):
+                    if px.coord().x > wx:
                         wx = px.coord().x
-                        clear_west = 1
 
             # set positions
-            self.sprites["north"].position = (center.x, (ny + 1.5 - clear_north) * self.tileheight)
-            self.sprites["east"].position = ((ex - 0.5 + clear_east) * self.tilewidth, center.y)
-            self.sprites["south"].position = (center.x, (sy - 0.5 + clear_south) * self.tileheight)
-            self.sprites["west"].position = ((wx + 1.5 - clear_west) * self.tilewidth, center.y)
+            self.sprites["center"].position = center
+            self.sprites["north"].position = (center.x, (ny + 0.5) * self.tileheight)
+            self.sprites["east"].position = ((ex + 0.5) * self.tilewidth, center.y)
+            self.sprites["south"].position = (center.x, (sy + 0.5) * self.tileheight)
+            self.sprites["west"].position = ((wx + 0.5) * self.tilewidth, center.y)
 
     def load_properties(self):
         return swapaxes(const.fourbase_properties, 0, 1).tolist()
@@ -163,8 +150,10 @@ class HUD:
             self.game.window.draw(s)
 
     def draw_range(self):
+        # TODO: Use sprites as an inversion mask for better contrast
         if self.game.state is gs.play:
             # draw range
+            self.game.window.draw(self.sprites["center"])
             self.game.window.draw(self.sprites["north"])
             self.game.window.draw(self.sprites["east"])
             self.game.window.draw(self.sprites["south"])
