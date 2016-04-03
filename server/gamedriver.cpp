@@ -58,10 +58,10 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
 
 #ifdef DEBUG
             std::cerr << "Message Recieved" << std::endl;
-            std::cerr << "  player: " << action.player() << std::endl;
-            std::cerr << "  action: " << static_cast<int>(action.action()) << std::endl;
+            std::cerr << "  player:    " << action.player() << std::endl;
+            std::cerr << "  action:    " << static_cast<int>(action.action()) << std::endl;
             std::cerr << "  direction: " << static_cast<int>(action.direction()) << std::endl;
-            std::cerr << "  piece id: " << action.piece() << std::endl << std::endl;
+            std::cerr << "  piece id:  " << action.piece() << std::endl << std::endl;
 #endif
 
             // perform action
@@ -72,7 +72,7 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
                 //players.send_all();
                 break;
             case protocol::Action::SHOOT :
-                model.attempt_to_shoot(action.piece(), action.direction());
+                model.attempt_to_shoot(action.piece(), action.direction(), action.player());
                 // TODO notify all clients of shot
                 //players.send_all();
                 break;

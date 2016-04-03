@@ -16,7 +16,7 @@
 #include "gamemodelerror.hpp"
 
 // debug flag
-//#define DEBUG
+#define DEBUG
 
 game_model::GameModel::GameModel(std::string map_file_path) {
 #ifdef DEBUG
@@ -38,12 +38,12 @@ game_model::GameModel::GameModel(std::string map_file_path) {
         map_file >> this->map_width;    // map width
         map_file >> this->map_height;   // map height
 #ifdef DEBUG
-        std::cerr << "map name:     " << this->map_name     << std::endl;
-        std::cerr << "map id:       " << this->map_id       << std::endl;
-        std::cerr << "map version:  " << this->map_version  << std::endl;
+        std::cerr << "map name:     " << this->map_name << std::endl;
+        std::cerr << "map id:       " << this->map_id << std::endl;
+        std::cerr << "map version:  " << this->map_version << std::endl;
         std::cerr << "player count: " << this->player_count << std::endl;
-        std::cerr << "map width:    " << this->map_width    << std::endl;
-        std::cerr << "map height:   " << this->map_height   << std::endl;
+        std::cerr << "map width:    " << this->map_width << std::endl;
+        std::cerr << "map height:   " << this->map_height << std::endl;
 #endif
 
         // create game players
@@ -84,7 +84,8 @@ game_model::GameModel::GameModel(std::string map_file_path) {
             // collect the coordinates
             std::sscanf(line.c_str(), "%d,%d;%d,%d;%d,%d", &t1x, &t1y, &t2x, &t2y, &t3x, &t3y);
 #ifdef DEBUG
-            std::cerr << "player " << i << " tank coordinates " << t1x << "," << t1y << "\t" << t2x << "," << t2y << "\t" << t3x << "," << t3y << std::endl;
+            std::cerr << "player " << i << " tank coordinates " << t1x << "," << t1y << "\t" << t2x << "," << t2y <<
+            "\t" << t3x << "," << t3y << std::endl;
 #endif
 
             // create tanks at the coordinates // TODO make them not all commanders
@@ -169,12 +170,22 @@ void game_model::GameModel::attempt_to_move(protocol::PieceID piece_id, protocol
             // move the game piece_id
             this->pieces.at(to_y).at(to_x) = std::move(this->pieces.at(y).at(x));
 
+#ifdef DEBUG
+            std::cerr << "Tank " << piece_id << " moved from (" << x << "," << y << ") to (" << to_x << "," << to_y <<
+            ")." << std::endl;
+#endif
+
             // TODO send appropriate messages
         }
     }
 }
 
-void game_model::GameModel::attempt_to_shoot(protocol::PieceID piece_id, protocol::Direction direction) {
+void game_model::GameModel::attempt_to_shoot(protocol::PieceID piece_id, protocol::Direction direction,
+                                             protocol::PlayerID player) {
+
+    // check that the player has ammo
+    if (this->players.at(player - 1).get_ammo() <= 0)
+        return;
 
     // get coordinates of the tank
     protocol::CoordinateX x;
@@ -221,6 +232,11 @@ void game_model::GameModel::attempt_to_shoot(protocol::PieceID piece_id, protoco
             break;
         }
     }
+
+#ifdef DEBUG
+    std::cerr << "Tank " << piece_id << " fired from (" << x << "," << y << ") at (" << to_x << "," << to_y <<
+    ")." << std::endl;
+#endif
 
     // check the hit location for solid game pieces
     if (this->pieces.at(to_y).at(to_x) && !this->pieces.at(to_y).at(to_x)->is_clear_shot()) {

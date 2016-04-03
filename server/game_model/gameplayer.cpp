@@ -14,5 +14,8 @@ game_model::GamePlayer::GamePlayer() {
 
     // assign id and next_id
     this->id = next_id++;
+
+    // starting ammo count
+    this->ammo = INT32_MAX;
 }
 
