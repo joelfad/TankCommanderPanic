@@ -26,9 +26,14 @@ def validate_map_version(maps_directory, filename, id_, version, map_found):
     map = tmx.TileMap.load(file_path)
     map_version = int(float(map.version))
 
-    # TODO check id
+    #check id information
+    map_id = None;
+    properties = map.properties
+    for map_property in properties:
+        if map_property.name == 'id':
+            map_id = int(float(map_property.value));
     #if map is valid
-    if map_version == version:
+    if map_version == version and map_id == id_:
         if map_found == True:
             raise RuntimeError("Duplicate map files found.")
         else:
