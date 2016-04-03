@@ -124,20 +124,25 @@ class InputHandler:
 
     # shoot requests
     def request_shoot_north(self):
-        print("Shoot UP")
         self.game.active_tank.rotation = 0
+        self.shoot_effect()
 
     def request_shoot_east(self):
-        print("Shoot RIGHT")
         self.game.active_tank.rotation = 90
+        self.shoot_effect()
 
     def request_shoot_south(self):
-        print("Shoot DOWN")
         self.game.active_tank.rotation = 180
+        self.shoot_effect()
 
     def request_shoot_west(self):
-        print("Shoot LEFT")
         self.game.active_tank.rotation = 270
+        self.shoot_effect()
+
+    # helper functions
+    def shoot_effect(self):
+        self.game.window.draw(self.game.active_tank, sf.RenderStates(sf.BLEND_ADD))
+        self.game.window.display()  # TODO: Improve this effect and check ammo before displaying it
 
     # map game state and user input to functions
     key_pressed_actions = \

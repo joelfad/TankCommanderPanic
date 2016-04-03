@@ -3,15 +3,18 @@
 # File: texturehandler.py
 # Author: Joel McFadden
 # Created: March 29, 2016
-# Modified: March 29, 2016
+# Modified: April 3, 2016
 
 import sfml as sf
 
 class TextureHandler:
     GRAPHICS_DIR = "../resources/graphics/"
+    FONTS_DIR = "../resources/fonts/"
+    FONTNAME = "atarcc.ttf"
 
     def __init__(self, image_source, tilewidth, tileheight, tilecount, columns):
         self.load_texture(image_source)
+        self.load_font(self.FONTNAME)
         self.tilewidth = tilewidth
         self.tileheight = tileheight
         self.tilecount = tilecount
@@ -23,6 +26,14 @@ class TextureHandler:
             self.texture = sf.Texture.from_file(self.GRAPHICS_DIR + filename)
         except IOError:
             print("Unable to load battlefield texture from {}".format(filename))
+            raise
+
+    # load font from file
+    def load_font(self, filename):
+        try:
+            self.font = sf.Font.from_file(self.FONTS_DIR + filename)
+        except IOError:
+            print("Unable to load font from {}".format(filename))
             raise
 
     # calculates the location of a tile in the texture file from its id

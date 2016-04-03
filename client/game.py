@@ -3,7 +3,7 @@
 # File: game.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: April 2, 2016
+# Modified: April 3, 2016
 
 import sfml as sf
 from numpy import clip
@@ -21,7 +21,8 @@ TILE_HEIGHT     = 32
 TILES_X         = 15
 TILES_Y         = 11
 RATIO           = 2
-HUD_HEIGHT      = TILE_HEIGHT * RATIO
+# HUD_HEIGHT      = TILE_HEIGHT * RATIO
+HUD_HEIGHT      = 0 # TODO: Draw the HUD in a separate area
 VIEW_WIDTH      = TILE_WIDTH  * TILES_X
 VIEW_HEIGHT     = TILE_HEIGHT * TILES_Y
 WINDOW_WIDTH    = VIEW_WIDTH  * RATIO

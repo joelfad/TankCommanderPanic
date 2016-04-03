@@ -41,6 +41,38 @@ class HUD:
         self.update()
 
     def update(self):
+        self.update_stats()
+        self.update_range()
+
+    def update_stats(self): # TODO: Remove magic numbers in this function
+        # translucent overlay
+        self.stats_box = sf.RectangleShape((960, 32))
+        self.stats_box.position = self.game.window.map_pixel_to_coords((0, 672))
+        self.stats_box.fill_color = sf.Color(0, 0, 0, 160)
+
+        self.stats = []
+
+        # tank health
+        position_x = 0
+        tank_colors = [self.tank_data[t.type][2] for t in self.game.tanks]
+        for i, tank in enumerate(self.game.tanks):
+            t = sf.Text(" {}:{} ".format(self.tank_data[tank.type][0], tank.value))
+            t.font = self.game.texturehandler.font
+            t.character_size = 8
+            t.position = self.game.window.map_pixel_to_coords((position_x, 680))
+            if tank is self.game.active_tank:
+                t.color = self.tank_data[tank.type][2]
+            position_x += t.local_bounds.width * 2
+            self.stats.append(t)
+
+        # ammo
+        a = sf.Text("*{} ".format(self.game.ammo))
+        a.font = self.game.texturehandler.font
+        a.character_size = 8
+        a.position = self.game.window.map_pixel_to_coords((960 - a.local_bounds.width * 2, 680))
+        self.stats.append(a)
+
+    def update_range(self):
         # update range of active tank
         center = self.game.active_tank.position
         active_x, active_y = self.game.active_tank.coord()
@@ -122,9 +154,17 @@ class HUD:
         return swapaxes(const.fourbase_properties, 0, 1).tolist()
 
     def draw(self):
+        self.draw_stats()
+        self.draw_range()
+
+    def draw_stats(self):
+        self.game.window.draw(self.stats_box)
+        for s in self.stats:
+            self.game.window.draw(s)
+
+    def draw_range(self):
         if self.game.state is gs.play:
             # draw range
-            # self.game.window.draw(self.sprites["center"])
             self.game.window.draw(self.sprites["north"])
             self.game.window.draw(self.sprites["east"])
             self.game.window.draw(self.sprites["south"])
