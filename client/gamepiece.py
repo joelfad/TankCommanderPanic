@@ -36,8 +36,8 @@ class GamePiece(Sprite):
 
     # return battlefield map coordinates of piece
     def coord(self):
-        return ((self.position.x - self.origin.x) / self.texture_rectangle.width,
-                (self.position.y - self.origin.y) / self.texture_rectangle.height)
+        return (int((self.position.x - self.origin.x) / self.texture_rectangle.width),
+                int((self.position.y - self.origin.y) / self.texture_rectangle.height))
 
 # TODO: Use this to set the sprite based on GamePiece value
 class PieceType(Enum):
