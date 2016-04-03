@@ -3,7 +3,7 @@
 # File: inputhandler.py
 # Author: Joel McFadden
 # Created: March 26, 2016
-# Modified: April 1, 2016
+# Modified: April 2, 2016
 
 import sfml as sf
 from gamestate import GameState as gs
@@ -28,6 +28,7 @@ class InputHandler:
                 # call mapped function
                 if (self.game.state, event.code) in self.key_pressed_actions:
                     self.key_pressed_actions[(self.game.state, event.code)](self)
+                    self.game.hud.update()
 
     # toggle pan
     def set_pan_on(self):

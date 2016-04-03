@@ -3,7 +3,7 @@
 # File: game.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: April 1, 2016
+# Modified: April 2, 2016
 
 import sfml as sf
 from numpy import clip
@@ -33,7 +33,6 @@ class Game:
         self.state = gs.wait
         self.window = self.create_window()
         self.battlefield = BattleField(self)
-        self.hud = HUD(self)
         self.inputhandler = InputHandler(self)
         # self.messagehandler = MessageHandler(self)
 
@@ -99,4 +98,5 @@ class Game:
         self.ammo = const.ammo # TODO: Receive this value from Event Message (Update Ammo)
         self.tanks = [self.battlefield.get_piece(id_) for id_ in const.tank_piece_id] # TODO: Receive this value from Game State Message
         self.active_tank = self.tanks[0]
+        self.hud = HUD(self)
         self.state = gs.play
