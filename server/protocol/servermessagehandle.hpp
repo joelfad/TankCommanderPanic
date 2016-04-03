@@ -15,7 +15,7 @@ namespace protocol {
 class ServerMessageHandle {
     public:
         ServerMessageHandle();
-        ~ServerMessageHandle() noexcept {}
+        virtual ~ServerMessageHandle() noexcept {}
 
         virtual Message to_msg() const = 0;
         /*  return message containing the fields specified by this handle */
