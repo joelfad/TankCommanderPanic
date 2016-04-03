@@ -102,7 +102,7 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
                         protocol::EventMessageHandle win_msg;
                         win_msg.event_type(protocol::EventType::GAME_OVER);
                         win_msg.value(protocol::EndGameState::WIN);
-                        players.back()->send(win_msg.to_msg());
+                        players.begin()->second->send(win_msg.to_msg());
                     }
                     else if (players.size() > 1) {
                         // TODO notify all clients of update
