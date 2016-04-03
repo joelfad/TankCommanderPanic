@@ -3,7 +3,7 @@
 # File: inputhandler.py
 # Author: Joel McFadden
 # Created: March 26, 2016
-# Modified: March 31, 2016
+# Modified: April 3, 2016
 
 import sfml as sf
 from gamestate import GameState as gs
@@ -12,70 +12,102 @@ class InputHandler:
 
     def __init__(self, game):
         self.game = game
+        self.pan_step_x = game.battlefield.tilewidth
+        self.pan_step_y = game.battlefield.tileheight
 
     def check_for_input(self):
         for event in self.game.window.events:
             if type(event) is sf.CloseEvent:
                 self.game.window.close()
             if type(event) is sf.KeyEvent and event.pressed:
+                # quit if ctrl+Q is pressed
+                if sf.Keyboard.is_key_pressed(sf.Keyboard.Q) and \
+                   (sf.Keyboard.is_key_pressed(sf.Keyboard.R_CONTROL) or \
+                   sf.Keyboard.is_key_pressed(sf.Keyboard.L_CONTROL)):
+                    self.game.window.close()
                 # call mapped function
-                if (self.game.state, event.code) in self.key_actions:
-                    self.key_actions[(self.game.state, event.code)](self)
+                if (self.game.state, event.code) in self.key_pressed_actions:
+                    self.key_pressed_actions[(self.game.state, event.code)](self)
+                    self.game.hud.update()
 
     # toggle pan
     def set_pan_on(self):
         self.game.state = gs.pan
-        print("-- Pan ON --")
 
     def set_pan_off(self):
         self.game.state = gs.play
-        print("-- Pan OFF --")
+        self.game.center_view()
 
     # pan the map
     def pan_north(self):
-        print("Pan UP")
+        self.game.pan_view(0, -self.pan_step_y)
 
     def pan_east(self):
-        print("Pan RIGHT")
+        self.game.pan_view(self.pan_step_x, 0)
 
     def pan_south(self):
-        print("Pan DOWN")
+        self.game.pan_view(0, self.pan_step_y)
 
     def pan_west(self):
-        print("Pan LEFT")
+        self.game.pan_view(-self.pan_step_x, 0)
 
     # switch tanks
     def next_tank(self):
         i = self.game.tanks.index(self.game.active_tank)
         self.game.active_tank = self.game.tanks[(i + 1) % len(self.game.tanks)]
+        self.game.center_view()
 
     def set_tank_1(self):
         self.game.active_tank = self.game.tanks[0]
+        if self.game.state is gs.pan:
+            self.set_pan_off()
+        else:
+            self.game.center_view()
 
     def set_tank_2(self):
         if len(self.game.tanks) > 1:
             self.game.active_tank = self.game.tanks[1]
+            if self.game.state is gs.pan:
+                self.set_pan_off()
+            else:
+                self.game.center_view()
 
     def set_tank_3(self):
         if len(self.game.tanks) > 2:
             self.game.active_tank = self.game.tanks[2]
+            if self.game.state is gs.pan:
+                self.set_pan_off()
+            else:
+                self.game.center_view()
 
     def set_tank_4(self):
         if len(self.game.tanks) > 3:
             self.game.active_tank = self.game.tanks[3]
+            if self.game.state is gs.pan:
+                self.set_pan_off()
+            else:
+                self.game.center_view()
 
     # move active tank
     def move_north(self, units):
-        self.game.active_tank.move(0, -units).rotation = 0
+        if self.game.active_tank.coord().y != 0:
+            self.game.active_tank.move(0, -units).rotation = 0
+            self.game.center_view()
 
     def move_east(self, units):
-        self.game.active_tank.move(units, 0).rotation = 90
+        if self.game.active_tank.coord().x != self.game.battlefield.map_tiles_x - 1:
+            self.game.active_tank.move(units, 0).rotation = 90
+            self.game.center_view()
 
     def move_south(self, units):
-        self.game.active_tank.move(0, units).rotation = 180
+        if self.game.active_tank.coord().y != self.game.battlefield.map_tiles_y - 1:
+            self.game.active_tank.move(0, units).rotation = 180
+            self.game.center_view()
 
     def move_west(self, units):
-        self.game.active_tank.move(-units, 0).rotation = 270
+        if self.game.active_tank.coord().x != 0:
+            self.game.active_tank.move(-units, 0).rotation = 270
+            self.game.center_view()
 
     # move requests
     def request_move_north(self):
@@ -92,27 +124,33 @@ class InputHandler:
 
     # shoot requests
     def request_shoot_north(self):
-        print("Shoot UP")
         self.game.active_tank.rotation = 0
+        self.shoot_effect()
 
     def request_shoot_east(self):
-        print("Shoot RIGHT")
         self.game.active_tank.rotation = 90
+        self.shoot_effect()
 
     def request_shoot_south(self):
-        print("Shoot DOWN")
         self.game.active_tank.rotation = 180
+        self.shoot_effect()
 
     def request_shoot_west(self):
-        print("Shoot LEFT")
         self.game.active_tank.rotation = 270
+        self.shoot_effect()
+
+    # helper functions
+    def shoot_effect(self):
+        self.game.window.draw(self.game.active_tank, sf.RenderStates(sf.BLEND_ADD))
+        self.game.window.display()  # TODO: Improve this effect and check ammo before displaying it
 
     # map game state and user input to functions
-    key_actions = \
+    key_pressed_actions = \
     {
         # toggle pan
         (gs.play, sf.Keyboard.TAB):     set_pan_on,
         (gs.pan, sf.Keyboard.TAB):      set_pan_off,
+        (gs.pan, sf.Keyboard.ESCAPE):   set_pan_off,
 
         # pan the map
         (gs.pan, sf.Keyboard.UP):       pan_north,
@@ -130,6 +168,11 @@ class InputHandler:
         (gs.play, sf.Keyboard.NUM2):    set_tank_2,
         (gs.play, sf.Keyboard.NUM3):    set_tank_3,
         (gs.play, sf.Keyboard.NUM4):    set_tank_4,
+        (gs.pan, sf.Keyboard.SPACE):    set_pan_off,
+        (gs.pan, sf.Keyboard.NUM1):     set_tank_1,
+        (gs.pan, sf.Keyboard.NUM2):     set_tank_2,
+        (gs.pan, sf.Keyboard.NUM3):     set_tank_3,
+        (gs.pan, sf.Keyboard.NUM4):     set_tank_4,
 
         # move requests
         (gs.play, sf.Keyboard.UP):      request_move_north,
