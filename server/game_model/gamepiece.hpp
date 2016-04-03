@@ -23,7 +23,7 @@ public:
     virtual void collide(TankPiece &tank) = 0;
     /* react to being collided into by tank (after occupying the same square) */
 
-    virtual void shot(int damage) = 0;
+    virtual int shot(int damage) = 0;
     /* react to taking damage */
 
     auto get_id() const noexcept -> protocol::PieceID { return id; }

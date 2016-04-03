@@ -24,9 +24,11 @@ void game_model::GamePiece::collide(TankPiece &tank) {
         throw GameModelEventError("collision with non-collide-able (not clear-drive) game piece");
 }
 
-void game_model::GamePiece::shot(int damage) {
+int game_model::GamePiece::shot(int damage) {
 
     // if this was shot, it had better not be clear to shoot through
     if (this->is_clear_shot())
         throw GameModelEventError("non-shoot-able (clear-shot) game piece was shot");
+
+    return 0;
 }

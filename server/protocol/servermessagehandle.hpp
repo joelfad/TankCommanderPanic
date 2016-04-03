@@ -21,6 +21,7 @@ class ServerMessageHandle {
         /*  return message containing the fields specified by this handle */
 
     private:
+
 };
 
 }

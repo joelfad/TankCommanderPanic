@@ -15,6 +15,7 @@
 #include "gamepiece.hpp"
 #include "gameplayer.hpp"
 #include "../protocol/protocoldefs.hpp"
+#include "../protocol/message.hpp"
 
 namespace game_model {
 
@@ -28,8 +29,8 @@ public:
     template<class T>
     using map_vector = std::vector<std::vector<std::unique_ptr<T>>>;
 
-    void attempt_to_move(protocol::PieceID piece_id, protocol::Direction direction);
-    void attempt_to_shoot(protocol::PieceID piece_id, protocol::Direction direction, protocol::PlayerID player);
+    std::vector<protocol::Message> attempt_to_move(protocol::PieceID piece_id, protocol::Direction direction);
+    std::vector<protocol::Message> attempt_to_shoot(protocol::PieceID piece_id, protocol::Direction direction, protocol::PlayerID player);
     /* handle game actions */
 
 private:

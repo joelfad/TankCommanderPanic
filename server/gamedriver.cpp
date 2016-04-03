@@ -64,32 +64,45 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
             std::cerr << "  piece id:  " << action.piece() << std::endl << std::endl;
 #endif
 
+            // list of messages to send
+            std::vector<protocol::Message> to_send;
+
             // perform action
             switch (action.action()) {
-            case protocol::Action::MOVE :
-                model.attempt_to_move(action.piece(), action.direction());
-                // TODO notify all clients of move
-                //players.send_all();
-                break;
-            case protocol::Action::SHOOT :
-                model.attempt_to_shoot(action.piece(), action.direction(), action.player());
-                // TODO notify all clients of shot
-                //players.send_all();
-                break;
-            case protocol::Action::QUIT :
-                players[player_id]->disconnect();
-                players.erase(player_id);
-                if (players.size() == 1) {
-                    // TODO send win message
-                    //players.back()->send();
-                }
-                else if (players.size() > 1) {
-                    // TODO notify all clients of update
-                    //players.send_all();
-                }
-                break;
-            default:
-                break;
+                case protocol::Action::MOVE :
+
+                    // attempt move in the model
+                    to_send = model.attempt_to_move(action.piece(), action.direction());
+
+                    // notify all clients of move
+                    for (auto msg : to_send)
+                        players.send_all(msg);
+
+                    break;
+                case protocol::Action::SHOOT :
+
+                    // attempt shot in the model
+                    to_send = model.attempt_to_shoot(action.piece(), action.direction(), action.player());
+
+                    // notify all clients of shot
+                    for (auto msg : to_send)
+                        players.send_all(msg);
+
+                    break;
+                case protocol::Action::QUIT :
+                    players[player_id]->disconnect();
+                    players.erase(player_id);
+                    if (players.size() == 1) {
+                        // TODO send win message
+                        //players.back()->send();
+                    }
+                    else if (players.size() > 1) {
+                        // TODO notify all clients of update
+                        //players.send_all();
+                    }
+                    break;
+                default:
+                    break;
             }
         }
 

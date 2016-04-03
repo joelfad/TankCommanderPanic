@@ -14,6 +14,7 @@
 #include "gamemodel.hpp"
 #include "tankpiece.hpp"
 #include "gamemodelerror.hpp"
+#include "../protocol/eventmessagehandle.hpp"
 
 // debug flag
 #define DEBUG
@@ -129,7 +130,7 @@ game_model::GameModel::GameModel(std::string map_file_path) {
     }
 }
 
-void game_model::GameModel::attempt_to_move(protocol::PieceID piece_id, protocol::Direction direction) {
+std::vector<protocol::Message> game_model::GameModel::attempt_to_move(protocol::PieceID piece_id, protocol::Direction direction) {
 
     // get coordinates of the tank
     protocol::CoordinateX x;
@@ -161,6 +162,9 @@ void game_model::GameModel::attempt_to_move(protocol::PieceID piece_id, protocol
             break;
     }
 
+    // list of messages to send
+    std::vector<protocol::Message> to_send;
+
     // check the map tile at the target coordinates
     if (this->map.at(to_y).at(to_x)->is_clear_drive()) {
 
@@ -175,17 +179,28 @@ void game_model::GameModel::attempt_to_move(protocol::PieceID piece_id, protocol
             ")." << std::endl;
 #endif
 
-            // TODO send appropriate messages
+            // compose move message
+            auto move_message = protocol::EventMessageHandle();
+            move_message.event_type(protocol::EventType::MOVE_GAME_PIECE);
+            move_message.direction(direction);
+            move_message.value(1);
+            move_message.piece_id(piece_id);
+            to_send.push_back(move_message.to_msg());
         }
     }
+
+    return to_send;
 }
 
-void game_model::GameModel::attempt_to_shoot(protocol::PieceID piece_id, protocol::Direction direction,
+std::vector<protocol::Message> game_model::GameModel::attempt_to_shoot(protocol::PieceID piece_id, protocol::Direction direction,
                                              protocol::PlayerID player) {
+
+    // list of messages to send
+    std::vector<protocol::Message> to_send;
 
     // check that the player has ammo
     if (this->players.at(player - 1).get_ammo() <= 0)
-        return;
+        return to_send;
 
     // get coordinates of the tank
     protocol::CoordinateX x;
@@ -238,14 +253,33 @@ void game_model::GameModel::attempt_to_shoot(protocol::PieceID piece_id, protoco
     ")." << std::endl;
 #endif
 
+    // compose move message
+    auto move_message = protocol::EventMessageHandle();
+    move_message.event_type(protocol::EventType::MOVE_GAME_PIECE);
+    move_message.direction(direction);
+    move_message.value(0);
+    move_message.piece_id(piece_id);
+    to_send.push_back(move_message.to_msg());
+
     // check the hit location for solid game pieces
     if (this->pieces.at(to_y).at(to_x) && !this->pieces.at(to_y).at(to_x)->is_clear_shot()) {
 
         // damage the target
-        this->pieces.at(to_y).at(to_x)->shot(power);
+        auto new_health = this->pieces.at(to_y).at(to_x)->shot(power);
 
-        // TODO send appropriate messages
+        // id of target piece
+        auto target_id = this->pieces.at(to_y).at(to_x)->get_id();
+
+        // compose damage message
+        auto damage_message = protocol::EventMessageHandle();
+        damage_message.event_type(protocol::EventType::UPDATE_HEALTH);
+        damage_message.direction(protocol::Direction::NONE);
+        damage_message.value(new_health);
+        damage_message.piece_id(target_id);
+        to_send.push_back(damage_message.to_msg());
     }
+
+    return to_send;
 }
 
 void game_model::GameModel::game_piece_coordinates(protocol::PieceID id, protocol::CoordinateX& x,
