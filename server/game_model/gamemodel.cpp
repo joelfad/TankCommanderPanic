@@ -5,11 +5,12 @@
  * Description: This class models the state of the game.
  */
 
+// c++ standard libraries
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <string>
 
+// project headers
 #include "gamemodel.hpp"
 #include "tankpiece.hpp"
 #include "gamemodelerror.hpp"
@@ -129,10 +130,15 @@ game_model::GameModel::GameModel(std::string map_file_path) {
 
 void game_model::GameModel::attempt_to_move(protocol::PieceID piece_id, protocol::Direction direction) {
 
-    // get coordinates of the piece_id
+    // get coordinates of the tank
     protocol::CoordinateX x;
     protocol::CoordinateY y;
     game_piece_coordinates(piece_id, x, y);
+
+    // check that the piece_id is a tank
+    auto type = this->pieces.at(y).at(x)->get_piece_type();
+    if (type < protocol::PieceType::RED_COMMANDER || type > protocol::PieceType::GREEN_NEGOTIATOR)
+        throw GameModelEventError("Only tanks can drive.");
 
     // get target coordinates
     protocol::CoordinateX to_x = x;
@@ -154,11 +160,6 @@ void game_model::GameModel::attempt_to_move(protocol::PieceID piece_id, protocol
             break;
     }
 
-    // check that the piece_id is a tank
-    auto type = this->pieces.at(y).at(x)->get_piece_type();
-    if (type < protocol::PieceType::RED_COMMANDER || type > protocol::PieceType::GREEN_NEGOTIATOR)
-        throw GameModelEventError("Only tanks can drive.");
-
     // check the map tile at the target coordinates
     if (this->map.at(to_y).at(to_x)->is_clear_drive()) {
 
@@ -173,16 +174,69 @@ void game_model::GameModel::attempt_to_move(protocol::PieceID piece_id, protocol
     }
 }
 
-void game_model::GameModel::attempt_to_shoot(protocol::PieceID piece, protocol::Direction direction) {
+void game_model::GameModel::attempt_to_shoot(protocol::PieceID piece_id, protocol::Direction direction) {
 
+    // get coordinates of the tank
+    protocol::CoordinateX x;
+    protocol::CoordinateY y;
+    game_piece_coordinates(piece_id, x, y);
+
+    // check that the piece_id is a tank
+    auto type = this->pieces.at(y).at(x)->get_piece_type();
+    if (type < protocol::PieceType::RED_COMMANDER || type > protocol::PieceType::GREEN_NEGOTIATOR)
+        throw GameModelEventError("Only tanks can drive.");
+
+    // get range of the tank
+    auto model = protocol::tank_model(type);
+    auto range = TankPiece::get_range(model);
+
+    // get power of the tank
+    auto power = TankPiece::get_power(model);
+
+    // find landing zone
+    protocol::CoordinateX to_x = x;
+    protocol::CoordinateY to_y = y;
+    for (int i = 0; i < range; i++) {
+        switch (direction) {
+            case protocol::Direction::NORTH :
+                to_y--;
+                break;
+            case protocol::Direction::EAST :
+                to_x++;
+                break;
+            case protocol::Direction::SOUTH :
+                to_y++;
+                break;
+            case protocol::Direction::WEST :
+                to_x--;
+                break;
+            default:
+                break;
+        }
+
+        // check the target coordinates for solid map tiles and game pieces
+        if (!this->map.at(to_y).at(to_x)->is_clear_shot() ||
+            (this->pieces.at(to_y).at(to_x) && !this->pieces.at(to_y).at(to_x)->is_clear_shot())) {
+            // HIT SOMETHING!
+            break;
+        }
+    }
+
+    // check the hit location for solid game pieces
+    if (this->pieces.at(to_y).at(to_x) && !this->pieces.at(to_y).at(to_x)->is_clear_shot()) {
+
+        // damage the target
+        this->pieces.at(to_y).at(to_x)->shot(power);
+
+        // TODO send appropriate messages
+    }
 }
 
 void game_model::GameModel::game_piece_coordinates(protocol::PieceID id, protocol::CoordinateX& x,
                                                    protocol::CoordinateY& y) {
     for (y = 0; y < this->pieces.size(); y++) {
-        auto row = this->pieces.at(y);
-        for (x = 0; x < row.size(); x++) {
-            if (row.at(x) && row.at(x)->get_id() == id)
+        for (x = 0; x < this->pieces.at(y).size(); x++) {
+            if (this->pieces.at(y).at(x) && this->pieces.at(y).at(x)->get_id() == id)
                 return;
         }
     }

@@ -29,7 +29,7 @@ public:
     using map_vector = std::vector<std::vector<std::unique_ptr<T>>>;
 
     void attempt_to_move(protocol::PieceID piece_id, protocol::Direction direction);
-    void attempt_to_shoot(protocol::PieceID piece, protocol::Direction direction);
+    void attempt_to_shoot(protocol::PieceID piece_id, protocol::Direction direction);
     /* handle game actions */
 
 private:
