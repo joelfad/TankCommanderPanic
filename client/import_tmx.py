@@ -11,7 +11,7 @@ def load_map_file(id_, version):
     map_file = None
     for file_name in os.listdir(maps_directory):
         if file_name.startswith(filepathbeginning) and file_name.endswith(filepathend):
-            map_found = validate_map_version(maps_directory, file_name, map_found)
+            map_found = validate_map_version(maps_directory, file_name, id_, version, map_found)
             if map_found == True:
                 map_file = file_name
 
@@ -20,19 +20,22 @@ def load_map_file(id_, version):
     else:
         read_map_file(map_file)
 
-def validate_map_version(maps_directory, filename, map_found):
+def validate_map_version(maps_directory, filename, id_, version, map_found):
     #check version information
     file_path = maps_directory + '/' + filename
     map = tmx.TileMap.load(file_path)
+    map_version = int(float(map.version))
 
-    # TODO check id and version
+    # TODO check id
     #if map is valid
-    if map_found == True:
-        raise RuntimeError("Duplicate map files found.")
-    else:
-        return True;
+    if map_version == version:
+        if map_found == True:
+            raise RuntimeError("Duplicate map files found.")
+        else:
+            return True;
     #if map is invalid
-    return False;
+    else:
+        return False;
 
 def read_map_file(mapfile):
 
