@@ -121,7 +121,7 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
 
 void send_envelopes(std::vector<MessageEnvelope> to_send, PlayerClientList& players, protocol::PlayerID actor) {
 
-    for (auto envelope: to_send) {
+    for (auto& envelope: to_send) {
         switch (envelope.get_recipient()) {
             case Recipient::ALL :
                 players.send_all(envelope.get_message());

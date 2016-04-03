@@ -226,8 +226,12 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
 
     // check that the piece_id is a tank
     auto type = this->pieces.at(y).at(x)->get_piece_type();
-    if (type < protocol::PieceType::RED_COMMANDER || type > protocol::PieceType::GREEN_NEGOTIATOR)
-        throw GameModelEventError("Only tanks can drive.");
+    if (type < protocol::PieceType::RED_COMMANDER || type > protocol::PieceType::GREEN_NEGOTIATOR) {
+        std::cerr << "ERROR: non-tank gamepiece tried to move." << std::endl;
+        return to_send;
+    }
+
+    // TODO check that the player owns the tank
 
     // get range of the tank
     auto model = protocol::tank_model(type);
@@ -270,7 +274,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     ")." << std::endl;
 #endif
 
-    // compose move message
+    // compose move message -- so tank point in the correct direction on everyone's screen
     auto move_message = protocol::EventMessageHandle();
     move_message.event_type(protocol::EventType::MOVE_GAME_PIECE);
     move_message.direction(direction);
@@ -278,7 +282,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     move_message.piece_id(piece_id);
     to_send.push_back(MessageEnvelope(Recipient::ALL, move_message.to_msg()));
 
-    // compose ammo message
+    // compose ammo message -- sent only to the shooter (actor)
     auto ammo_message = protocol::EventMessageHandle();
     ammo_message.event_type(protocol::EventType::UPDATE_AMMO);
     ammo_message.direction(protocol::Direction::NONE);
@@ -295,13 +299,20 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
         // id of target piece
         auto target_id = this->pieces.at(to_y).at(to_x)->get_id();
 
-        // compose damage message
-        auto damage_message = protocol::EventMessageHandle();
-        damage_message.event_type(protocol::EventType::UPDATE_HEALTH);
-        damage_message.direction(protocol::Direction::NONE);
-        damage_message.value(new_health);
-        damage_message.piece_id(target_id);
-        to_send.push_back(MessageEnvelope(Recipient::ALL, damage_message.to_msg()));
+        // check if the target was destroyed
+        if (new_health <= 0) {
+
+            // TODO compose destroy message
+        } else {
+
+            // compose damage message
+            auto damage_message = protocol::EventMessageHandle();
+            damage_message.event_type(protocol::EventType::UPDATE_HEALTH);
+            damage_message.direction(protocol::Direction::NONE);
+            damage_message.value(new_health);
+            damage_message.piece_id(target_id);
+            to_send.push_back(MessageEnvelope(Recipient::ALL, damage_message.to_msg()));
+        }
     }
 
     return to_send;
