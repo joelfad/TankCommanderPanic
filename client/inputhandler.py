@@ -3,7 +3,7 @@
 # File: inputhandler.py
 # Author: Joel McFadden
 # Created: March 26, 2016
-# Modified: April 1, 2016
+# Modified: April 3, 2016
 
 import sfml as sf
 from gamestate import GameState as gs
@@ -28,6 +28,7 @@ class InputHandler:
                 # call mapped function
                 if (self.game.state, event.code) in self.key_pressed_actions:
                     self.key_pressed_actions[(self.game.state, event.code)](self)
+                    self.game.hud.update()
 
     # toggle pan
     def set_pan_on(self):
@@ -89,20 +90,24 @@ class InputHandler:
 
     # move active tank
     def move_north(self, units):
-        self.game.active_tank.move(0, -units).rotation = 0
-        self.game.center_view()
+        if self.game.active_tank.coord().y != 0:
+            self.game.active_tank.move(0, -units).rotation = 0
+            self.game.center_view()
 
     def move_east(self, units):
-        self.game.active_tank.move(units, 0).rotation = 90
-        self.game.center_view()
+        if self.game.active_tank.coord().x != self.game.battlefield.map_tiles_x - 1:
+            self.game.active_tank.move(units, 0).rotation = 90
+            self.game.center_view()
 
     def move_south(self, units):
-        self.game.active_tank.move(0, units).rotation = 180
-        self.game.center_view()
+        if self.game.active_tank.coord().y != self.game.battlefield.map_tiles_y - 1:
+            self.game.active_tank.move(0, units).rotation = 180
+            self.game.center_view()
 
     def move_west(self, units):
-        self.game.active_tank.move(-units, 0).rotation = 270
-        self.game.center_view()
+        if self.game.active_tank.coord().x != 0:
+            self.game.active_tank.move(-units, 0).rotation = 270
+            self.game.center_view()
 
     # move requests
     def request_move_north(self):
@@ -119,20 +124,25 @@ class InputHandler:
 
     # shoot requests
     def request_shoot_north(self):
-        print("Shoot UP")
         self.game.active_tank.rotation = 0
+        self.shoot_effect()
 
     def request_shoot_east(self):
-        print("Shoot RIGHT")
         self.game.active_tank.rotation = 90
+        self.shoot_effect()
 
     def request_shoot_south(self):
-        print("Shoot DOWN")
         self.game.active_tank.rotation = 180
+        self.shoot_effect()
 
     def request_shoot_west(self):
-        print("Shoot LEFT")
         self.game.active_tank.rotation = 270
+        self.shoot_effect()
+
+    # helper functions
+    def shoot_effect(self):
+        self.game.window.draw(self.game.active_tank, sf.RenderStates(sf.BLEND_ADD))
+        self.game.window.display()  # TODO: Improve this effect and check ammo before displaying it
 
     # map game state and user input to functions
     key_pressed_actions = \
