@@ -48,10 +48,10 @@ sprite_map = \
     31: 550,    # green negotiator
 }
 
-COMMANDER_RANGE     = 5 # TODO: Get correct value
-INTERCEPTOR_RANGE   = 8 # TODO: Get correct value
-ELIMINATOR_RANGE    = 3 # TODO: Get correct value
-NEGOTIATOR_RANGE    = 1 # TODO: Get correct value
+COMMANDER_RANGE     = 6
+INTERCEPTOR_RANGE   = 6
+ELIMINATOR_RANGE    = 3
+NEGOTIATOR_RANGE    = 12
 
 # piece_type mapped to tank data
 tank_map = \
@@ -79,12 +79,12 @@ tank_map = \
 
 hud_sprites = \
 {
-    "range_n": 510,
-    "range_e": 531,
-    "range_s": 530,
-    "range_w": 509,
-    "center":  488,
-    "pan":     489,
+    "north":    510,
+    "east":     531,
+    "south":    530,
+    "west":     509,
+    "center":   488,
+    "pan":      489,
 }
 
 #############
