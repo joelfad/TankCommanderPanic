@@ -11,6 +11,7 @@ Description:  The main game logic driver.
 #include "messageenvelope.hpp"
 #include "protocol/actionmessagehandle.hpp"
 #include "game_model/gamemodel.hpp"
+#include "protocol/eventmessagehandle.hpp"
 
 // c++ standard libraries
 #include <chrono>
@@ -98,7 +99,10 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
                     players.erase(player_id);
                     if (players.size() == 1) {
                         // TODO send win message
-                        //players.back()->send();
+                        protocol::EventMessageHandle win_msg;
+                        win_msg.event_type(protocol::EventType::GAME_OVER);
+                        win_msg.value(protocol::EndGameState::WIN);
+                        players.back()->send(win_msg.to_msg());
                     }
                     else if (players.size() > 1) {
                         // TODO notify all clients of update
