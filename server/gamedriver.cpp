@@ -56,7 +56,7 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
             auto action = protocol::ActionMessageHandle::make_from_msg(*message);
             auto player_id = action.player();
 
-            // perfrom action
+            // perform action
             switch (action.action()) {
             case protocol::Action::MOVE :
                 model.attempt_to_move(action.piece(), action.direction());
