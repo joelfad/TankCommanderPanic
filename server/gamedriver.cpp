@@ -35,11 +35,14 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
     PlayerClientList players;
 
     // wait for clients to connect
-    while (players.size() < model.get_player_count()) {
+    auto game_player = model.get_players().cbegin();
+    while (true) {
         PlayerSpool::maybe_item client = client_spool.get();
         if (client) {
-            players.push_back(*client);
+            players.push_back(game_player->second.get_id(), *client);
             //client->send(); // TODO send welcome message (with player ID etc.)
+            game_player++;
+            if (game_player == model.get_players().cend()) break;
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));

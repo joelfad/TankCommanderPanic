@@ -32,8 +32,11 @@ public:
     using map_vector = std::vector<std::vector<std::unique_ptr<T>>>;
 
     std::vector<MessageEnvelope> attempt_to_move(protocol::PieceID piece_id, protocol::Direction direction);
-    std::vector<MessageEnvelope> attempt_to_shoot(protocol::PieceID piece_id, protocol::Direction direction, protocol::PlayerID player_id);
+    std::vector<MessageEnvelope> attempt_to_shoot(protocol::PieceID piece_id, protocol::Direction direction,
+                                                  protocol::PlayerID player_id);
     /* handle game actions */
+
+    auto get_players() const noexcept -> const std::map<protocol::PlayerID, GamePlayer>& { return this->players; }
 
 private:
 

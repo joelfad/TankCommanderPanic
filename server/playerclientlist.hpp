@@ -9,24 +9,25 @@ Description:  List of game clients.
 #define PLAYERCLIENTLIST_HPP
 
 #include "playerclient.hpp"
+#include "protocol/protocoldefs.hpp"
 
 #include <vector>
 
 class PlayerClientList {
     public:
-        using size_type = std::vector<PlayerClient::Ptr>::size_type;
-        using iterator = std::vector<PlayerClient::Ptr>::iterator;
-        using const_iterator = std::vector<PlayerClient::Ptr>::const_iterator;
+        using size_type = std::map<protocol::PlayerID, PlayerClient::Ptr>::size_type;
+        using iterator = std::map<protocol::PlayerID, PlayerClient::Ptr>::iterator;
+        using const_iterator = std::map<protocol::PlayerID, PlayerClient::Ptr>::const_iterator;
 
         auto size() const noexcept -> size_type;
 
         auto count() const noexcept -> int;
 
-        void push_back(const PlayerClient::Ptr& player);
+        void push_back(protocol::PlayerID player_id, const PlayerClient::Ptr& player);
 
-        void erase(int index);
+        void erase(protocol::PlayerID player_id);
 
-        void erase(const_iterator position);
+        void erase(const_iterator index);
 
         void send_all(const protocol::Message& msg) const;
 
@@ -38,15 +39,11 @@ class PlayerClientList {
 
         auto cend() const -> const_iterator;
 
-        auto back() -> PlayerClient::Ptr&;
-
-        auto back() const -> PlayerClient::Ptr const &;
-
-        auto operator[] (int index) -> PlayerClient::Ptr&;
-        auto operator[] (int index) const -> PlayerClient::Ptr const &;
+        auto operator[] (protocol::PlayerID&& player_id) -> PlayerClient::Ptr&;
+        auto operator[] (const protocol::PlayerID& player_id) -> PlayerClient::Ptr&;
 
     private:
-        std::vector<PlayerClient::Ptr> players;
+        std::map<protocol::PlayerID, PlayerClient::Ptr> players;
 };
 
 #endif // PLAYERCLIENTLIST_HPP
