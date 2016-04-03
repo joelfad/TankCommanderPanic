@@ -8,6 +8,7 @@ Description:  The main game logic driver.
 // project headers
 #include "playerclientlist.hpp"
 #include "gamedriver.hpp"
+#include "messageenvelope.hpp"
 #include "protocol/actionmessagehandle.hpp"
 #include "game_model/gamemodel.hpp"
 
@@ -17,6 +18,8 @@ Description:  The main game logic driver.
 #include <iostream>
 
 #define DEBUG
+
+void send_envelopes(std::vector<MessageEnvelope> to_send, PlayerClientList& players, protocol::PlayerID actor);
 
 /*
 runs the game
@@ -65,7 +68,7 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
 #endif
 
             // list of messages to send
-            std::vector<protocol::Message> to_send;
+            std::vector<MessageEnvelope> to_send;
 
             // perform action
             switch (action.action()) {
@@ -75,8 +78,7 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
                     to_send = model.attempt_to_move(action.piece(), action.direction());
 
                     // notify all clients of move
-                    for (auto msg : to_send)
-                        players.send_all(msg);
+                    send_envelopes(to_send, players, player_id);
 
                     break;
                 case protocol::Action::SHOOT :
@@ -85,8 +87,7 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
                     to_send = model.attempt_to_shoot(action.piece(), action.direction(), action.player());
 
                     // notify all clients of shot
-                    for (auto msg : to_send)
-                        players.send_all(msg);
+                    send_envelopes(to_send, players, player_id);
 
                     break;
                 case protocol::Action::QUIT :
@@ -108,5 +109,19 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
 
         // wait for next game tick
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+}
+
+void send_envelopes(std::vector<MessageEnvelope> to_send, PlayerClientList& players, protocol::PlayerID actor) {
+
+    for (auto envelope: to_send) {
+        switch (envelope.get_recipient()) {
+            case Recipient::ALL :
+                players.send_all(envelope.get_message());
+                break;
+            case Recipient::ACTOR :
+                // TODO send to correct client
+                break;
+        }
     }
 }

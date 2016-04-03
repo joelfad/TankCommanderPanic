@@ -19,23 +19,24 @@ public:
 
     GamePlayer();
 
-    const std::string &get_name() const noexcept { return name; }
+    const std::string &get_name() const noexcept { return this->name; }
     void set_name(std::string name) { this->name = name; }
     /* display name of player */
 
-    auto get_id() const noexcept { return id; }
+    auto get_id() const noexcept { return this->id; }
 
     auto get_ammo() const noexcept { return ammo; }
-    void set_ammo(int ammo) { GamePlayer::ammo = ammo; }
+    void set_ammo(int ammo) { this->ammo = ammo; }
+    void change_ammo(int diff) { this->ammo += diff; }
     /* ammo is shared for the player's tanks */
 
-    auto get_tank_count() const noexcept { return tank_count; }
+    auto get_tank_count() const noexcept { return this->tank_count; }
     /* number of tanks */
 
-    void loose_tank() { GamePlayer::tank_count--; }
+    void loose_tank() { this->tank_count--; }
     /* register a loss of a tank */
 
-    auto get_team_color() const noexcept { return team_color; }
+    auto get_team_color() const noexcept { return this->team_color; }
 
 private:
 
