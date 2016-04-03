@@ -39,6 +39,8 @@ enum class EventType: ServerMsgType {
     UPDATE_AMMO = 32, UPDATE_HEALTH = 33, DESTROY_GAME_PIECE = 34, MOVE_GAME_PIECE = 35, GAME_OVER = 36
 };
 
+enum EndGameState: std::int32_t {WIN, LOSE};
+
 using PieceID = std::uint32_t;
 using TankCount = std::uint8_t;
 
