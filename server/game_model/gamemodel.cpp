@@ -77,7 +77,8 @@ game_model::GameModel::GameModel(std::string map_file_path) {
 #endif
 
         // collect player's starting positions
-        for (int i = 0; i < this->player_count; i++) {
+        for (auto& player_pair: this->players) {
+            auto& player = player_pair.second;
 
             // coordinates for the player's three tanks
             int t1x, t1y, t2x, t2y, t3x, t3y;
@@ -92,16 +93,17 @@ game_model::GameModel::GameModel(std::string map_file_path) {
             // collect the coordinates
             std::sscanf(line.c_str(), "%d,%d;%d,%d;%d,%d", &t1x, &t1y, &t2x, &t2y, &t3x, &t3y);
 #ifdef DEBUG
-            std::cerr << "player " << i << " tank coordinates " << t1x << "," << t1y << "\t" << t2x << "," << t2y <<
+            std::cerr << "player " << player.get_id() << " tank coordinates " << t1x << "," << t1y << "\t" << t2x <<
+            "," << t2y <<
             "\t" << t3x << "," << t3y << std::endl;
 #endif
 
             // create tanks at the coordinates // TODO make them not all commanders
-            this->pieces.at(t1y).at(t1x) = std::make_unique<TankPiece>(this->players.at(i),
+            this->pieces.at(t1y).at(t1x) = std::make_unique<TankPiece>(player,
                                                                        protocol::TankModel::COMMANDER);
-            this->pieces.at(t2y).at(t2x) = std::make_unique<TankPiece>(this->players.at(i),
+            this->pieces.at(t2y).at(t2x) = std::make_unique<TankPiece>(player,
                                                                        protocol::TankModel::INTERCEPTOR);
-            this->pieces.at(t3y).at(t3x) = std::make_unique<TankPiece>(this->players.at(i),
+            this->pieces.at(t3y).at(t3x) = std::make_unique<TankPiece>(player,
                                                                        protocol::TankModel::ELIMINATOR);
 #ifdef DEBUG
             std::cerr << "tank " << this->pieces.at(t1y).at(t1x)->get_id() << std::endl;
@@ -137,7 +139,8 @@ game_model::GameModel::GameModel(std::string map_file_path) {
     }
 }
 
-std::vector<MessageEnvelope> game_model::GameModel::attempt_to_move(protocol::PieceID piece_id, protocol::Direction direction) {
+std::vector<MessageEnvelope> game_model::GameModel::attempt_to_move(protocol::PieceID piece_id,
+                                                                    protocol::Direction direction) {
 
     // get coordinates of the tank
     protocol::CoordinateX x;
@@ -192,15 +195,16 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_move(protocol::Pi
             move_message.direction(direction);
             move_message.value(1);
             move_message.piece_id(piece_id);
-            to_send.push_back(MessageEnvelope(Recipient::ALL ,move_message.to_msg()));
+            to_send.push_back(MessageEnvelope(Recipient::ALL, move_message.to_msg()));
         }
     }
 
     return to_send;
 }
 
-std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::PieceID piece_id, protocol::Direction direction,
-                                             protocol::PlayerID player_id) {
+std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::PieceID piece_id,
+                                                                     protocol::Direction direction,
+                                                                     protocol::PlayerID player_id) {
 
     // list of messages to send
     std::vector<MessageEnvelope> to_send;
@@ -272,7 +276,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     move_message.direction(direction);
     move_message.value(0);
     move_message.piece_id(piece_id);
-    to_send.push_back(MessageEnvelope(Recipient::ALL ,move_message.to_msg()));
+    to_send.push_back(MessageEnvelope(Recipient::ALL, move_message.to_msg()));
 
     // compose ammo message
     auto ammo_message = protocol::EventMessageHandle();
@@ -280,7 +284,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     ammo_message.direction(protocol::Direction::NONE);
     ammo_message.value(player.get_ammo());
     ammo_message.piece_id(0);
-    to_send.push_back(MessageEnvelope(Recipient::ACTOR ,ammo_message.to_msg()));
+    to_send.push_back(MessageEnvelope(Recipient::ACTOR, ammo_message.to_msg()));
 
     // check the hit location for solid game pieces
     if (this->pieces.at(to_y).at(to_x) && !this->pieces.at(to_y).at(to_x)->is_clear_shot()) {
@@ -297,7 +301,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
         damage_message.direction(protocol::Direction::NONE);
         damage_message.value(new_health);
         damage_message.piece_id(target_id);
-        to_send.push_back(MessageEnvelope(Recipient::ALL ,damage_message.to_msg()));
+        to_send.push_back(MessageEnvelope(Recipient::ALL, damage_message.to_msg()));
     }
 
     return to_send;
