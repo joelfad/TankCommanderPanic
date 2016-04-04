@@ -62,8 +62,6 @@ class MessageHandler:
         '''.format(self.game.player_id, action_type, direction, piece_id))
 
     def check_for_messages(self):
-        print("Checking for new messages...")
-
         # poll for incoming messages
         for fd, event in self.poll.poll(10): # wait 10ms for events
             if event & select.POLLIN:
