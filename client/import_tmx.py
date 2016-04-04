@@ -160,34 +160,5 @@ def read_map_file():
 
         return (texture_data, map_data)
 
-    '''
-    for l in map_data:
-        for r in l:
-            for t in r:
-                print("{:4d}".format(t), end="")
-            print()
-        print('\n')
-
-
-    # load mock map properties
-    self.map_tiles_x = const.width          # TODO: Remove when function is implemented
-    self.map_tiles_y = const.height         #
-    self.tilewidth = const.tilewidth        #
-    self.tileheight = const.tileheight      #
-    self.piece_layer = const.piece_layer    #
-
-    texture_data = (                        # TODO: Remove "const" when function is implemented
-                 const.image_source,        #
-                 self.tilewidth,
-                 self.tileheight,
-                 const.tilecount,           #
-                 const.columns,             #
-                 )
-
-    # load mock map data
-    map_data = const.fourbase_tile_ids  # TODO: Remove when function is implemented
-    return (texture_data, map_data)
-    '''
-
 if __name__ == "__main__":
     load_map_file(2,1)
