@@ -12,6 +12,7 @@ Description:  The main game logic driver.
 #include "protocol/actionmessagehandle.hpp"
 #include "game_model/gamemodel.hpp"
 #include "protocol/eventmessagehandle.hpp"
+#include "protocol/gamestatemessage.hpp"
 
 // c++ standard libraries
 #include <chrono>
@@ -49,8 +50,66 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
-    // TODO send all players the initial game state and game start messages
-    //players.send_all();
+    // send all players the initial game state and game start messages
+
+    for (auto& player_pair : model.get_players()) {
+        auto& player = player_pair.second;
+
+        // compose game state message
+        auto game_state_message = protocol::GameStateMessageHandle();
+        game_state_message.map_id(model.get_map_id());
+        game_state_message.map_version(model.get_map_version());
+        game_state_message.player_id(player.get_id());
+        game_state_message.tank_piece_ids(player.get_tank_ids());
+#ifdef DEBUG
+        std::cerr << "[Sent] Game State Message" << std::endl;
+        std::cerr << "  message type:     1" << std::endl;
+        std::cerr << "  map id:           " << static_cast<int>(model.get_map_id()) << std::endl;
+        std::cerr << "  map version:      " << static_cast<int>(model.get_map_version()) << std::endl;
+        std::cerr << "  player id:        " << player.get_id() << std::endl;
+        std::cerr << "  owned tank count: " << player.get_tank_ids().size() << std::endl;
+        for (auto& tank : player.get_tank_ids())
+            std::cerr << "  tank piece id:    " << static_cast<int>(tank) << std::endl;
+        std::cerr << std::endl;
+#endif
+        players[player.get_id()]->send(game_state_message.to_msg());
+
+        // compose update ammo message
+        auto ammo_message = protocol::EventMessageHandle();
+        ammo_message.event_type(protocol::EventType::UPDATE_AMMO);
+        ammo_message.direction(protocol::Direction::NONE);
+        ammo_message.value(player.get_ammo());
+        ammo_message.piece_id(0);
+#ifdef DEBUG
+        std::cerr << "[Sent] Event Message" << std::endl;
+        std::cerr << "  event type: " << static_cast<int>(protocol::EventType::UPDATE_AMMO) << std::endl;
+        std::cerr << "  direction:  " << static_cast<int>(protocol::Direction::NONE) << std::endl;
+        std::cerr << "  value:      " << player.get_ammo() << std::endl;
+        std::cerr << "  piece id:   0" << std::endl << std::endl;
+#endif
+        players[player.get_id()]->send(ammo_message.to_msg());
+    }
+
+    // get create pieces messages
+    auto to_send = model.create_all_pieces();
+
+    // send all game pieces to all clients
+    send_envelopes(to_send, players, 0);
+
+    // compose game start message
+    auto game_start_message = protocol::EventMessageHandle();
+    game_start_message.event_type(protocol::EventType::GAME_START);
+    game_start_message.direction(protocol::Direction::NONE);
+    game_start_message.value(0);
+    game_start_message.piece_id(0);
+#ifdef DEBUG
+    std::cerr << "[Sent] Event Message" << std::endl;
+    std::cerr << "  event type: " << static_cast<int>(protocol::EventType::GAME_START) << std::endl;
+    std::cerr << "  direction:  " << static_cast<int>(protocol::Direction::NONE) << std::endl;
+    std::cerr << "  value:      0" << std::endl;
+    std::cerr << "  piece id:   0" << std::endl << std::endl;
+#endif
+    players.send_all(game_start_message.to_msg());
 
     // run the game
     while (true) {
@@ -139,6 +198,11 @@ void send_envelopes(std::vector<MessageEnvelope> to_send, PlayerClientList& play
 
                 // send to correct client
                 players[actor]->send(envelope.get_message());
+                break;
+            case Recipient::TARGET :
+
+                // send to target client
+                players[envelope.get_receiver()]->send(envelope.get_message());
                 break;
         }
     }

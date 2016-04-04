@@ -19,10 +19,9 @@ void game_model::SolidPiece::collide(TankPiece& tank) {
     GamePiece::collide(tank);
 }
 
-int game_model::SolidPiece::shot(int damage) {
+void game_model::SolidPiece::shot(int damage) {
     GamePiece::shot(damage);
     this->health -= damage;
-    return this->health;
 }
 
 void game_model::SolidPiece::set_max_health(int max_health)  {

@@ -8,7 +8,11 @@
 #ifndef SERVER_GAMEPLAYER_HPP
 #define SERVER_GAMEPLAYER_HPP
 
+#include <algorithm>
+
 #include <string>
+#include <vector>
+#include <set>
 
 #include "../protocol/protocoldefs.hpp"
 
@@ -36,10 +40,16 @@ public:
     void change_ammo(int diff) { this->ammo += diff; }
     /* ammo is shared for the player's tanks */
 
-    auto get_tank_count() const noexcept { return this->tank_count; }
+    auto get_tank_count() const noexcept -> protocol::TankCount { return static_cast<protocol::TankCount>(this->tank_ids.size()); }
     /* number of tanks */
 
-    void loose_tank() { this->tank_count--; }
+    void add_tank_id(protocol::PieceID tank_id) {this->tank_ids.emplace(tank_id); }
+
+    auto get_tank_ids() const -> std::vector<protocol::PieceID>;
+
+    void loose_tank(protocol::PieceID& tank_id) {
+        this->tank_ids.erase(tank_id);
+    }
     /* register a loss of a tank */
 
     auto get_team_color() const noexcept { return this->team_color; }
@@ -49,13 +59,16 @@ private:
     static protocol::PlayerID next_id;
     /* counter for assigning unique ids */
 
+    static protocol::TeamColor next_color;
+    /* variable for assigning unique colors */
+
     static constexpr protocol::PlayerID invalid_id = 0;
 
-    std::string name;                   // Display Name
-    protocol::PlayerID id = invalid_id; // Id
-    int ammo;                           // Ammo next_id
-    protocol::TankCount tank_count;     // Number of tanks
-    protocol::TeamColor team_color;     // Team color
+    std::string name;                       // Display Name
+    protocol::PlayerID id = invalid_id;     // Id
+    int ammo;                               // Ammo next_id
+    std::set<protocol::PieceID> tank_ids;   // Owned tank ids
+    protocol::TeamColor team_color;         // Team color
 
 };
 

@@ -11,10 +11,10 @@ Description:  A handle for messages sent by the server to clients.
 
 //~constructors~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-protocol::GameStateMessageHandle::GameStateMessageHandle() : GameStateMessageHandle{0, 0, 0, 0, std::vector<PieceID>{}} {}
+protocol::GameStateMessageHandle::GameStateMessageHandle() : GameStateMessageHandle{0, 0, 0, std::vector<PieceID>{}} {}
 
-protocol::GameStateMessageHandle::GameStateMessageHandle(ServerMsgType _message_type, MapID _map_id, MapVersion _map_version, PlayerID _player_id, const std::vector<PieceID>& _tank_ids) {
-    msg_fields.message_type = _message_type;
+protocol::GameStateMessageHandle::GameStateMessageHandle(MapID _map_id, MapVersion _map_version, PlayerID _player_id, const std::vector<PieceID>& _tank_ids) {
+    msg_fields.message_type = protocol::GameStateMessageValue;
     msg_fields.map_id = _map_id;
     msg_fields.map_version = _map_version;
     msg_fields.player_id = _player_id;
@@ -55,10 +55,6 @@ protocol::Message protocol::GameStateMessageHandle::to_msg() const {
 
 //~setters~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-void protocol::GameStateMessageHandle::messsage_type(ServerMsgType msg_type) noexcept {
-    msg_fields.message_type = msg_type;
-}
-
 void protocol::GameStateMessageHandle::map_id(MapID id) noexcept {
     msg_fields.map_id = id;
 }
@@ -84,10 +80,6 @@ void protocol::GameStateMessageHandle::append_tank(PieceID pid) {
 
 
 //~getters~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-auto protocol::GameStateMessageHandle::messsage_type() const noexcept -> ServerMsgType {
-    return msg_fields.message_type;
-}
 
 auto protocol::GameStateMessageHandle::map_id() const noexcept -> MapID {
     return msg_fields.map_id;
