@@ -64,7 +64,7 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
             auto player_id = action.player();
 
 #ifdef DEBUG
-            std::cerr << "Message Recieved" << std::endl;
+            std::cerr << "[Received] Action Message" << std::endl;
             std::cerr << "  player:    " << action.player() << std::endl;
             std::cerr << "  action:    " << static_cast<int>(action.action()) << std::endl;
             std::cerr << "  direction: " << static_cast<int>(action.direction()) << std::endl;
