@@ -186,37 +186,43 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_move(protocol::Pi
             break;
     }
 
+    // move distance
+    int distance = 0;
+
     // check the map tile at the target coordinates
     if (this->map.at(to_y).at(to_x)->is_clear_drive()) {
 
         // check the location for solid game pieces
         if (!this->pieces.at(to_y).at(to_x) || this->pieces.at(to_y).at(to_x)->is_clear_drive()) {
 
+            // set the distance
+            distance = 1;
+
             // move the game piece_id
             this->pieces.at(to_y).at(to_x) = std::move(this->pieces.at(y).at(x));
 
 #ifdef DEBUG
-            std::cerr << "Tank " << piece_id << " moved from (" << (int)x << "," << (int)y << ") to (" << (int)to_x
-                      << "," << (int)to_y << ")." << std::endl;
+            std::cerr << "Tank " << piece_id << " moved from (" << (int) x << "," << (int) y << ") to (" << (int) to_x
+            << "," << (int) to_y << ")." << std::endl;
 #endif
 
             // TODO check for pickup items
-
-            // compose move message
-            auto move_message = protocol::EventMessageHandle();
-            move_message.event_type(protocol::EventType::MOVE_GAME_PIECE);
-            move_message.direction(direction);
-            move_message.value(1);
-            move_message.piece_id(piece_id);
-#ifdef DEBUG
-            std::cerr << "[Sent] Event Message" << std::endl;
-            std::cerr << "  event type: " << static_cast<int>(protocol::EventType::MOVE_GAME_PIECE) << std::endl;
-            std::cerr << "  direction:  " << static_cast<int>(direction) << std::endl;
-            std::cerr << "  value:      1" << std::endl;
-            std::cerr << "  piece id:   " << static_cast<int>(piece_id) << std::endl << std::endl;
-#endif
-            to_send.push_back(MessageEnvelope(Recipient::ALL, move_message.to_msg()));
         }
+
+        // compose move message
+        auto move_message = protocol::EventMessageHandle();
+        move_message.event_type(protocol::EventType::MOVE_GAME_PIECE);
+        move_message.direction(direction);
+        move_message.value(distance);
+        move_message.piece_id(piece_id);
+#ifdef DEBUG
+        std::cerr << "[Sent] Event Message" << std::endl;
+        std::cerr << "  event type: " << static_cast<int>(protocol::EventType::MOVE_GAME_PIECE) << std::endl;
+        std::cerr << "  direction:  " << static_cast<int>(direction) << std::endl;
+        std::cerr << "  value:      " << distance << std::endl;
+        std::cerr << "  piece id:   " << static_cast<int>(piece_id) << std::endl << std::endl;
+#endif
+        to_send.push_back(MessageEnvelope(Recipient::ALL, move_message.to_msg()));
     }
 
     return to_send;
@@ -344,7 +350,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     if (this->pieces.at(to_y).at(to_x) && !this->pieces.at(to_y).at(to_x)->is_clear_shot()) {
 
         // get the target
-        auto target_ptr = dynamic_cast<SolidPiece*>(this->pieces.at(to_y).at(to_x).get());
+        auto target_ptr = dynamic_cast<SolidPiece *>(this->pieces.at(to_y).at(to_x).get());
         if (target_ptr) {
 
             // damage the target
@@ -372,7 +378,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
                 to_send.push_back(MessageEnvelope(Recipient::ALL, destroy_message.to_msg()));
 
                 // check if target is a tank
-                auto tank_ptr = dynamic_cast<TankPiece*>(target_ptr);
+                auto tank_ptr = dynamic_cast<TankPiece *>(target_ptr);
                 if (tank_ptr) {
 
                     // get tank id
@@ -389,7 +395,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
                     commander.loose_tank(tank_id);
 #ifdef DEBUG
                     std::cerr << "player " << commander.get_id() << " has " <<
-                            static_cast<int>(commander.get_tank_count()) << " tanks" << std::endl;
+                    static_cast<int>(commander.get_tank_count()) << " tanks" << std::endl;
 #endif
 
                     // check if commander lost
@@ -408,7 +414,8 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
                         std::cerr << "  value:      " << static_cast<int>(protocol::EndGameState::LOSE) << std::endl;
                         std::cerr << "  piece id:   0" << std::endl << std::endl;
 #endif
-                        to_send.push_back(MessageEnvelope(Recipient::TARGET, commander.get_id(), game_over_message.to_msg()));
+                        to_send.push_back(
+                                MessageEnvelope(Recipient::TARGET, commander.get_id(), game_over_message.to_msg()));
 
                         // register a player loss
                         this->players.erase(commander.get_id());
@@ -423,7 +430,8 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
                             win_game_message.piece_id(0);
 #ifdef DEBUG
                             std::cerr << "[Sent] Event Message" << std::endl;
-                            std::cerr << "  event type: " << static_cast<int>(protocol::EventType::GAME_OVER) << std::endl;
+                            std::cerr << "  event type: " << static_cast<int>(protocol::EventType::GAME_OVER) <<
+                            std::endl;
                             std::cerr << "  direction:  " << static_cast<int>(protocol::Direction::NONE) << std::endl;
                             std::cerr << "  value:      " << static_cast<int>(protocol::EndGameState::WIN) << std::endl;
                             std::cerr << "  piece id:   0" << std::endl << std::endl;
@@ -476,7 +484,7 @@ std::vector<MessageEnvelope> game_model::GameModel::create_all_pieces() {
             if (this->pieces.at(y).at(x)) {
 
                 // get piece pointer
-                auto piece_ptr = static_cast<GamePiece*>(this->pieces.at(y).at(x).get());
+                auto piece_ptr = static_cast<GamePiece *>(this->pieces.at(y).at(x).get());
 
                 // TODO get accurate value value
                 int value = 100;
