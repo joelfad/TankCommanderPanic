@@ -51,10 +51,10 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
     }
 
     // TODO send all players the initial game state and game start messages
-    //players.send_all();
     for (auto& player_pair : model.get_players()) {
         auto& player = player_pair.second;
 
+        // compose game state message
         auto game_state_message = protocol::GameStateMessageHandle();
         game_state_message.map_id(model.get_map_id());
         game_state_message.map_version(model.get_map_version());
@@ -72,6 +72,21 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
             std::cerr << "  tank piece id:    " << static_cast<int>(tank) << std::endl;
 #endif
         players[player.get_id()]->send(game_state_message.to_msg());
+
+        // compose update ammo message
+        auto ammo_message = protocol::EventMessageHandle();
+        ammo_message.event_type(protocol::EventType::UPDATE_AMMO);
+        ammo_message.direction(protocol::Direction::NONE);
+        ammo_message.value(player.get_ammo());
+        ammo_message.piece_id(0);
+#ifdef DEBUG
+        std::cerr << "[Sent] Event Message" << std::endl;
+        std::cerr << "  event type: " << static_cast<int>(protocol::EventType::UPDATE_AMMO) << std::endl;
+        std::cerr << "  direction:  " << static_cast<int>(protocol::Direction::NONE) << std::endl;
+        std::cerr << "  value:      " << player.get_ammo() << std::endl;
+        std::cerr << "  piece id:   0" << std::endl << std::endl;
+#endif
+        players[player.get_id()]->send(ammo_message.to_msg());
     }
 
     // run the game
