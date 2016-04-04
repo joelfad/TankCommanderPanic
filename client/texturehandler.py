@@ -3,7 +3,7 @@
 # File: texturehandler.py
 # Author: Joel McFadden
 # Created: March 29, 2016
-# Modified: March 29, 2016
+# Modified: April 4, 2016
 
 import sfml as sf
 
