@@ -16,6 +16,8 @@ constexpr unsigned short port = 4410;
 
 using ServerMsgType = std::uint8_t;
 
+static constexpr ServerMsgType GameStateMessageValue = 1;
+
 enum class PieceType: ServerMsgType {
     // 2 - 7 brick types
     HEALTH=8, AMMO=9, DECORATION=10,

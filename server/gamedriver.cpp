@@ -63,13 +63,14 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
         // TODO add debug printout
 #ifdef DEBUG
         std::cerr << "[Sent] Game State Message" << std::endl;
-        std::cerr << "  message type:     0" << std::endl;
+        std::cerr << "  message type:     1" << std::endl;
         std::cerr << "  map id:           " << model.get_map_id() << std::endl;
         std::cerr << "  map version:      " << model.get_map_version() << std::endl;
         std::cerr << "  player id:        " << player.get_id() << std::endl;
         std::cerr << "  owned tank count: " << player.get_tank_ids().size() << std::endl;
         for (auto& tank : player.get_tank_ids())
             std::cerr << "  tank piece id:    " << static_cast<int>(tank) << std::endl;
+        std::cerr << std::endl;
 #endif
         players[player.get_id()]->send(game_state_message.to_msg());
 

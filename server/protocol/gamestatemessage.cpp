@@ -14,7 +14,7 @@ Description:  A handle for messages sent by the server to clients.
 protocol::GameStateMessageHandle::GameStateMessageHandle() : GameStateMessageHandle{0, 0, 0, std::vector<PieceID>{}} {}
 
 protocol::GameStateMessageHandle::GameStateMessageHandle(MapID _map_id, MapVersion _map_version, PlayerID _player_id, const std::vector<PieceID>& _tank_ids) {
-    msg_fields.message_type = 0;
+    msg_fields.message_type = protocol::GameStateMessageValue;
     msg_fields.map_id = _map_id;
     msg_fields.map_version = _map_version;
     msg_fields.player_id = _player_id;
