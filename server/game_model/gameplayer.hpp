@@ -8,6 +8,8 @@
 #ifndef SERVER_GAMEPLAYER_HPP
 #define SERVER_GAMEPLAYER_HPP
 
+#include <algorithm>
+
 #include <string>
 #include <vector>
 
@@ -44,7 +46,10 @@ public:
 
     const auto& get_tank_ids() const noexcept { return this->tank_ids; }
 
-    void loose_tank() { this->tank_count--; }
+    void loose_tank(protocol::PieceID& tank_id) {
+        this->tank_count--;
+        std::remove(this->tank_ids.begin(), this->tank_ids.end(), tank_id);
+    }
     /* register a loss of a tank */
 
     auto get_team_color() const noexcept { return this->team_color; }

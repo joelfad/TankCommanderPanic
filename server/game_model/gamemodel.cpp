@@ -339,45 +339,65 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     // check the hit location for solid game pieces
     if (this->pieces.at(to_y).at(to_x) && !this->pieces.at(to_y).at(to_x)->is_clear_shot()) {
 
-        // damage the target
-        auto new_health = this->pieces.at(to_y).at(to_x)->shot(power);
+        // get the target
+        auto target_ptr = dynamic_cast<SolidPiece*>(this->pieces.at(to_y).at(to_x).get());
+        if (target_ptr) {
 
-        // id of target piece
-        auto target_id = this->pieces.at(to_y).at(to_x)->get_id();
+            // damage the target
+            target_ptr->shot(power);
 
-        // check if the target was destroyed
-        if (new_health <= 0) {
+            // id of target piece
+            auto target_id = target_ptr->get_id();
 
-            // compose destroy message
-            auto destroy_message = protocol::EventMessageHandle();
-            destroy_message.event_type(protocol::EventType::DESTROY_GAME_PIECE);
-            destroy_message.direction(protocol::Direction::NONE);
-            destroy_message.value(0);
-            destroy_message.piece_id(target_id);
+            // check if the target was destroyed
+            if (target_ptr->get_health() <= 0) {
+
+                // compose destroy message
+                auto destroy_message = protocol::EventMessageHandle();
+                destroy_message.event_type(protocol::EventType::DESTROY_GAME_PIECE);
+                destroy_message.direction(protocol::Direction::NONE);
+                destroy_message.value(0);
+                destroy_message.piece_id(target_id);
 #ifdef DEBUG
-            std::cerr << "[Sent] Event Message" << std::endl;
-            std::cerr << "  event type: " << static_cast<int>(protocol::EventType::DESTROY_GAME_PIECE) << std::endl;
-            std::cerr << "  direction:  " << static_cast<int>(protocol::Direction::NONE) << std::endl;
-            std::cerr << "  value:      0" << std::endl;
-            std::cerr << "  piece id:   " << static_cast<int>(target_id) << std::endl << std::endl;
+                std::cerr << "[Sent] Event Message" << std::endl;
+                std::cerr << "  event type: " << static_cast<int>(protocol::EventType::DESTROY_GAME_PIECE) << std::endl;
+                std::cerr << "  direction:  " << static_cast<int>(protocol::Direction::NONE) << std::endl;
+                std::cerr << "  value:      0" << std::endl;
+                std::cerr << "  piece id:   " << static_cast<int>(target_id) << std::endl << std::endl;
 #endif
-            to_send.push_back(MessageEnvelope(Recipient::ALL, destroy_message.to_msg()));
-        } else {
+                to_send.push_back(MessageEnvelope(Recipient::ALL, destroy_message.to_msg()));
 
-            // compose damage message
-            auto damage_message = protocol::EventMessageHandle();
-            damage_message.event_type(protocol::EventType::UPDATE_HEALTH);
-            damage_message.direction(protocol::Direction::NONE);
-            damage_message.value(new_health);
-            damage_message.piece_id(target_id);
+                // check if target is a tank
+                auto tank_ptr = dynamic_cast<TankPiece*>(target_ptr);
+                if (tank_ptr) {
+
+                    auto tank_id = tank_ptr->get_id();
+
+                    // player looses the tank
+                    tank_ptr->get_commander().loose_tank(tank_id);
+
+                    // TODO check if said player lost
+                }
+
+                // delete the destroyed target
+                this->pieces.at(to_y).at(to_x).reset();
+            } else {
+
+                // compose damage message
+                auto damage_message = protocol::EventMessageHandle();
+                damage_message.event_type(protocol::EventType::UPDATE_HEALTH);
+                damage_message.direction(protocol::Direction::NONE);
+                damage_message.value(target_ptr->get_health());
+                damage_message.piece_id(target_id);
 #ifdef DEBUG
-            std::cerr << "[Sent] Event Message" << std::endl;
-            std::cerr << "  event type: " << static_cast<int>(protocol::EventType::UPDATE_HEALTH) << std::endl;
-            std::cerr << "  direction:  " << static_cast<int>(protocol::Direction::NONE) << std::endl;
-            std::cerr << "  value:      " << new_health << std::endl;
-            std::cerr << "  piece id:   " << static_cast<int>(target_id) << std::endl << std::endl;
+                std::cerr << "[Sent] Event Message" << std::endl;
+                std::cerr << "  event type: " << static_cast<int>(protocol::EventType::UPDATE_HEALTH) << std::endl;
+                std::cerr << "  direction:  " << static_cast<int>(protocol::Direction::NONE) << std::endl;
+                std::cerr << "  value:      " << target_ptr->get_health() << std::endl;
+                std::cerr << "  piece id:   " << static_cast<int>(target_id) << std::endl << std::endl;
 #endif
-            to_send.push_back(MessageEnvelope(Recipient::ALL, damage_message.to_msg()));
+                to_send.push_back(MessageEnvelope(Recipient::ALL, damage_message.to_msg()));
+            }
         }
     }
 
