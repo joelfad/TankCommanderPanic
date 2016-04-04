@@ -3,22 +3,22 @@
 # File: hud.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: April 3, 2016
+# Modified: April 4, 2016
 
 import sfml as sf
 from gamestate import GameState as gs
-from gamepiece import PieceType as pt
+from protocol import PieceType as pt
 from numpy import swapaxes, clip
 import const
 
 class HUD:
 
-    def __init__(self, game):
+    def __init__(self, game, map_id, map_version):
         self.game = game
         self.texture = game.texturehandler.texture
 
         # load map properties and tank data
-        self.map_properties = self.load_properties()
+        self.map_properties = self.load_properties(map_id, map_version)
         self.tank_data = const.tank_data
 
         # set useful values for calculations
@@ -46,31 +46,56 @@ class HUD:
 
     def update_stats(self): # TODO: Remove magic numbers in this function
         # translucent overlay
-        self.stats_box = sf.RectangleShape((960, 32))
+        self.stats_box = sf.RectangleShape((480, 16))
         self.stats_box.position = self.game.window.map_pixel_to_coords((0, 672))
-        self.stats_box.fill_color = sf.Color(0, 0, 0, 160)
+
+        # set overlay white if player has won, black otherwise
+        if self.game.state is gs.won:
+            self.stats_box.fill_color = sf.Color(255, 255, 255, 160)
+        else:
+            self.stats_box.fill_color = sf.Color(0, 0, 0, 160)
 
         self.stats = []
 
-        # tank health
-        position_x = 0
-        tank_colors = [self.tank_data[t.type][2] for t in self.game.tanks]
-        for i, tank in enumerate(self.game.tanks):
-            t = sf.Text(" {}:{} ".format(self.tank_data[tank.type][0], tank.value))
-            t.font = self.game.texturehandler.font
-            t.character_size = 8
-            t.position = self.game.window.map_pixel_to_coords((position_x, 680))
-            if tank is self.game.active_tank:
-                t.color = self.tank_data[tank.type][2]
-            position_x += t.local_bounds.width * 2
-            self.stats.append(t)
+        # display tank health if still playing
+        if self.game.state is gs.play or (self.game.state is gs.pan and self.game.prev is gs.play):
+            position_x = 0
+            tank_colors = [self.tank_data[t.type][2] for t in self.game.tanks]
+            for i, tank in enumerate(self.game.tanks):
+                t = sf.Text(" {}:{} ".format(self.tank_data[tank.type][0], tank.value))
+                t.font = self.game.fonthandler.font
+                t.character_size = 8
+                t.position = self.game.window.map_pixel_to_coords((position_x, 680))
+                if tank is self.game.active_tank:
+                    t.color = self.tank_data[tank.type][2]
+                position_x += t.local_bounds.width * 2
+                self.stats.append(t)
 
-        # ammo
-        a = sf.Text("*{} ".format(self.game.ammo))
-        a.font = self.game.texturehandler.font
-        a.character_size = 8
-        a.position = self.game.window.map_pixel_to_coords((960 - a.local_bounds.width * 2, 680))
-        self.stats.append(a)
+        # display game over message if lost
+        if self.game.state is gs.lost:
+            m = sf.Text("GAME OVER")
+            m.font = self.game.fonthandler.font
+            m.character_size = 8
+            m.position = self.game.window.map_pixel_to_coords((480 - m.local_bounds.width, 680))
+            self.stats.append(m)
+        else:
+            # display ammo if won or still playing
+            a = sf.Text("*{} ".format(self.game.ammo))
+            a.font = self.game.fonthandler.font
+            a.character_size = 8
+            a.position = self.game.window.map_pixel_to_coords(((480 - a.local_bounds.width) * 2, 680))
+
+            # display victory message if won
+            if self.game.state is gs.won or self.game.prev is gs.won:
+                a.color = sf.Color.BLACK
+                m = sf.Text("YOU WIN!")
+                m.font = self.game.fonthandler.font
+                m.character_size = 8
+                m.position = self.game.window.map_pixel_to_coords((480 - m.local_bounds.width, 680))
+                m.color = sf.Color.BLACK
+                self.stats.append(m)
+
+            self.stats.append(a)
 
     def update_range(self):
         # update range of active tank
@@ -96,61 +121,49 @@ class HUD:
                         and (p.type in pt.tank.value or p.type in pt.brick.value)
                         }
 
-            # 1 if max range is reached or a game piece is within range
-            clear_north = 1
-            clear_east  = 1
-            clear_south = 1
-            clear_west  = 1
-
             # search north range for obstacles
             for ny in range(active_y - 1, active_y - max_range - 1, -1):
                 if not self.map_properties[active_x][clip(ny, 0, self.max_y)] % 2:
-                    clear_north = 0
                     break
             # search south range for obstacles
             for sy in range(active_y + 1, active_y + max_range + 1):
                 if not self.map_properties[active_x][clip(sy, 0, self.max_y)] % 2:
-                    clear_south = 0
                     break
             # search east range for obstacles
             for ex in range(active_x + 1, active_x + max_range + 1):
                 if not self.map_properties[clip(ex, 0, self.max_x)][active_y] % 2:
-                    clear_east = 0
                     break
             # search west range for obstacles
             for wx in range(active_x - 1, active_x - max_range - 1, -1):
                 if not self.map_properties[clip(wx, 0, self.max_x)][active_y] % 2:
-                    clear_west = 0
                     break
 
             # search north and south ranges for game pieces (tanks or bricks)
             for py in pieces_y:
-                if py.coord().y in range(active_y - 1, ny - 1, -1):
-                    if py.coord().y >= ny:
+                if py.coord().y in range(active_y - 1, ny, -1):
+                    if py.coord().y > ny:
                         ny = py.coord().y
-                        clear_north = 1
-                elif py.coord().y in range(active_y + 1, sy + 1):
-                    if py.coord().y <= sy:
+                elif py.coord().y in range(active_y + 1, sy):
+                    if py.coord().y < sy:
                         sy = py.coord().y
-                        clear_south = 1
             # search east and west ranges for game pieces (tanks or bricks)
             for px in pieces_x:
-                if px.coord().x in range(active_x + 1, ex + 1):
-                    if px.coord().x <= ex:
+                if px.coord().x in range(active_x + 1, ex):
+                    if px.coord().x < ex:
                         ex = px.coord().x
-                        clear_east = 1
-                elif px.coord().x in range(active_x - 1, wx - 1, -1):
-                    if px.coord().x >= wx:
+                elif px.coord().x in range(active_x - 1, wx, -1):
+                    if px.coord().x > wx:
                         wx = px.coord().x
-                        clear_west = 1
 
             # set positions
-            self.sprites["north"].position = (center.x, (ny + 1.5 - clear_north) * self.tileheight)
-            self.sprites["east"].position = ((ex - 0.5 + clear_east) * self.tilewidth, center.y)
-            self.sprites["south"].position = (center.x, (sy - 0.5 + clear_south) * self.tileheight)
-            self.sprites["west"].position = ((wx + 1.5 - clear_west) * self.tilewidth, center.y)
+            self.sprites["center"].position = center
+            self.sprites["north"].position = (center.x, (ny + 0.5) * self.tileheight)
+            self.sprites["east"].position = ((ex + 0.5) * self.tilewidth, center.y)
+            self.sprites["south"].position = (center.x, (sy + 0.5) * self.tileheight)
+            self.sprites["west"].position = ((wx + 0.5) * self.tilewidth, center.y)
 
-    def load_properties(self):
+    def load_properties(self, map_id, map_version):
+        #TODO: Load properties using map_id and map_version
         return swapaxes(const.fourbase_properties, 0, 1).tolist()
 
     def draw(self):
@@ -163,8 +176,10 @@ class HUD:
             self.game.window.draw(s)
 
     def draw_range(self):
+        # TODO: Use sprites as an inversion mask for better contrast
         if self.game.state is gs.play:
             # draw range
+            self.game.window.draw(self.sprites["center"])
             self.game.window.draw(self.sprites["north"])
             self.game.window.draw(self.sprites["east"])
             self.game.window.draw(self.sprites["south"])

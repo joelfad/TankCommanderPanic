@@ -3,49 +3,40 @@
 # File: battlefield.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: April 3, 2016
+# Modified: April 4, 2016
 
 import sfml as sf
 from numpy import swapaxes
 from gamepiece import *
+from gamestate import GameState as gs
+import import_tmx
 import const
 Tile = sf.Sprite
 
 class BattleField:
 
     # initialize the battlefield
-    def __init__(self, game):
+    def __init__(self, game, map_id, map_version):
         self.game = game
-        # TODO: Load map id and map version from Game State Message instead of "const"
-        texture_data, map_data = self.load_map_file(const.id_, const.version)
+        texture_data, map_data = self.load_map_file(map_id, map_version)
         self.texture = game.load_texture(texture_data)
         self.mapwidth, self.mapheight, map_ = self.create_map(map_data)
         self.prerender(map_)
         self.pieces = {}
 
-        # load mock tanks
-        for piece in const.fourbase_tanks:  # TODO: Remove and generate from Create Piece Message
-            self.create_piece(*piece)       #
-
     # load map data from file
     def load_map_file(self, id_, version):
-        # load mock map properties
-        self.map_tiles_x = const.width          # TODO: Remove when function is implemented
-        self.map_tiles_y = const.height         #
-        self.tilewidth = const.tilewidth        #
-        self.tileheight = const.tileheight      #
-        self.piece_layer = const.piece_layer    #
+        (
+            self.map_name,
+            self.map_tiles_x,
+            self.map_tiles_y,
+            self.piece_layer,
+            texture_data
+        ), map_data = import_tmx.load_map_file(id_, version)
 
-        texture_data = (                        # TODO: Remove "const" when function is implemented
-                       const.image_source,      #
-                       self.tilewidth,
-                       self.tileheight,
-                       const.tilecount,         #
-                       const.columns,           #
-                       )
+        self.tilewidth, self.tileheight = texture_data[1:3]
+        print("Piece Layer: {}".format(self.piece_layer))
 
-        # load mock map data
-        map_data = const.fourbase_tile_ids  # TODO: Remove when function is implemented
         return (texture_data, map_data)
 
     # create map from loaded data
@@ -100,12 +91,22 @@ class BattleField:
         return self.pieces[id_]
 
     # create new gamepiece
-    def create_piece(self, id_, x, y, type, value):
-        piece = GamePiece(id_, (x * self.tilewidth, y * self.tileheight), type, value, self.game.texturehandler)
+    def create_piece(self, type_, id_, x, y, value):
+        piece = GamePiece(id_, (x * self.tilewidth, y * self.tileheight), type_, value, self.game.texturehandler)
         self.pieces[id_] = piece
 
     # destroy gamepiece
     def destroy_piece(self, id_):
+        piece = self.pieces[id_]
+        # check for destroyed tank
+        if piece in self.game.tanks:                # piece is player's tank
+            self.game.tanks.remove(piece)
+            if self.game.tanks:                     # piece is not last tank
+                if piece is self.game.active_tank:  # piece is active tank
+                    self.game.active_tank = self.game.tanks[0]
+            else:                                   # piece is last tank
+                self.game.state = gs.lose
+        # destroy
         del self.pieces[id_]
 
     # draw the battlefield

@@ -3,16 +3,16 @@
 # File: game.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: April 3, 2016
+# Modified: April 4, 2016
 
 import sfml as sf
 from numpy import clip
 from battlefield import *
 from texturehandler import *
+from fonthandler import *
+from messagehandler import *
 from inputhandler import *
 from gamestate import GameState as gs
-from const import ammo # TODO: Remove after Event Messages can be received
-from random import randint # TODO: Remove after Game State Message can be received
 from hud import HUD
 
 # display constants
@@ -30,27 +30,29 @@ WINDOW_HEIGHT   = VIEW_HEIGHT * RATIO + HUD_HEIGHT
 
 class Game:
 
-    def __init__(self):
+    def __init__(self, server_addr):
         self.state = gs.wait
         self.window = self.create_window()
-        self.battlefield = BattleField(self)
+        self.fonthandler = FontHandler()
+        self.messagehandler = MessageHandler(self, server_addr)
         self.inputhandler = InputHandler(self)
-        # self.messagehandler = MessageHandler(self)
 
     def process_events(self):
-        # handle messages first (in case the last tank is destroyed)
+        self.messagehandler.check_for_messages()
         self.inputhandler.check_for_input()
 
     def render(self):
         self.window.clear()
-        self.battlefield.draw()
-        self.hud.draw()
+        if self.state is not gs.wait:
+            self.battlefield.draw()
+            self.hud.draw()
+        else:
+            self.draw_wait()
         self.window.display()
 
     def run(self):
         while self.window.is_open:
             self.process_events()
-            # self.update()
             self.render()
 
     def create_window(self):
@@ -93,11 +95,30 @@ class Game:
         # update view
         self.window.view.center = (center_x, center_y)
 
+    def draw_wait(self):
+        wait = sf.Text(" Waiting for server to start game...")
+        wait.font = self.fonthandler.font
+        wait.character_size = 8
+        wait.position = self.window.map_pixel_to_coords((0, 680))
+        self.window.draw(wait)
+
     # set the state of the game
-    def set_state(self):
-        self.player_id = randint(0, 32767) # TODO: Receive this value from Game State Message
-        self.ammo = const.ammo # TODO: Receive this value from Event Message (Update Ammo)
-        self.tanks = [self.battlefield.get_piece(id_) for id_ in const.tank_piece_id] # TODO: Receive this value from Game State Message
+    def set_state(self, map_id, map_version, player_id, tank_piece_ids):
+        self.map_id = map_id
+        self.map_version = map_version
+        self.player_id = player_id
+        self.tanks = tank_piece_ids
+
+        # create battlefield
+        self.battlefield = BattleField(self, map_id, map_version)
+
+    def start(self):
+        # set up tanks
+        self.tanks = [self.battlefield.get_piece(id_) for id_ in self.tanks]
         self.active_tank = self.tanks[0]
+
         self.state = gs.play
-        self.hud = HUD(self)
+        self.prev = gs.play
+
+        # create hud
+        self.hud = HUD(self, self.map_id, self.map_version)
