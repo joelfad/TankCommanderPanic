@@ -8,7 +8,7 @@
 import sfml as sf
 
 class TextureHandler:
-    GRAPHICS_DIR = "../resources/graphics/"
+    GRAPHICS_DIR = "resources/graphics/"
 
     def __init__(self, image_source, tilewidth, tileheight, tilecount, columns):
         self.load_texture(image_source)

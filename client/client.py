@@ -14,12 +14,13 @@ from game import *
 
 if __name__ == '__main__':
     # check command line arguments
-    if len(sys.argv) != 3:
-        print("Usage: messagehandler.py <host> <port>\n")
+    if len(sys.argv) != 2:
+        print("Usage: {} <HOST>".format(sys.argv[0]))
+        print("HOST is the IP address of the game server")
         sys.exit()
 
     # set server address
-    server_addr = (sys.argv[1], int(sys.argv[2]))
+    server_addr = (sys.argv[1], 4410)
 
     game = Game(server_addr)
     game.run()
