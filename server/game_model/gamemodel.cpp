@@ -33,16 +33,19 @@ game_model::GameModel::GameModel(std::string map_file_path) {
 #endif
 
         // collect basic info
+        int map_id_tmp, map_version_tmp;
         map_file >> this->map_name;     // map name
-        map_file >> this->map_id;       // map id
-        map_file >> this->map_version;  // map version
+        map_file >> map_id_tmp;         // map id
+        this->map_id = static_cast<protocol::MapID>(map_id_tmp);
+        map_file >> map_version_tmp;    // map version
+        this->map_version = static_cast<protocol::MapID>(map_version_tmp);
         map_file >> this->player_count; // player count
         map_file >> this->map_width;    // map width
         map_file >> this->map_height;   // map height
 #ifdef DEBUG
         std::cerr << "map name:     " << this->map_name << std::endl;
-        std::cerr << "map id:       " << this->map_id << std::endl;
-        std::cerr << "map version:  " << this->map_version << std::endl;
+        std::cerr << "map id:       " << static_cast<int>(this->map_id) << std::endl;
+        std::cerr << "map version:  " << static_cast<int>(this->map_version) << std::endl;
         std::cerr << "player count: " << this->player_count << std::endl;
         std::cerr << "map width:    " << this->map_width << std::endl;
         std::cerr << "map height:   " << this->map_height << std::endl;
