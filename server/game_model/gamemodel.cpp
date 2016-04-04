@@ -193,6 +193,8 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_move(protocol::Pi
             ")." << std::endl;
 #endif
 
+            // TODO check for pickup items
+
             // compose move message
             auto move_message = protocol::EventMessageHandle();
             move_message.event_type(protocol::EventType::MOVE_GAME_PIECE);
