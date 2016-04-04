@@ -393,10 +393,11 @@ void game_model::GameModel::game_piece_coordinates(protocol::PieceID id, protoco
 }
 
 std::vector<protocol::PieceID> game_model::GameModel::tanks_owned_by(protocol::PlayerID player_id) {
-    auto result = std::vector<TankPiece>();
-    for (auto row : this->pieces) {
-        for (auto piece_ptr : row) {
-            // TODO check that the piece is a tank owned by the player
-        }
-    }
+//    auto result = std::vector<TankPiece>();
+//    for (auto row : this->pieces) {
+//        for (auto piece_ptr : row) {
+//            // TODO check that the piece is a tank owned by the player
+//        }
+//    }
+    return std::vector<protocol::PieceID>{1,2,3}; // TODO unmock
 }
