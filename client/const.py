@@ -79,6 +79,7 @@ tank_data = \
 
 hud_sprites = \
 {
+    "center":   488,
     "north":    510,
     "east":     531,
     "south":    530,
