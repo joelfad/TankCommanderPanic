@@ -208,22 +208,22 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_move(protocol::Pi
 
             // TODO check for pickup items
         }
-
-        // compose move message
-        auto move_message = protocol::EventMessageHandle();
-        move_message.event_type(protocol::EventType::MOVE_GAME_PIECE);
-        move_message.direction(direction);
-        move_message.value(distance);
-        move_message.piece_id(piece_id);
-#ifdef DEBUG
-        std::cerr << "[Sent] Event Message" << std::endl;
-        std::cerr << "  event type: " << static_cast<int>(protocol::EventType::MOVE_GAME_PIECE) << std::endl;
-        std::cerr << "  direction:  " << static_cast<int>(direction) << std::endl;
-        std::cerr << "  value:      " << distance << std::endl;
-        std::cerr << "  piece id:   " << static_cast<int>(piece_id) << std::endl << std::endl;
-#endif
-        to_send.push_back(MessageEnvelope(Recipient::ALL, move_message.to_msg()));
     }
+
+    // compose move message
+    auto move_message = protocol::EventMessageHandle();
+    move_message.event_type(protocol::EventType::MOVE_GAME_PIECE);
+    move_message.direction(direction);
+    move_message.value(distance);
+    move_message.piece_id(piece_id);
+#ifdef DEBUG
+    std::cerr << "[Sent] Event Message" << std::endl;
+    std::cerr << "  event type: " << static_cast<int>(protocol::EventType::MOVE_GAME_PIECE) << std::endl;
+    std::cerr << "  direction:  " << static_cast<int>(direction) << std::endl;
+    std::cerr << "  value:      " << distance << std::endl;
+    std::cerr << "  piece id:   " << static_cast<int>(piece_id) << std::endl << std::endl;
+#endif
+    to_send.push_back(MessageEnvelope(Recipient::ALL, move_message.to_msg()));
 
     return to_send;
 }
