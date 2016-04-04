@@ -105,6 +105,9 @@ game_model::GameModel::GameModel(std::string map_file_path) {
                                                                        protocol::TankModel::INTERCEPTOR);
             this->pieces.at(t3y).at(t3x) = std::make_unique<TankPiece>(player,
                                                                        protocol::TankModel::ELIMINATOR);
+            player.add_tank_id(this->pieces.at(t1y).at(t1x)->get_id());
+            player.add_tank_id(this->pieces.at(t2y).at(t2x)->get_id());
+            player.add_tank_id(this->pieces.at(t3y).at(t3x)->get_id());
 #ifdef DEBUG
             std::cerr << "tank " << this->pieces.at(t1y).at(t1x)->get_id() << std::endl;
             std::cerr << "tank " << this->pieces.at(t2y).at(t2x)->get_id() << std::endl;
@@ -390,14 +393,4 @@ void game_model::GameModel::game_piece_coordinates(protocol::PieceID id, protoco
         }
     }
     throw GamePieceNotFoundError(std::string("game piece with id ").append(std::to_string(id)).append(" not found"));
-}
-
-std::vector<protocol::PieceID> game_model::GameModel::tanks_owned_by(protocol::PlayerID player_id) {
-//    auto result = std::vector<TankPiece>();
-//    for (auto row : this->pieces) {
-//        for (auto piece_ptr : row) {
-//            // TODO check that the piece is a tank owned by the player
-//        }
-//    }
-    return std::vector<protocol::PieceID>{1,2,3}; // TODO unmock
 }

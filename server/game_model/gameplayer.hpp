@@ -9,6 +9,7 @@
 #define SERVER_GAMEPLAYER_HPP
 
 #include <string>
+#include <vector>
 
 #include "../protocol/protocoldefs.hpp"
 
@@ -39,6 +40,10 @@ public:
     auto get_tank_count() const noexcept { return this->tank_count; }
     /* number of tanks */
 
+    void add_tank_id(protocol::PieceID tank_id) {this->tank_ids.push_back(tank_id); }
+
+    const auto& get_tank_ids() const noexcept { return this->tank_ids; }
+
     void loose_tank() { this->tank_count--; }
     /* register a loss of a tank */
 
@@ -51,11 +56,12 @@ private:
 
     static constexpr protocol::PlayerID invalid_id = 0;
 
-    std::string name;                   // Display Name
-    protocol::PlayerID id = invalid_id; // Id
-    int ammo;                           // Ammo next_id
-    protocol::TankCount tank_count;     // Number of tanks
-    protocol::TeamColor team_color;     // Team color
+    std::string name;                           // Display Name
+    protocol::PlayerID id = invalid_id;         // Id
+    int ammo;                                   // Ammo next_id
+    std::vector<protocol::PieceID> tank_ids;    // Owned tank ids
+    protocol::TankCount tank_count;             // Number of tanks
+    protocol::TeamColor team_color;             // Team color
 
 };
 
