@@ -150,7 +150,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_move(protocol::Pi
     protocol::CoordinateY y;
     game_piece_coordinates(piece_id, x, y);
 
-    // check that the piece_id is a tank
+    // check that the piece is a tank
     auto type = this->pieces.at(y).at(x)->get_piece_type();
     if (type < protocol::PieceType::RED_COMMANDER || type > protocol::PieceType::GREEN_NEGOTIATOR) {
         std::cerr << "ERROR: non-tank gamepiece tried to move." << std::endl;
@@ -189,8 +189,8 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_move(protocol::Pi
             this->pieces.at(to_y).at(to_x) = std::move(this->pieces.at(y).at(x));
 
 #ifdef DEBUG
-            std::cerr << "Tank " << piece_id << " moved from (" << x << "," << y << ") to (" << to_x << "," << to_y <<
-            ")." << std::endl;
+            std::cerr << "Tank " << piece_id << " moved from (" << (int)x << "," << (int)y << ") to (" << (int)to_x
+                      << "," << (int)to_y << ")." << std::endl;
 #endif
 
             // TODO check for pickup items
@@ -225,9 +225,18 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     // get reference to player
     GamePlayer& player = this->players[player_id];
 
+#ifdef DEBUG
+    std::cerr << "player id: " << player.get_id() << std::endl;
+    std::cerr << "ammo:      " << player.get_ammo() << std::endl;
+#endif
+
     // check that the player has ammo
     if (player.get_ammo() <= 0)
         return to_send;
+
+#ifdef DEBUG
+    std::cerr << "enough ammo!" << std::endl;
+#endif
 
     // use up an ammo
     player.change_ammo(-1);
@@ -237,8 +246,15 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     protocol::CoordinateY y;
     game_piece_coordinates(piece_id, x, y);
 
-    // check that the piece_id is a tank
+#ifdef DEBUG
+    std::cerr << "tank at (" << x << "," << y << ")" << std::endl;
+#endif
+
+    // check that the piece is a tank
     auto type = this->pieces.at(y).at(x)->get_piece_type();
+#ifdef DEBUG
+    std::cerr << "type: " << static_cast<int>(type) << std::endl;
+#endif
     if (type < protocol::PieceType::RED_COMMANDER || type > protocol::PieceType::GREEN_NEGOTIATOR) {
         std::cerr << "ERROR: non-tank gamepiece tried to shoot." << std::endl;
         return to_send;
@@ -283,8 +299,8 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     }
 
 #ifdef DEBUG
-    std::cerr << "Tank " << piece_id << " fired from (" << x << "," << y << ") at (" << to_x << "," << to_y <<
-    ")." << std::endl;
+    std::cerr << "Tank " << piece_id << " fired from (" << (int) x << "," << (int) y << ") at (" << (int) to_x << "," <<
+    (int) to_y << ")." << std::endl;
 #endif
 
     // compose move message -- so tank point in the correct direction on everyone's screen
