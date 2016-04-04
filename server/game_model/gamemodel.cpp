@@ -142,6 +142,9 @@ game_model::GameModel::GameModel(std::string map_file_path) {
 std::vector<MessageEnvelope> game_model::GameModel::attempt_to_move(protocol::PieceID piece_id,
                                                                     protocol::Direction direction) {
 
+    // list of messages to send
+    std::vector<MessageEnvelope> to_send;
+
     // get coordinates of the tank
     protocol::CoordinateX x;
     protocol::CoordinateY y;
@@ -149,8 +152,12 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_move(protocol::Pi
 
     // check that the piece_id is a tank
     auto type = this->pieces.at(y).at(x)->get_piece_type();
-    if (type < protocol::PieceType::RED_COMMANDER || type > protocol::PieceType::GREEN_NEGOTIATOR)
-        throw GameModelEventError("Only tanks can drive.");
+    if (type < protocol::PieceType::RED_COMMANDER || type > protocol::PieceType::GREEN_NEGOTIATOR) {
+        std::cerr << "ERROR: non-tank gamepiece tried to move." << std::endl;
+        return to_send;
+    }
+
+    // TODO check that the player owns the tank
 
     // get target coordinates
     protocol::CoordinateX to_x = x;
@@ -171,9 +178,6 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_move(protocol::Pi
         default:
             break;
     }
-
-    // list of messages to send
-    std::vector<MessageEnvelope> to_send;
 
     // check the map tile at the target coordinates
     if (this->map.at(to_y).at(to_x)->is_clear_drive()) {
@@ -227,7 +231,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     // check that the piece_id is a tank
     auto type = this->pieces.at(y).at(x)->get_piece_type();
     if (type < protocol::PieceType::RED_COMMANDER || type > protocol::PieceType::GREEN_NEGOTIATOR) {
-        std::cerr << "ERROR: non-tank gamepiece tried to move." << std::endl;
+        std::cerr << "ERROR: non-tank gamepiece tried to shoot." << std::endl;
         return to_send;
     }
 
