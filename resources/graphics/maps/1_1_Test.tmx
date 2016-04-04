@@ -124,6 +124,9 @@
 </data>
  </layer>
  <layer name="tanks" width="30" height="20">
+  <properties>
+   <property name="game_pieces_placeholder" value="true"/>
+  </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

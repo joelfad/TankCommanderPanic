@@ -65,16 +65,16 @@ def generate(input_file_name):
         # get layer properties
         properties = layer.find("properties")
 
-        # skip the layer if it has no game properties
-        if properties is None:
-            continue
-
         # create a dictionary for the layer properties
         layer_properties = {}
 
         # iterate over the properties
         for ppty in properties:
             layer_properties[ppty.attrib["name"]] = ppty.attrib["value"]
+
+        # skip the layer if it has no game properties
+        if "cleardrive" not in layer_properties.keys():
+            continue
 
         # parse the properties
         cleardrive = (layer_properties["cleardrive"].find("true") >= 0)
