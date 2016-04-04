@@ -30,9 +30,9 @@ def load_map_file(id_, version):
         # read valid map
         read_map_file()
 
-def get_map_property(map, name):
+def get_map_property_value(map, property_name):
     for map_property in map.properties:
-        if map_property.name == name:
+        if map_property.name == property_name:
             return map_property.value
     return None;
 
@@ -42,9 +42,9 @@ def validate_map_version(filename, id_, version):
     file_path = MAPS_DIRECTORY + '/' + filename
     map = tmx.TileMap.load(file_path)
     # get the map id from the map file
-    map_id = int(float(get_map_property(map, 'id')))
+    map_id = int(float(get_map_property_value(map, 'id')))
     # get the map_version from the map file
-    map_version = int(float(get_map_property(map, 'version')))
+    map_version = int(float(get_map_property_value(map, 'version')))
     # check if map is valid
     if map_id == id_ and map_version == version:
         # if a valid map was found before this, raise an exception
@@ -64,9 +64,23 @@ def read_map_file():
     # get dimensions of tiles
     tilewidth = map.tilewidth
     tileheight = map.tileheight
-    # get name of map
-    name = str(get_map_property(map, 'name'))
+    # TODO get number of columns from map file
+    columns = 21;
+    # get image source
+    image = map.tilesets[0].image
 
+    # get name of map
+    map_name = str(get_map_property_value(map, 'name'))
+
+
+
+    texture_data = (
+                MAP_FILE,
+                tilewidth,
+                tilewidth,
+                tileheight,
+                columns,
+    )
 
     '''
     # load mock map properties
