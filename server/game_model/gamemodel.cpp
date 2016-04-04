@@ -486,8 +486,16 @@ std::vector<MessageEnvelope> game_model::GameModel::create_all_pieces() {
                 // get piece pointer
                 auto piece_ptr = static_cast<GamePiece *>(this->pieces.at(y).at(x).get());
 
-                // TODO get accurate value value
-                int value = 100;
+                // declare value
+                int value = 0;
+
+                // check if piece is a solid piece
+                auto solid_ptr = static_cast<TankPiece *>(this->pieces.at(y).at(x).get());
+                if (solid_ptr) {
+                    value = solid_ptr->get_health();
+                }
+
+                // TODO check if piece is other piece types (as they are implemented)
 
                 // compose create piece message
                 auto create_piece_message = protocol::CreatePieceMessageHandle();
