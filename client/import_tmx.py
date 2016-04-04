@@ -30,25 +30,23 @@ def load_map_file(id_, version):
         # read valid map
         read_map_file()
 
+def get_map_property(map, name):
+    for map_property in map.properties:
+        if map_property.name == name:
+            return map_property.value
+    return None;
+
 def validate_map_version(filename, id_, version):
     global MAP_FOUND
     # load the map file
     file_path = MAPS_DIRECTORY + '/' + filename
     map = tmx.TileMap.load(file_path)
     # get the map id from the map file
-    map_id = None;
-    properties = map.properties
-    for map_property in properties:
-        if map_property.name == 'id':
-            map_id = int(float(map_property.value));
+    map_id = int(float(get_map_property(map, 'id')))
     # get the map_version from the map file
-    map_version = None
-    properties = map.properties
-    for map_property in properties:
-        if map_property.name == 'version':
-            map_version = int(float(map_property.value));
+    map_version = int(float(get_map_property(map, 'version')))
     # check if map is valid
-    if map_version == version and map_id == id_:
+    if map_id == id_ and map_version == version:
         # if a valid map was found before this, raise an exception
         if MAP_FOUND == True:
             raise RuntimeError("Duplicate map files found.")
