@@ -197,11 +197,11 @@ class InputHandler:
 
         # shoot requests
         (gs.play, sf.Keyboard.W):       request_shoot_north,
-        (gs.play, sf.Keyboard.S):       request_shoot_east,
-        (gs.play, sf.Keyboard.R):       request_shoot_south,
+        (gs.play, sf.Keyboard.D):       request_shoot_east,
+        (gs.play, sf.Keyboard.S):       request_shoot_south,
         (gs.play, sf.Keyboard.A):       request_shoot_west,
         (gs.won, sf.Keyboard.W):        request_shoot_north,
-        (gs.won, sf.Keyboard.S):        request_shoot_east,
-        (gs.won, sf.Keyboard.R):        request_shoot_south,
+        (gs.won, sf.Keyboard.D):        request_shoot_east,
+        (gs.won, sf.Keyboard.S):        request_shoot_south,
         (gs.won, sf.Keyboard.A):        request_shoot_west,
     }
