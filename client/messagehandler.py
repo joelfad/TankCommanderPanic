@@ -3,7 +3,7 @@
 # File: messagehandler.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: April 3, 2016
+# Modified: April 4, 2016
 
 import sys
 import socket
@@ -39,8 +39,10 @@ class MessageHandler:
         message_type = struct.unpack('B', header)[0]
 
         # receive and process message body
+        print("MESSAGE TYPE: {}".format(message_type)) # TODO: Remove this DEBUG line
         self.message_actions[message_type](self, message_type)
-        self.game.hud.update()
+        if self.game.state is not gs.wait:
+            self.game.hud.update()
 
     def send_message(self, action_type, direction=0, piece_id=0):
         # pack message into binary
@@ -63,7 +65,7 @@ class MessageHandler:
         print("Checking for new messages...")
 
         # poll for incoming messages
-        for fd, event in self.poll.poll(10): # wait 50ms for events
+        for fd, event in self.poll.poll(10): # wait 10ms for events
             if event & select.POLLIN:
                 self.recv_message()
 
@@ -73,12 +75,12 @@ class MessageHandler:
 
     def unpack_game_state(self):
         # receive first three bytes of message
-        message_part = self.sock.recv(5)
-        map_id, map_version, player_id, owned_tank_count = struct.unpack('<BBHB', message_part)
+        message_part = self.sock.recv(7) # TODO: This should be 5
+        map_id, map_version, garbage1, player_id, owned_tank_count, garbage2 = struct.unpack('<BBBHBB', message_part)
 
         # receive remainder of message
         message_part = self.sock.recv(owned_tank_count * 4)
-        tank_piece_id = struct.unpack('<'+'i'*owned_tank_count, message_part)
+        tank_piece_ids = struct.unpack('!'+'i'*owned_tank_count, message_part)
 
         # print results
         print('''\
@@ -88,10 +90,10 @@ class MessageHandler:
         map_version = {}
         player_id = {}
         owned_tank_count = {}
-        tank_piece_id = {}\
-        '''.format(map_id, map_version, player_id, owned_tank_count, tank_piece_id))
+        tank_piece_ids = {}\
+        '''.format(map_id, map_version, player_id, owned_tank_count, tank_piece_ids))
 
-        return (map_id, map_version, player_id, tank_piece_id)
+        return (map_id, map_version, player_id, tank_piece_ids)
 
     def unpack_create_piece(self):
         # receive message
@@ -108,12 +110,11 @@ class MessageHandler:
         piece_coord_y = {}\
         '''.format(value, piece_id, piece_coord_x, piece_coord_y))
 
-        return (value, piece_id, piece_coord_x, piece_coord_y)
+        return (piece_id, piece_coord_x, piece_coord_y, value)
 
     def unpack_event(self):
         # receive message
         message = self.sock.recv(11) # TODO: This should be 9
-        print(message)
         direction, garbage, value, piece_id = struct.unpack('<Bhii', message) # TODO: Remove garbage
 
         # print results
@@ -129,13 +130,13 @@ class MessageHandler:
 
     # set game state
     def receive_game_state(self, message_type):
-        map_id, map_version, player_id, tank_piece_id = self.unpack_game_state()
-        # TODO: handle message
+        state = self.unpack_game_state()
+        self.game.set_state(*state)
 
     # create new game piece
     def receive_piece(self, piece_type):
-        value, piece_id, x, y = self.unpack_create_piece()
-        self.game.battlefield.create_piece(piece_id, x, y, piece_type, value)
+        piece_data = self.unpack_create_piece()
+        self.game.battlefield.create_piece(piece_type, *piece_data)
 
     def receive_brick_piece(self, piece_type):
         receive_piece(piece_type)
@@ -180,6 +181,10 @@ class MessageHandler:
             print("Invalid move request. Unknown direction: {}".format(direction))
         self.game.center_view()
 
+    def game_start(self, event_type):
+        self.unpack_event() # dump message
+        self.game.start()
+
     def game_over(self, event_type):
         direction, value, piece_id = self.unpack_event()
         if not value:
@@ -207,6 +212,7 @@ class MessageHandler:
     message_actions[33]     = update_heath
     message_actions[34]     = destroy_piece
     message_actions[35]     = move_piece
-    message_actions[36]     = game_over
+    message_actions[36]     = game_start
+    message_actions[37]     = game_over
 
     message_actions = tuple(message_actions)

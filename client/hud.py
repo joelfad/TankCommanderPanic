@@ -3,7 +3,7 @@
 # File: hud.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: April 3, 2016
+# Modified: April 4, 2016
 
 import sfml as sf
 from gamestate import GameState as gs
@@ -13,12 +13,12 @@ import const
 
 class HUD:
 
-    def __init__(self, game):
+    def __init__(self, game, map_id, map_version):
         self.game = game
         self.texture = game.texturehandler.texture
 
         # load map properties and tank data
-        self.map_properties = self.load_properties()
+        self.map_properties = self.load_properties(map_id, map_version)
         self.tank_data = const.tank_data
 
         # set useful values for calculations
@@ -46,31 +46,56 @@ class HUD:
 
     def update_stats(self): # TODO: Remove magic numbers in this function
         # translucent overlay
-        self.stats_box = sf.RectangleShape((960, 16))
+        self.stats_box = sf.RectangleShape((480, 16))
         self.stats_box.position = self.game.window.map_pixel_to_coords((0, 672))
-        self.stats_box.fill_color = sf.Color(0, 0, 0, 160)
+
+        # set overlay white if player has won, black otherwise
+        if self.game.state is gs.won:
+            self.stats_box.fill_color = sf.Color(255, 255, 255, 160)
+        else:
+            self.stats_box.fill_color = sf.Color(0, 0, 0, 160)
 
         self.stats = []
 
-        # tank health
-        position_x = 0
-        tank_colors = [self.tank_data[t.type][2] for t in self.game.tanks]
-        for i, tank in enumerate(self.game.tanks):
-            t = sf.Text(" {}:{} ".format(self.tank_data[tank.type][0], tank.value))
-            t.font = self.game.texturehandler.font
-            t.character_size = 8
-            t.position = self.game.window.map_pixel_to_coords((position_x, 680))
-            if tank is self.game.active_tank:
-                t.color = self.tank_data[tank.type][2]
-            position_x += t.local_bounds.width * 2
-            self.stats.append(t)
+        # display tank health if still playing
+        if self.game.state is gs.play or (self.game.state is gs.pan and self.game.prev is gs.play):
+            position_x = 0
+            tank_colors = [self.tank_data[t.type][2] for t in self.game.tanks]
+            for i, tank in enumerate(self.game.tanks):
+                t = sf.Text(" {}:{} ".format(self.tank_data[tank.type][0], tank.value))
+                t.font = self.game.fonthandler.font
+                t.character_size = 8
+                t.position = self.game.window.map_pixel_to_coords((position_x, 680))
+                if tank is self.game.active_tank:
+                    t.color = self.tank_data[tank.type][2]
+                position_x += t.local_bounds.width * 2
+                self.stats.append(t)
 
-        # ammo
-        a = sf.Text("*{} ".format(self.game.ammo))
-        a.font = self.game.texturehandler.font
-        a.character_size = 8
-        a.position = self.game.window.map_pixel_to_coords((960 - a.local_bounds.width * 2, 680))
-        self.stats.append(a)
+        # display game over message if lost
+        if self.game.state is gs.lost:
+            m = sf.Text("GAME OVER")
+            m.font = self.game.fonthandler.font
+            m.character_size = 8
+            m.position = self.game.window.map_pixel_to_coords((480 - m.local_bounds.width, 680))
+            self.stats.append(m)
+        else:
+            # display ammo if won or still playing
+            a = sf.Text("*{} ".format(self.game.ammo))
+            a.font = self.game.texturehandler.font
+            a.character_size = 8
+            a.position = self.game.window.map_pixel_to_coords(((480 - a.local_bounds.width) * 2, 680))
+
+            # display victory message if won
+            if self.game.state is gs.won or self.game.prev is gs.won:
+                a.color = sf.Color.BLACK
+                m = sf.Text("YOU WIN!")
+                m.font = self.game.fonthandler.font
+                m.character_size = 8
+                m.position = self.game.window.map_pixel_to_coords((480 - m.local_bounds.width, 680))
+                m.color = sf.Color.BLACK
+                self.stats.append(m)
+
+            self.stats.append(a)
 
     def update_range(self):
         # update range of active tank
@@ -137,7 +162,8 @@ class HUD:
             self.sprites["south"].position = (center.x, (sy + 0.5) * self.tileheight)
             self.sprites["west"].position = ((wx + 0.5) * self.tilewidth, center.y)
 
-    def load_properties(self):
+    def load_properties(self, map_id, map_version):
+        #TODO: Load properties using map_id and map_version
         return swapaxes(const.fourbase_properties, 0, 1).tolist()
 
     def draw(self):

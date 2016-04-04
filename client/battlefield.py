@@ -3,7 +3,7 @@
 # File: battlefield.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: April 3, 2016
+# Modified: April 4, 2016
 
 import sfml as sf
 from numpy import swapaxes
@@ -15,18 +15,13 @@ Tile = sf.Sprite
 class BattleField:
 
     # initialize the battlefield
-    def __init__(self, game):
+    def __init__(self, game, map_id, map_version):
         self.game = game
-        # TODO: Load map id and map version from Game State Message instead of "const"
-        texture_data, map_data = self.load_map_file(const.id_, const.version)
+        texture_data, map_data = self.load_map_file(map_id, map_version)
         self.texture = game.load_texture(texture_data)
         self.mapwidth, self.mapheight, map_ = self.create_map(map_data)
         self.prerender(map_)
         self.pieces = {}
-
-        # load mock tanks
-        for piece in const.fourbase_tanks:  # TODO: Remove and generate from Create Piece Message
-            self.create_piece(*piece)       #
 
     # load map data from file
     def load_map_file(self, id_, version):
@@ -101,7 +96,7 @@ class BattleField:
         return self.pieces[id_]
 
     # create new gamepiece
-    def create_piece(self, id_, x, y, type_, value):
+    def create_piece(self, type_, id_, x, y, value):
         piece = GamePiece(id_, (x * self.tilewidth, y * self.tileheight), type_, value, self.game.texturehandler)
         self.pieces[id_] = piece
 

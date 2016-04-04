@@ -5,7 +5,7 @@
 # File: client.py
 # Author: Joel McFadden
 # Created: February 2, 2016
-# Modified: March 31, 2016
+# Modified: April 4, 2016
 
 # Credits: Part of this code has been adapted from the following book:
 #          "Learning Python Network Programming" © 2015 Packt Publishing
@@ -22,5 +22,4 @@ if __name__ == '__main__':
     server_addr = (sys.argv[1], int(sys.argv[2]))
 
     game = Game(server_addr)
-    game.set_state() # TODO: Remove after game gets state from Game State Message
     game.run()
