@@ -150,7 +150,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_move(protocol::Pi
     protocol::CoordinateY y;
     game_piece_coordinates(piece_id, x, y);
 
-    // check that the piece_id is a tank
+    // check that the piece is a tank
     auto type = this->pieces.at(y).at(x)->get_piece_type();
     if (type < protocol::PieceType::RED_COMMANDER || type > protocol::PieceType::GREEN_NEGOTIATOR) {
         std::cerr << "ERROR: non-tank gamepiece tried to move." << std::endl;
@@ -237,7 +237,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     protocol::CoordinateY y;
     game_piece_coordinates(piece_id, x, y);
 
-    // check that the piece_id is a tank
+    // check that the piece is a tank
     auto type = this->pieces.at(y).at(x)->get_piece_type();
     if (type < protocol::PieceType::RED_COMMANDER || type > protocol::PieceType::GREEN_NEGOTIATOR) {
         std::cerr << "ERROR: non-tank gamepiece tried to shoot." << std::endl;
