@@ -50,7 +50,8 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
-    // TODO send all players the initial game state and game start messages
+    // send all players the initial game state and game start messages
+
     for (auto& player_pair : model.get_players()) {
         auto& player = player_pair.second;
 
@@ -60,7 +61,6 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
         game_state_message.map_version(model.get_map_version());
         game_state_message.player_id(player.get_id());
         game_state_message.tank_piece_ids(player.get_tank_ids());
-        // TODO add debug printout
 #ifdef DEBUG
         std::cerr << "[Sent] Game State Message" << std::endl;
         std::cerr << "  message type:     1" << std::endl;
@@ -89,6 +89,12 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
 #endif
         players[player.get_id()]->send(ammo_message.to_msg());
     }
+
+    // get create pieces messages
+    auto to_send = model.create_all_pieces();
+
+    // send all game pieces to all clients
+    send_envelopes(to_send, players, 0);
 
     // compose game start message
     auto game_start_message = protocol::EventMessageHandle();

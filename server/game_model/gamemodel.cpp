@@ -16,6 +16,7 @@
 #include "gamemodelerror.hpp"
 #include "../messageenvelope.hpp"
 #include "../protocol/eventmessagehandle.hpp"
+#include "../protocol/createpiecemessagehandle.hpp"
 
 // debug flag
 #define DEBUG
@@ -437,4 +438,38 @@ void game_model::GameModel::game_piece_coordinates(protocol::PieceID id, protoco
         }
     }
     throw GamePieceNotFoundError(std::string("game piece with id ").append(std::to_string(id)).append(" not found"));
+}
+
+std::vector<MessageEnvelope> game_model::GameModel::create_all_pieces() {
+    auto to_send = std::vector<MessageEnvelope>();
+    for (int y = 0; y < this->pieces.size(); y++) {
+        for (int x = 0; x < this->pieces.at(y).size(); x++) {
+            if (this->pieces.at(y).at(x)) {
+
+                // get piece pointer
+                auto piece_ptr = static_cast<GamePiece*>(this->pieces.at(y).at(x).get());
+
+                // TODO get accurate value value
+                int value = 100;
+
+                // compose create piece message
+                auto create_piece_message = protocol::CreatePieceMessageHandle();
+                create_piece_message.piece_type(piece_ptr->get_piece_type());
+                create_piece_message.value(value);
+                create_piece_message.piece_id(piece_ptr->get_id());
+                create_piece_message.piece_coord_x(x);
+                create_piece_message.piece_coord_y(y);
+#ifdef DEBUG
+                std::cerr << "[Sent] Create Piece Message" << std::endl;
+                std::cerr << "  piece type: " << static_cast<int>(piece_ptr->get_piece_type()) << std::endl;
+                std::cerr << "  value:      " << value << std::endl;
+                std::cerr << "  piece id:   " << static_cast<int>(piece_ptr->get_id()) << std::endl;
+                std::cerr << "  coord x:    " << x << std::endl;
+                std::cerr << "  coord y:    " << y << std::endl << std::endl;
+#endif
+                to_send.push_back(MessageEnvelope(Recipient::ALL, create_piece_message.to_msg()));
+            }
+        }
+    }
+    return to_send;
 }
