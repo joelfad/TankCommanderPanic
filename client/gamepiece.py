@@ -3,18 +3,18 @@
 # File: gamepiece.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: March 31, 2016
+# Modified: April 3, 2016
 
-from sfml import Sprite
+from sfml import Sprite, Vector2
 from enum import Enum
 from const import sprite_map
 
 class GamePiece(Sprite):
 
-    def __init__(self, id, position, type, value, texturehandler):
+    def __init__(self, id_, position, type_, value, texturehandler):
         super(self.__class__, self).__init__(texturehandler.texture)
-        self.id = id
-        self.type = type
+        self.id = id_
+        self.type = type_
         self.position = position
         self.value = value
 
@@ -33,6 +33,11 @@ class GamePiece(Sprite):
         super(self.__class__, self).move((x * self.texture_rectangle.width,
                                           y * self.texture_rectangle.height))
         return self
+
+    # return battlefield map coordinates of piece
+    def coord(self):
+        return Vector2(int((self.position.x - self.origin.x) / self.texture_rectangle.width),
+                          int((self.position.y - self.origin.y) / self.texture_rectangle.height))
 
 # TODO: Use this to set the sprite based on GamePiece value
 class PieceType(Enum):
