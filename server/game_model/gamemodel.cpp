@@ -375,7 +375,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
                     auto tank_id = tank_ptr->get_id();
 
                     // get tank's commander
-                    auto commander = tank_ptr->get_commander();
+                    auto& commander = tank_ptr->get_commander();
 
                     // player looses the tank
                     commander.loose_tank(tank_id);
