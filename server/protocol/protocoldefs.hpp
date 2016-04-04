@@ -36,7 +36,7 @@ TankModel tank_model(PieceType);
 /* calculate the Model from the PieceType */
 
 enum class EventType: ServerMsgType {
-    UPDATE_AMMO = 32, UPDATE_HEALTH = 33, DESTROY_GAME_PIECE = 34, MOVE_GAME_PIECE = 35, GAME_OVER = 36
+    UPDATE_AMMO = 32, UPDATE_HEALTH = 33, DESTROY_GAME_PIECE = 34, MOVE_GAME_PIECE = 35, GAME_START=36, GAME_OVER = 37
 };
 
 enum EndGameState: std::int32_t {WIN, LOSE};
