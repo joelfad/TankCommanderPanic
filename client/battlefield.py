@@ -117,7 +117,7 @@ class BattleField:
             else:                                   # piece is last tank
                 self.game.state = gs.lose
         # destroy
-        del piece
+        del self.pieces[id_]
 
     # draw the battlefield
     def draw(self):

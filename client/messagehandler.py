@@ -40,6 +40,7 @@ class MessageHandler:
 
         # receive and process message body
         self.message_actions[message_type](self, message_type)
+        self.game.hud.update()
 
     def send_message(self, action_type, direction=0, piece_id=0):
         # pack message into binary
@@ -62,7 +63,7 @@ class MessageHandler:
         print("Checking for new messages...")
 
         # poll for incoming messages
-        for fd, event in self.poll.poll(50): # wait 50ms for events
+        for fd, event in self.poll.poll(10): # wait 50ms for events
             if event & select.POLLIN:
                 self.recv_message()
 
@@ -111,9 +112,9 @@ class MessageHandler:
 
     def unpack_event(self):
         # receive message
-        message = self.sock.recv(9)
+        message = self.sock.recv(11) # TODO: This should be 9
         print(message)
-        direction, value, piece_id = struct.unpack('<Bii', message)
+        direction, garbage, value, piece_id = struct.unpack('<Bhii', message) # TODO: Remove garbage
 
         # print results
         print('''\

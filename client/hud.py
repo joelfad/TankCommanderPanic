@@ -46,7 +46,7 @@ class HUD:
 
     def update_stats(self): # TODO: Remove magic numbers in this function
         # translucent overlay
-        self.stats_box = sf.RectangleShape((960, 32))
+        self.stats_box = sf.RectangleShape((960, 16))
         self.stats_box.position = self.game.window.map_pixel_to_coords((0, 672))
         self.stats_box.fill_color = sf.Color(0, 0, 0, 160)
 
