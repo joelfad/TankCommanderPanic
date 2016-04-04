@@ -375,3 +375,12 @@ void game_model::GameModel::game_piece_coordinates(protocol::PieceID id, protoco
     }
     throw GamePieceNotFoundError(std::string("game piece with id ").append(std::to_string(id)).append(" not found"));
 }
+
+std::vector<protocol::PieceID> game_model::GameModel::tanks_owned_by(protocol::PlayerID player_id) {
+    auto result = std::vector<TankPiece>();
+    for (auto row : this->pieces) {
+        for (auto piece_ptr : row) {
+            // TODO check that the piece is a tank owned by the player
+        }
+    }
+}
