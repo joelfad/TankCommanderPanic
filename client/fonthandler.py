@@ -8,7 +8,7 @@
 import sfml as sf
 
 class FontHandler:
-    FONTS_DIR = "../resources/fonts/"
+    FONTS_DIR = "resources/fonts/"
     FONTNAME = "atarcc.ttf"
 
     def __init__(self):

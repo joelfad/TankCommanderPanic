@@ -9,7 +9,7 @@ import os
 import xml.etree.ElementTree as ET
 import csv
 
-MAP_DIRECTORY = "../resources/graphics/maps"
+MAP_DIRECTORY = "resources/graphics/maps"
 
 def load_map_file(id_, version):
     global MAP_DIRECTORY

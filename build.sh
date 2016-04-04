@@ -21,5 +21,6 @@ cd ../../
 
 # Create symlinks
 echo "Creating symbolic links..."
+rm -f Server Client
 ln -s $SDIR/build/server Server
 ln -s $CDIR/client.py Client
