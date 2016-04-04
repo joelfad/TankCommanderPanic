@@ -81,7 +81,7 @@ class HUD:
         else:
             # display ammo if won or still playing
             a = sf.Text("*{} ".format(self.game.ammo))
-            a.font = self.game.texturehandler.font
+            a.font = self.game.fonthandler.font
             a.character_size = 8
             a.position = self.game.window.map_pixel_to_coords(((480 - a.local_bounds.width) * 2, 680))
 

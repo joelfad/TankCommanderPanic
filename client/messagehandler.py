@@ -76,7 +76,7 @@ class MessageHandler:
     def unpack_game_state(self):
         # receive first three bytes of message
         message_part = self.sock.recv(7) # TODO: This should be 5
-        map_id, map_version, garbage1, player_id, owned_tank_count, garbage2 = struct.unpack('<BBBHBB', message_part)
+        map_id, map_version, g1, player_id, owned_tank_count, g2 = struct.unpack('<BBBHBB', message_part) # TODO: Remove garbage (g1, g2)
 
         # receive remainder of message
         message_part = self.sock.recv(owned_tank_count * 4)
@@ -97,8 +97,8 @@ class MessageHandler:
 
     def unpack_create_piece(self):
         # receive message
-        message = self.sock.recv(10)
-        value, piece_id, piece_coord_x, piece_coord_y = struct.unpack('<iiBB', message)
+        message = self.sock.recv(15) # TODO: This should be 10
+        g1, g2, value, piece_id, piece_coord_x, piece_coord_y, g3 = struct.unpack('<BHiiBBH', message) # TODO: Remove garbage (g1, g2, g3)
 
         # print results
         print('''\
@@ -115,7 +115,7 @@ class MessageHandler:
     def unpack_event(self):
         # receive message
         message = self.sock.recv(11) # TODO: This should be 9
-        direction, garbage, value, piece_id = struct.unpack('<Bhii', message) # TODO: Remove garbage
+        direction, g1, value, piece_id = struct.unpack('<Bhii', message) # TODO: Remove garbage (g1)
 
         # print results
         print('''\
