@@ -7,7 +7,7 @@
 
 import sfml as sf
 from gamestate import GameState as gs
-from gamepiece import PieceType as pt
+from protocol import PieceType as pt
 from numpy import swapaxes, clip
 import const
 

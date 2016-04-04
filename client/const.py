@@ -3,7 +3,7 @@
 # File: const.py
 # Author: Joel McFadden
 # Created: March 29, 2016
-# Modified: April 2, 2016
+# Modified: April 3, 2016
 
 import sfml as sf
 
@@ -92,10 +92,10 @@ hud_sprites = \
 #############
 
 # received from server
-id_ = 2              # map id
+id_ = 2             # map id
 version = 1         # map version
-ammo = 500          # ammo count
-tank_piece_id = [1000, 2000, 3000] # ids of owned tanks
+ammo = 100          # ammo count
+tank_piece_id = [1, 2, 3] # ids of owned tanks
 
 # determined from load_map_data
 name = "Fourbase"   # map name
@@ -111,22 +111,22 @@ columns = 21        # columns in texture
 # mock properties
 tank_range = 5
 
-# mock tanks
-red_commander = (1000, 1, 1, 16, 20)
-red_interceptor = (2000, 3, 2, 17, 20)
-red_eliminator = (3000, 2, 3, 18, 20)
+# mock tanks (id, x, y, type, value)
+red_commander       = (1, 1, 1, 16, 50)
+red_interceptor     = (2, 3, 2, 17, 30)
+red_eliminator      = (3, 2, 3, 18, 100)
 
-blue_commander = (1100, 30, 1, 20, 20)
-blue_interceptor = (2200, 29, 3, 21, 20)
-blue_eliminator = (3300, 28, 2, 22, 20)
+blue_commander      = (4, 30, 1, 20, 50)
+blue_interceptor    = (5, 29, 3, 21, 30)
+blue_eliminator     = (6, 28, 2, 22, 100)
 
-yellow_commander = (1110, 1, 30, 24, 20)
-yellow_interceptor = (2220, 2, 28, 25, 20)
-yellow_eliminator = (3330, 3, 29, 26, 20)
+yellow_commander    = (7, 1, 30, 24, 50)
+yellow_interceptor  = (8, 2, 28, 25, 30)
+yellow_eliminator   = (9, 3, 29, 26, 100)
 
-green_commander = (1111, 30, 30, 28, 20)
-green_interceptor = (2222, 28, 29, 29, 20)
-green_eliminator = (3333, 29, 28, 30, 20)
+green_commander     = (10, 30, 30, 28, 50)
+green_interceptor   = (11, 28, 29, 29, 30)
+green_eliminator    = (12, 29, 28, 30, 100)
 
 fourbase_tanks = \
 {

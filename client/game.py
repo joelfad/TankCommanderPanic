@@ -9,6 +9,7 @@ import sfml as sf
 from numpy import clip
 from battlefield import *
 from texturehandler import *
+from messagehandler import *
 from inputhandler import *
 from gamestate import GameState as gs
 from const import ammo # TODO: Remove after Event Messages can be received
@@ -30,15 +31,15 @@ WINDOW_HEIGHT   = VIEW_HEIGHT * RATIO + HUD_HEIGHT
 
 class Game:
 
-    def __init__(self):
+    def __init__(self, server_addr):
         self.state = gs.wait
         self.window = self.create_window()
         self.battlefield = BattleField(self)
+        self.messagehandler = MessageHandler(self, server_addr)
         self.inputhandler = InputHandler(self)
-        # self.messagehandler = MessageHandler(self)
 
     def process_events(self):
-        # handle messages first (in case the last tank is destroyed)
+        self.messagehandler.check_for_messages()
         self.inputhandler.check_for_input()
 
     def render(self):
@@ -50,7 +51,6 @@ class Game:
     def run(self):
         while self.window.is_open:
             self.process_events()
-            # self.update()
             self.render()
 
     def create_window(self):
@@ -95,7 +95,7 @@ class Game:
 
     # set the state of the game
     def set_state(self):
-        self.player_id = randint(0, 32767) # TODO: Receive this value from Game State Message
+        self.player_id = 1#randint(0, 32767) # TODO: Receive this value from Game State Message
         self.ammo = const.ammo # TODO: Receive this value from Event Message (Update Ammo)
         self.tanks = [self.battlefield.get_piece(id_) for id_ in const.tank_piece_id] # TODO: Receive this value from Game State Message
         self.active_tank = self.tanks[0]
