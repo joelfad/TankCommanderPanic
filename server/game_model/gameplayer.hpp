@@ -59,6 +59,9 @@ private:
     static protocol::PlayerID next_id;
     /* counter for assigning unique ids */
 
+    static protocol::TeamColor next_color;
+    /* variable for assigning unique colors */
+
     static constexpr protocol::PlayerID invalid_id = 0;
 
     std::string name;                           // Display Name

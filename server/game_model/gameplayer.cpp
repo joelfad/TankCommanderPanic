@@ -10,6 +10,9 @@
 protocol::PlayerID game_model::GamePlayer::next_id = 1;
 /* set initial next_id to 1 */
 
+protocol::TeamColor game_model::GamePlayer::next_color = protocol::TeamColor::RED;
+/* set initial next_color to RED */
+
 game_model::GamePlayer::GamePlayer() {}
 
 game_model::GamePlayer::GamePlayer(GamePlayer&& other) : name{std::move(other.name)}, id{other.id},
@@ -35,6 +38,7 @@ game_model::GamePlayer game_model::GamePlayer::make_game_player() {
     auto result = game_model::GamePlayer();
     result.id = next_id++;
     result.ammo = 100;
-    result.team_color = static_cast<protocol::TeamColor>(result.id - 1); // TODO make not ugly
+    result.team_color = next_color;
+    next_color = static_cast<protocol::TeamColor>((static_cast<int>(next_color) + 4) % 16);
     return result;
 }
