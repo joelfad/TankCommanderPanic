@@ -53,7 +53,7 @@ class HUD:
             stats_box.position = self.game.window.map_pixel_to_coords((0, 672))
         else:
             # dim display if lost
-            stats_box = sf.RectangleShape((480, 336))
+            stats_box = sf.RectangleShape((480, 352))
             stats_box.position = self.game.window.map_pixel_to_coords((0, 0))
 
         # set overlay white if player has won, black otherwise
