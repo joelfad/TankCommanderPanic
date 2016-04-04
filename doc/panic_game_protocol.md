@@ -4,7 +4,7 @@ This document describes the message format and order for Panic Game Protocol,
 the protocol used by Tank Commander Panic. It is built on TCP and allows for
 joining games and supports the gameplay.
 
-This is version `1` of the protocol. Protocol version numbers will simply
+This is version `2` of the protocol. Protocol version numbers will simply
 increment when an incompatible change is made.
 
 ## Message Formats
@@ -147,8 +147,9 @@ This format is identified by a `message_type` value of `32` - `47`.
 | 33                 | Update Health       | new health value               | -                                        |
 | 34                 | Destroy `GamePiece` | `0` (not used)                 | -                                        |
 | 35                 | Move `GamePiece`    | distance `GamePiece` is moved  | only time `direction` is specified       |
-| 36                 | Game Over           | enum: `you win`, `you loose`   | `piece_id` is not specified (set to `0`) |
-| 37 - 47            | *unreserved*        | -                              | -                                        |
+| 36                 | Game Start          | `0` (not used)                 | `piece_id` is not specified (set to `0`) |
+| 37                 | Game Over           | enum: `you win`, `you loose`   | `piece_id` is not specified (set to `0`) |
+| 38 - 47            | *unreserved*        | -                              | -                                        |
 
 **Note:** When a tank fires, an **Event Message** is sent to all players stating
 that the tank moved in the direction it fired a distance of 0. This will cause
