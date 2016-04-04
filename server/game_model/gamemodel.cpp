@@ -371,12 +371,22 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
                 auto tank_ptr = dynamic_cast<TankPiece*>(target_ptr);
                 if (tank_ptr) {
 
+                    // get tank id
                     auto tank_id = tank_ptr->get_id();
 
-                    // player looses the tank
-                    tank_ptr->get_commander().loose_tank(tank_id);
+                    // get tank's commander
+                    auto commander = tank_ptr->get_commander();
 
-                    // TODO check if said player lost
+                    // player looses the tank
+                    commander.loose_tank(tank_id);
+
+                    // check if commander lost
+                    if (commander.get_tank_count() <= 0) {
+
+                        // TODO compose game over message
+
+
+                    }
                 }
 
                 // delete the destroyed target
