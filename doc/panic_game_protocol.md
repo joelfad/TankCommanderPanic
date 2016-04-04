@@ -2,7 +2,7 @@
 
 This document describes the message format and order for Panic Game Protocol,
 the protocol used by Tank Commander Panic. It is built on TCP and allows for
-joining games and supports the gameplay.
+joining games and supports the gameplay. The protocol runs over port `4410`.
 
 This is version `2` of the protocol. Protocol version numbers will simply
 increment when an incompatible change is made.
