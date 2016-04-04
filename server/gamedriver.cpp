@@ -131,10 +131,14 @@ void send_envelopes(std::vector<MessageEnvelope> to_send, PlayerClientList& play
     for (auto& envelope: to_send) {
         switch (envelope.get_recipient()) {
             case Recipient::ALL :
+
+                // send to all clients
                 players.send_all(envelope.get_message());
                 break;
             case Recipient::ACTOR :
-                // TODO send to correct client
+
+                // send to correct client
+                players[actor]->send(envelope.get_message());
                 break;
         }
     }
