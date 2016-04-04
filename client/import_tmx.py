@@ -58,10 +58,15 @@ def validate_map_version(filename, id_, version):
 
 def read_map_file():
     map = tmx.TileMap.load(MAPS_DIRECTORY + '/' + MAP_FILE)
+    # get dimensions of map in tiles
     map_tiles_x = map.width
     map_tiles_y = map.height
+    # get dimensions of tiles
     tilewidth = map.tilewidth
     tileheight = map.tileheight
+    # get name of map
+    name = str(get_map_property(map, 'name'))
+
 
     '''
     # load mock map properties
