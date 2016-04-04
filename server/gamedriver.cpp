@@ -89,6 +89,21 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
         players[player.get_id()]->send(ammo_message.to_msg());
     }
 
+    // compose game start message
+    auto game_start_message = protocol::EventMessageHandle();
+    game_start_message.event_type(protocol::EventType::GAME_START);
+    game_start_message.direction(protocol::Direction::NONE);
+    game_start_message.value(0);
+    game_start_message.piece_id(0);
+#ifdef DEBUG
+    std::cerr << "[Sent] Event Message" << std::endl;
+    std::cerr << "  event type: " << static_cast<int>(protocol::EventType::GAME_START) << std::endl;
+    std::cerr << "  direction:  " << static_cast<int>(protocol::Direction::NONE) << std::endl;
+    std::cerr << "  value:      0" << std::endl;
+    std::cerr << "  piece id:   0" << std::endl << std::endl;
+#endif
+    players.send_all(game_start_message.to_msg());
+
     // run the game
     while (true) {
         // get next player message
