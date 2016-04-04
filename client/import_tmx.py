@@ -35,15 +35,18 @@ def validate_map_version(filename, id_, version):
     # load the map file
     file_path = MAPS_DIRECTORY + '/' + filename
     map = tmx.TileMap.load(file_path)
-
-    # get the map_version from the map file
-    map_version = int(float(map.version))
     # get the map id from the map file
     map_id = None;
     properties = map.properties
     for map_property in properties:
         if map_property.name == 'id':
             map_id = int(float(map_property.value));
+    # get the map_version from the map file
+    map_version = None
+    properties = map.properties
+    for map_property in properties:
+        if map_property.name == 'version':
+            map_version = int(float(map_property.value));
     # check if map is valid
     if map_version == version and map_id == id_:
         # if a valid map was found before this, raise an exception
@@ -56,7 +59,7 @@ def validate_map_version(filename, id_, version):
         MAP_FOUND = False;
 
 def read_map_file():
-    map = tmx.TileMap.load(file_path)
+    map = tmx.TileMap.load(MAPS_DIRECTORY + '/' + MAP_FILE)
     map_tiles_x = map.width
     map_tiles_y = map.height
     tilewidth = map.tilewidth
@@ -71,11 +74,11 @@ def read_map_file():
     self.piece_layer = const.piece_layer    #
 
     texture_data = (                        # TODO: Remove "const" when function is implemented
-                 const.image_source,      #
+                 const.image_source,        #
                  self.tilewidth,
                  self.tileheight,
-                 const.tilecount,         #
-                 const.columns,           #
+                 const.tilecount,           #
+                 const.columns,             #
                  )
 
     # load mock map data
