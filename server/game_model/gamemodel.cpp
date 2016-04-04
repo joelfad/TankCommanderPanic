@@ -306,7 +306,13 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
         // check if the target was destroyed
         if (new_health <= 0) {
 
-            // TODO compose destroy message
+            // compose destroy message
+            auto destroy_message = protocol::EventMessageHandle();
+            destroy_message.event_type(protocol::EventType::DESTROY_GAME_PIECE);
+            destroy_message.direction(protocol::Direction::NONE);
+            destroy_message.value(0);
+            destroy_message.piece_id(target_id);
+            to_send.push_back(MessageEnvelope(Recipient::ALL, destroy_message.to_msg()));
         } else {
 
             // compose damage message
