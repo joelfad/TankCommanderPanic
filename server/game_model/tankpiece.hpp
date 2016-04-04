@@ -25,6 +25,8 @@ public:
 
     static auto get_speed(protocol::TankModel model) noexcept { return model_speed[static_cast<char>(model)]; }
 
+    auto get_commander() noexcept -> GamePlayer& { return this->commander; }
+
     auto get_color() const noexcept { return commander.get_team_color(); }
 
     protocol::PieceType get_piece_type() const noexcept override;

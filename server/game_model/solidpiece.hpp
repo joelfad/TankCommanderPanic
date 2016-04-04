@@ -25,7 +25,7 @@ public:
     void collide(TankPiece &tank) override;
     /* react to being driven over by a tank */
 
-    int shot(int damage) override;
+    void shot(int damage) override;
     /* react to taking damage */
 
     virtual protocol::PieceType get_piece_type() const noexcept override = 0;

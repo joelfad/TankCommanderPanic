@@ -16,6 +16,8 @@ constexpr unsigned short port = 4410;
 
 using ServerMsgType = std::uint8_t;
 
+static constexpr ServerMsgType GameStateMessageValue = 1;
+
 enum class PieceType: ServerMsgType {
     // 2 - 7 brick types
     HEALTH=8, AMMO=9, DECORATION=10,
@@ -36,7 +38,7 @@ TankModel tank_model(PieceType);
 /* calculate the Model from the PieceType */
 
 enum class EventType: ServerMsgType {
-    UPDATE_AMMO = 32, UPDATE_HEALTH = 33, DESTROY_GAME_PIECE = 34, MOVE_GAME_PIECE = 35, GAME_OVER = 36
+    UPDATE_AMMO = 32, UPDATE_HEALTH = 33, DESTROY_GAME_PIECE = 34, MOVE_GAME_PIECE = 35, GAME_START=36, GAME_OVER = 37
 };
 
 enum EndGameState: std::int32_t {WIN, LOSE};
