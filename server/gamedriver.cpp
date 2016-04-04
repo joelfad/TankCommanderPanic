@@ -162,6 +162,11 @@ void send_envelopes(std::vector<MessageEnvelope> to_send, PlayerClientList& play
                 // send to correct client
                 players[actor]->send(envelope.get_message());
                 break;
+            case Recipient::TARGET :
+
+                // send to target client
+                players[envelope.get_receiver()]->send(envelope.get_message());
+                break;
         }
     }
 }

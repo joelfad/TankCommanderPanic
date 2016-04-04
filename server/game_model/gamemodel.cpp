@@ -383,9 +383,20 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
                     // check if commander lost
                     if (commander.get_tank_count() <= 0) {
 
-                        // TODO compose game over message
-
-
+                        // compose game over message
+                        auto game_over_message = protocol::EventMessageHandle();
+                        game_over_message.event_type(protocol::EventType::GAME_OVER);
+                        game_over_message.direction(protocol::Direction::NONE);
+                        game_over_message.value(protocol::EndGameState::LOSE);
+                        game_over_message.piece_id(0);
+#ifdef DEBUG
+                        std::cerr << "[Sent] Event Message" << std::endl;
+                        std::cerr << "  event type: " << static_cast<int>(protocol::EventType::GAME_OVER) << std::endl;
+                        std::cerr << "  direction:  " << static_cast<int>(protocol::Direction::NONE) << std::endl;
+                        std::cerr << "  value:      " << static_cast<int>(protocol::EndGameState::LOSE) << std::endl;
+                        std::cerr << "  piece id:   0" << std::endl << std::endl;
+#endif
+                        to_send.push_back(MessageEnvelope(Recipient::TARGET, commander.get_id(), game_over_message.to_msg()));
                     }
                 }
 
