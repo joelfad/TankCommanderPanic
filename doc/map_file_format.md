@@ -22,9 +22,9 @@ The format of the file type is as follows:
     MAP_ID
     MAP_VERSION
     NUMBER_OF_PLAYERS
-    STARTING_POSITIONS [each player's starting positions on separate lines]
     MAP_WIDTH
     MAP_HEIGHT
+    STARTING_POSITIONS [each player's starting positions on separate lines]
     [blank line]
     MAP_DATA
 
@@ -36,9 +36,9 @@ The format of the file type is as follows:
 | MAP_ID             | integer     | `1`           |
 | MAP_VERSION        | integer     | `1`           |
 | NUMBER_OF_PLAYERS  | integer     | `2`           |
-| STARTING_POSITIONS | *see below* | `1,4;1,5;1,6` |
 | MAP_WIDTH          | integer     | `30`          |
 | MAP_HEIGHT         | integer     | `20`          |
+| STARTING_POSITIONS | *see below* | `1,4;1,5;1,6` |
 
 #### Format of `STARTING_POSITIONS`
 
