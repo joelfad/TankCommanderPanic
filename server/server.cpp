@@ -22,7 +22,7 @@ Description:  The games communication server.
 using boost::asio::ip::tcp;
 
 /*
-An asynchronous connection acceptort class
+An asynchronous connection acceptor class
 */
 class ConnectionAcceptor {
     public:

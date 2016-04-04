@@ -50,10 +50,8 @@ adds an item to the spool
 template <typename T>
 template <typename G>
 auto spool<T>::add(G&& msg) -> void {
-    //mutex.lock();
     std::lock_guard<std::mutex> lock{mutex};
     queue.push_back(std::forward<T>(msg));
-    //mutex.unlock();
 }
 
 /*
@@ -62,13 +60,11 @@ if available, pops returns the first item on the spool, otherwise returns empty 
 template <typename T>
 auto spool<T>::get() -> maybe_item {
     auto item = maybe_item{};
-    //mutex.lock();
     std::lock_guard<std::mutex> lock{mutex};
     if (!queue.empty()) {
         item = maybe_item{queue.front()};
         queue.pop_front();
     }
-    //mutex.unlock();
     return item;
 }
 

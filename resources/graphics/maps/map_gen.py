@@ -141,11 +141,6 @@ def generate(input_file_name):
         output_file.write(map_properties["players"])
         output_file.write("\n")
 
-        # write the starting positions
-        for start_pos in start_poses:
-            output_file.write(start_pos)
-            output_file.write("\n")
-
         # write the maps's width
         output_file.write(str(map_properties["width"]))
         output_file.write("\n")
@@ -153,6 +148,11 @@ def generate(input_file_name):
         # write the maps's height
         output_file.write(str(map_properties["height"]))
         output_file.write("\n")
+
+        # write the starting positions
+        for start_pos in start_poses:
+            output_file.write(start_pos)
+            output_file.write("\n")
 
         # write the tile properties
         output_file.write("\n")

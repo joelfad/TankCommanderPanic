@@ -11,23 +11,37 @@
 
 #include "gamepiece.hpp"
 
-class SolidPiece: public GamePiece {
+namespace game_model {
+
+class SolidPiece : public GamePiece {
 public:
 
     SolidPiece();
+    SolidPiece(int max_health);
 
-    void shot(int damage);
+    void set_max_health(int max_health);
+    /* sets max_health and sets health to full */
+
+    void collide(TankPiece &tank) override;
+    /* react to being driven over by a tank */
+
+    int shot(int damage) override;
     /* react to taking damage */
 
-private:
+    virtual protocol::PieceType get_piece_type() const noexcept override = 0;
+
+    auto get_health() const noexcept { return health; }
+
+protected:
 
     int health;
-    /* Amount of damage that can be sustained */
+    /* amount of damage that can be sustained */
 
-    int clearshot;
-    int cleardrive;
+    int max_health;
+    /* maximum value of health */
 
 };
 
+}
 
 #endif //SERVER_SOLIDPIECE_HPP

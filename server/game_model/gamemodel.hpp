@@ -9,27 +9,58 @@
 #define SERVER_GAMEMODEL_HPP
 
 #include <vector>
+#include <map>
+#include <memory>
 
 #include "tile.hpp"
 #include "gamepiece.hpp"
 #include "gameplayer.hpp"
+#include "../protocol/protocoldefs.hpp"
+#include "../protocol/message.hpp"
+#include "../messageenvelope.hpp"
+
+namespace game_model {
 
 class GameModel {
 public:
 
-    GameModel(int map_id, int map_version);
+    GameModel(std::string map_file_path);
+
+    auto get_player_count() const noexcept { return player_count; }
+
+    template<class T>
+    using map_vector = std::vector<std::vector<std::unique_ptr<T>>>;
+
+    std::vector<MessageEnvelope> attempt_to_move(protocol::PieceID piece_id, protocol::Direction direction);
+    std::vector<MessageEnvelope> attempt_to_shoot(protocol::PieceID piece_id, protocol::Direction direction,
+                                                  protocol::PlayerID player_id);
+    /* handle game actions */
+
+    auto get_players() const noexcept -> const std::map<protocol::PlayerID, GamePlayer>& { return this->players; }
 
 private:
 
-    std::vector<std::vector<Tile>> map;
+    int player_count;
+    int map_width;
+    int map_height;
+
+    std::string map_name;
+    protocol::MapID map_id;
+    protocol::MapVersion map_version;
+
+    map_vector<Tile> map;
     /* 2D vector of tiles composes the map of the battlefield */
 
-    std::vector<std::vector<GamePiece>> pieces;
+    map_vector<GamePiece> pieces;
     /* 2D vector of game pieces on the battlefield */
 
-    std::vector<GamePlayer> players;
+    std::map<protocol::PlayerID, GamePlayer> players;
     /* collection of players */
+
+    void game_piece_coordinates(protocol::PieceID id, protocol::CoordinateX& x, protocol::CoordinateY& y);
+    /* find the coordinates of a game piece based on its id */
 
 };
 
+}
 #endif // SERVER_GAMEMODEL_HPP
