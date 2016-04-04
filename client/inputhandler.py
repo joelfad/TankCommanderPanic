@@ -45,7 +45,7 @@ class InputHandler:
         self.game.state = gs.pan
 
     def set_pan_off(self):
-        self.game.state = gs.prev
+        self.game.state = self.game.prev
         self.game.center_view()
 
     # pan the map
