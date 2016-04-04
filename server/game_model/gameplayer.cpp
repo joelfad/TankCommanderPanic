@@ -32,5 +32,7 @@ game_model::GamePlayer& game_model::GamePlayer::operator=(GamePlayer&& rhs) {
 game_model::GamePlayer game_model::GamePlayer::make_game_player() {
     auto result = game_model::GamePlayer();
     result.id = next_id++;
+    result.ammo = 100;
+    result.team_color = static_cast<protocol::TeamColor>(result.id - 1); // TODO make not ugly
     return result;
 }
