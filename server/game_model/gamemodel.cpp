@@ -206,7 +206,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_move(protocol::Pi
             std::cerr << "  event type: " << static_cast<int>(protocol::EventType::MOVE_GAME_PIECE) << std::endl;
             std::cerr << "  direction:  " << static_cast<int>(direction) << std::endl;
             std::cerr << "  value:      1" << std::endl;
-            std::cerr << "  piece id:   " << static_cast<int>(piece_id) << std::endl;
+            std::cerr << "  piece id:   " << static_cast<int>(piece_id) << std::endl << std::endl;
 #endif
             to_send.push_back(MessageEnvelope(Recipient::ALL, move_message.to_msg()));
         }
@@ -298,7 +298,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     std::cerr << "  event type: " << static_cast<int>(protocol::EventType::MOVE_GAME_PIECE) << std::endl;
     std::cerr << "  direction:  " << static_cast<int>(direction) << std::endl;
     std::cerr << "  value:      0" << std::endl;
-    std::cerr << "  piece id:   " << static_cast<int>(piece_id) << std::endl;
+    std::cerr << "  piece id:   " << static_cast<int>(piece_id) << std::endl << std::endl;
 #endif
     to_send.push_back(MessageEnvelope(Recipient::ALL, move_message.to_msg()));
 
@@ -313,7 +313,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
     std::cerr << "  event type: " << static_cast<int>(protocol::EventType::UPDATE_AMMO) << std::endl;
     std::cerr << "  direction:  " << static_cast<int>(protocol::Direction::NONE) << std::endl;
     std::cerr << "  value:      " << player.get_ammo() << std::endl;
-    std::cerr << "  piece id:   0" << std::endl;
+    std::cerr << "  piece id:   0" << std::endl << std::endl;
 #endif
     to_send.push_back(MessageEnvelope(Recipient::ACTOR, ammo_message.to_msg()));
 
@@ -340,7 +340,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
             std::cerr << "  event type: " << static_cast<int>(protocol::EventType::DESTROY_GAME_PIECE) << std::endl;
             std::cerr << "  direction:  " << static_cast<int>(protocol::Direction::NONE) << std::endl;
             std::cerr << "  value:      0" << std::endl;
-            std::cerr << "  piece id:   " << static_cast<int>(target_id) << std::endl;
+            std::cerr << "  piece id:   " << static_cast<int>(target_id) << std::endl << std::endl;
 #endif
             to_send.push_back(MessageEnvelope(Recipient::ALL, destroy_message.to_msg()));
         } else {
@@ -356,7 +356,7 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
             std::cerr << "  event type: " << static_cast<int>(protocol::EventType::UPDATE_HEALTH) << std::endl;
             std::cerr << "  direction:  " << static_cast<int>(protocol::Direction::NONE) << std::endl;
             std::cerr << "  value:      " << new_health << std::endl;
-            std::cerr << "  piece id:   " << static_cast<int>(target_id) << std::endl;
+            std::cerr << "  piece id:   " << static_cast<int>(target_id) << std::endl << std::endl;
 #endif
             to_send.push_back(MessageEnvelope(Recipient::ALL, damage_message.to_msg()));
         }

@@ -107,7 +107,7 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
                         std::cerr << "  event type: " << static_cast<int>(protocol::EventType::GAME_OVER) << std::endl;
                         std::cerr << "  direction:  0" << std::endl;
                         std::cerr << "  value:      " << static_cast<int>(protocol::EndGameState::WIN)<< std::endl;
-                        std::cerr << "  piece id:   0" << std::endl;
+                        std::cerr << "  piece id:   0" << std::endl << std::endl;
 #endif
                         players.begin()->second->send(win_msg.to_msg());
                     }
