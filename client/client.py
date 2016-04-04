@@ -13,6 +13,14 @@
 from game import *
 
 if __name__ == '__main__':
-    game = Game()
+    # check command line arguments
+    if len(sys.argv) != 3:
+        print("Usage: messagehandler.py <host> <port>\n")
+        sys.exit()
+
+    # set server address
+    server_addr = (sys.argv[1], int(sys.argv[2]))
+
+    game = Game(server_addr)
     game.set_state() # TODO: Remove after game gets state from Game State Message
     game.run()

@@ -10,5 +10,7 @@ from enum import Enum
 class GameState(Enum):
     wait    = 0 # waiting for initial game state
     play    = 1 # playing the game (controlling tanks)
-    pan     = 2 # panning the map (player active)
-    obs     = 3 # gameover (player inactive)
+    pan     = 2 # panning the map (active player)
+    obs     = 3 # observe the game (inactive user)
+    lost    = 4 # game over (player lost)
+    won     = 5 # game over (player won)
