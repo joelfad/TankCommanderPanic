@@ -44,7 +44,6 @@ def validate_map_version(filename, id_, version):
     for map_property in properties:
         if map_property.name == 'id':
             map_id = int(float(map_property.value));
-
     # check if map is valid
     if map_version == version and map_id == id_:
         # if a valid map was found before this, raise an exception
@@ -57,7 +56,11 @@ def validate_map_version(filename, id_, version):
         MAP_FOUND = False;
 
 def read_map_file():
-
+    map = tmx.TileMap.load(file_path)
+    map_tiles_x = map.width
+    map_tiles_y = map.height
+    tilewidth = map.tilewidth
+    tileheight = map.tileheight
 
     '''
     # load mock map properties
