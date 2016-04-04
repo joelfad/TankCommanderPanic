@@ -112,7 +112,7 @@ def read_map_file():
     # create list for layers
     map_data = []
 
-    game_piece_layer = None
+    piece_layer = None
     layer_counter = 0
     # iterate through the layers
     for layer in root.findall("layer"):
@@ -123,41 +123,44 @@ def read_map_file():
         for p in properties:
             # get the game_pieces_placeholder from the map file
             if 'game_pieces_placeholder' in p.attrib['name']:
-                skip_layer = str(p.attrib['value'])
+                skip_layer = True
 
-
-        if not skip_layer:
+        if skip_layer is False:
             # add new layer to map_data
             # make list for layer
             layer_list = []
             # get data
             csv_data = layer.find("data").text.strip()
-            print('clean csv ------------------------------------------')
-            print(csv_data)
-            print('end clean csv --------------------------------------')
+            #print('clean csv ------------------------------------------')
+            #print(csv_data)
+            #print('end clean csv --------------------------------------')
             # split data by rows
             for row in csv_data.split('\n'):
                 row = row.strip()
-                print('start row ------------------------------------------')
-                print(row)
-                print('end row --------------------------------------')
+                #print('start row ------------------------------------------')
+                #print(row)
+                #print('end row --------------------------------------')
                 row_list = []
                 for tile in row.split(','):
                     tile = tile.strip()
                     if(tile == ''):
                         continue
-                    print('start tile ------------------------------------------')
-                    print(tile)
-                    print('end tile --------------------------------------')
+                    #print('start tile ------------------------------------------')
+                    #print(tile)
+                    #print('end tile --------------------------------------')
                     tile = int(tile)
                     row_list.append(tile)
                 layer_list.append(row_list)
+            map_data.append(layer_list)
+            layer_counter += 1
         else:
-            game_piece_layer = layer_counter
+            # if this is the piece layer, record what layer index is below it
+            piece_layer = layer_counter - 1
+            skip_layer = False
 
-        map_data.append(layer_list)
-        layer_counter += 1
+        return (texture_data, map_data)
 
+    '''
     for l in map_data:
         for r in l:
             for t in r:
@@ -166,10 +169,6 @@ def read_map_file():
         print('\n')
 
 
-
-
-
-    '''
     # load mock map properties
     self.map_tiles_x = const.width          # TODO: Remove when function is implemented
     self.map_tiles_y = const.height         #
