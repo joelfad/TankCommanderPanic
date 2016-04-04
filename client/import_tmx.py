@@ -2,6 +2,7 @@
 # load map data from file
 import os
 import xml.etree.ElementTree as ET
+import csv
 
 MAPS_DIRECTORY = '';
 MAP_FOUND = False;
@@ -97,6 +98,76 @@ def read_map_file():
                 tilecount,
                 columns,
     )
+
+    # error checking on map values
+    print("map_tiles_x is " + str(map_tiles_x))
+    print("map_tiles_y is " + str(map_tiles_y))
+    print("tilewidth is " + str(tilewidth))
+    print("tileheight is " + str(tileheight))
+    print("columns is " + str(columns))
+    print("tilecount is " + str(tilecount))
+    print("image_source is " + str(image_source))
+    print("map_name is " + str(map_name))
+
+    # create list for layers
+    map_data = []
+
+    game_piece_layer = None
+    layer_counter = 0
+    # iterate through the layers
+    for layer in root.findall("layer"):
+
+        # check if game piece layer
+        skip_layer = False
+        properties = layer.find('properties')
+        for p in properties:
+            # get the game_pieces_placeholder from the map file
+            if 'game_pieces_placeholder' in p.attrib['name']:
+                skip_layer = str(p.attrib['value'])
+
+
+        if not skip_layer:
+            # add new layer to map_data
+            # make list for layer
+            layer_list = []
+            # get data
+            csv_data = layer.find("data").text.strip()
+            print('clean csv ------------------------------------------')
+            print(csv_data)
+            print('end clean csv --------------------------------------')
+            # split data by rows
+            for row in csv_data.split('\n'):
+                row = row.strip()
+                print('start row ------------------------------------------')
+                print(row)
+                print('end row --------------------------------------')
+                row_list = []
+                for tile in row.split(','):
+                    tile = tile.strip()
+                    if(tile == ''):
+                        continue
+                    print('start tile ------------------------------------------')
+                    print(tile)
+                    print('end tile --------------------------------------')
+                    tile = int(tile)
+                    row_list.append(tile)
+                layer_list.append(row_list)
+        else:
+            game_piece_layer = layer_counter
+
+        map_data.append(layer_list)
+        layer_counter += 1
+
+    for l in map_data:
+        for r in l:
+            for t in r:
+                print("{:4d}".format(t), end="")
+            print()
+        print('\n')
+
+
+
+
 
     '''
     # load mock map properties
