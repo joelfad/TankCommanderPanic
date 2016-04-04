@@ -381,8 +381,16 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
                     // get tank's commander
                     auto& commander = tank_ptr->get_commander();
 
+#ifdef DEBUG
+                    std::cerr << "a tank was lost by player " << commander.get_id() << std::endl;
+#endif
+
                     // player looses the tank
                     commander.loose_tank(tank_id);
+#ifdef DEBUG
+                    std::cerr << "player " << commander.get_id() << " has " <<
+                            static_cast<int>(commander.get_tank_count()) << " tanks" << std::endl;
+#endif
 
                     // check if commander lost
                     if (commander.get_tank_count() <= 0) {
@@ -401,6 +409,27 @@ std::vector<MessageEnvelope> game_model::GameModel::attempt_to_shoot(protocol::P
                         std::cerr << "  piece id:   0" << std::endl << std::endl;
 #endif
                         to_send.push_back(MessageEnvelope(Recipient::TARGET, commander.get_id(), game_over_message.to_msg()));
+
+                        // register a player loss
+                        this->players.erase(commander.get_id());
+
+                        // check if actor won
+                        if (this->players.size() <= 1) {
+                            // compose win game message
+                            auto win_game_message = protocol::EventMessageHandle();
+                            win_game_message.event_type(protocol::EventType::GAME_OVER);
+                            win_game_message.direction(protocol::Direction::NONE);
+                            win_game_message.value(protocol::EndGameState::WIN);
+                            win_game_message.piece_id(0);
+#ifdef DEBUG
+                            std::cerr << "[Sent] Event Message" << std::endl;
+                            std::cerr << "  event type: " << static_cast<int>(protocol::EventType::GAME_OVER) << std::endl;
+                            std::cerr << "  direction:  " << static_cast<int>(protocol::Direction::NONE) << std::endl;
+                            std::cerr << "  value:      " << static_cast<int>(protocol::EndGameState::WIN) << std::endl;
+                            std::cerr << "  piece id:   0" << std::endl << std::endl;
+#endif
+                            to_send.push_back(MessageEnvelope(Recipient::ACTOR, win_game_message.to_msg()));
+                        }
                     }
                 }
 
