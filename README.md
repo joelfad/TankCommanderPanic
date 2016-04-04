@@ -6,6 +6,8 @@ Players have command of up to four tanks but can drive only one at a time,
 carefully switching between them to take advantage of each tank's
 characteristics on the ever-changing battlefield.
 
+![Screenshot](doc/img/screenshot.png)
+
 
 ## Dependencies
 
