@@ -39,7 +39,7 @@ class MessageHandler:
         message_type = struct.unpack('B', header)[0]
 
         # receive and process message body
-        print("MESSAGE TYPE: {}".format(message_type)) # TODO: Remove this DEBUG line
+        print("         |--- {} ---|".format(str(message_type).zfill(2))) # TODO: Remove this DEBUG line
         self.message_actions[message_type](self, message_type)
         if self.game.state is not gs.wait:
             self.game.hud.update()
@@ -53,13 +53,13 @@ class MessageHandler:
 
         # print outgoing message
         print('''\
-        -- Sent --
+         |   Sent   |
         <Action Message>
         player_id = {}
         action_type = {}
         direction = {}
         piece_id = {}\
-        '''.format(self.game.player_id, action_type, direction, piece_id))
+        \n'''.format(self.game.player_id, action_type, direction, piece_id))
 
     def check_for_messages(self):
         # poll for incoming messages
@@ -82,14 +82,14 @@ class MessageHandler:
 
         # print results
         print('''\
-        -- Received --
+         | Received |
         <Game State Message>
         map_id = {}
         map_version = {}
         player_id = {}
         owned_tank_count = {}
         tank_piece_ids = {}\
-        '''.format(map_id, map_version, player_id, owned_tank_count, tank_piece_ids))
+        \n'''.format(map_id, map_version, player_id, owned_tank_count, tank_piece_ids))
 
         return (map_id, map_version, player_id, tank_piece_ids)
 
@@ -100,13 +100,13 @@ class MessageHandler:
 
         # print results
         print('''\
-        -- Received --
+         | Received |
         <Create Piece Message>
         value = {}
         piece_id = {}
         piece_coord_x = {}
         piece_coord_y = {}\
-        '''.format(value, piece_id, piece_coord_x, piece_coord_y))
+        \n'''.format(value, piece_id, piece_coord_x, piece_coord_y))
 
         return (piece_id, piece_coord_x, piece_coord_y, value)
 
@@ -117,12 +117,12 @@ class MessageHandler:
 
         # print results
         print('''\
-        -- Received --
+         | Received |
         <Event Message>
         direction = {}
         value = {}
         piece_id = {}\
-        '''.format(direction, value, piece_id))
+        \n'''.format(direction, value, piece_id))
 
         return (direction, value, piece_id)
 
@@ -177,19 +177,21 @@ class MessageHandler:
             piece.move(-units, 0).rotation = 270    # move west
         else:
             print("Invalid move request. Unknown direction: {}".format(direction))
-        self.game.center_view()
+        if self.game.state is not gs.lost:
+            self.game.center_view()
 
     def game_start(self, event_type):
         self.unpack_event() # dump message
         self.game.start()
+        self.game.center_view()
 
     def game_over(self, event_type):
         direction, value, piece_id = self.unpack_event()
         if not value:
             self.game.state = gs.lost
-        elif value == 1: # TODO: Remove magic number
-            self.game.state = gs.won
-        else:
+        elif value == 1 and self.game.state is not gs.lost: # TODO: Remove magic number and
+            self.game.state = gs.won                        #       remove check if game is lost
+        else:                                               #       (server should not send win message)
             print("Invalid game over value: {}".format(value))
 
     # map message type to functions
