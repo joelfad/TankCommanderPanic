@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # load map data from file
 import os
-import tmx
+import xml.etree.ElementTree as ET
 
 MAPS_DIRECTORY = '';
 MAP_FOUND = False;
@@ -30,21 +30,25 @@ def load_map_file(id_, version):
         # read valid map
         read_map_file()
 
-def get_map_property_value(map, property_name):
-    for map_property in map.properties:
-        if map_property.name == property_name:
-            return map_property.value
-    return None;
-
 def validate_map_version(filename, id_, version):
     global MAP_FOUND
     # load the map file
     file_path = MAPS_DIRECTORY + '/' + filename
-    map = tmx.TileMap.load(file_path)
-    # get the map id from the map file
-    map_id = int(float(get_map_property_value(map, 'id')))
-    # get the map_version from the map file
-    map_version = int(float(get_map_property_value(map, 'version')))
+    # parse the .tmx file into an XML tree
+    tree = ET.parse(file_path)
+    # get the tree's root: the map tag
+    root = tree.getroot()
+    # get the properties of the map
+    properties = root.find('properties')
+
+    for p in properties:
+        # get the map id from the map file
+        if "id" in p.attrib['name']:
+            map_id = int(p.attrib['value'])
+        # get the map version from the map file
+        if "version" in p.attrib['name']:
+            map_version = int(p.attrib['value'])
+
     # check if map is valid
     if map_id == id_ and map_version == version:
         # if a valid map was found before this, raise an exception
@@ -57,28 +61,40 @@ def validate_map_version(filename, id_, version):
         MAP_FOUND = False;
 
 def read_map_file():
-    map = tmx.TileMap.load(MAPS_DIRECTORY + '/' + MAP_FILE)
+    # parse the .tmx file into an XML tree
+    tree = ET.parse(MAPS_DIRECTORY + '/' + MAP_FILE)
+    # get the tree's root: the map tag
+    root = tree.getroot()
+
     # get dimensions of map in tiles
-    map_tiles_x = map.width
-    map_tiles_y = map.height
+    map_tiles_x = int(root.attrib['width'])
+    map_tiles_y = int(root.attrib['height'])
     # get dimensions of tiles
-    tilewidth = map.tilewidth
-    tileheight = map.tileheight
-    # TODO get number of columns from map file
-    columns = 21;
+    tilewidth = int(root.attrib['tilewidth'])
+    tileheight = int(root.attrib['tileheight'])
+
+    # get the number of the columns
+    tileset = root.find('tileset')
+    columns = int(tileset.attrib['columns'])
+    tilecount = int(tileset.attrib['tilecount'])
+
     # get image source
-    image = map.tilesets[0].image
+    image = tileset.find('image')
+    image_source = image.attrib['source']
 
     # get name of map
-    map_name = str(get_map_property_value(map, 'name'))
-
-
+    # get the properties of the map
+    properties = root.find('properties')
+    for p in properties:
+        # get the map id from the map file
+        if "name" in p.attrib['name']:
+            map_name = str(p.attrib['value'])
 
     texture_data = (
-                MAP_FILE,
-                tilewidth,
+                image_source,
                 tilewidth,
                 tileheight,
+                tilecount,
                 columns,
     )
 
