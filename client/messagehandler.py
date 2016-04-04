@@ -9,6 +9,8 @@ import sys
 import socket
 import select
 import struct
+from protocol import Cardinality as card
+from gamestate import GameState as gs
 
 class MessageHandler:
 
@@ -37,7 +39,7 @@ class MessageHandler:
         message_type = struct.unpack('B', header)[0]
 
         # receive and process message body
-        message_actions[message_type](message_type)
+        self.message_actions[message_type](self, message_type)
 
     def send_message(self, action_type, direction=0, piece_id=0):
         # pack message into binary
@@ -60,7 +62,7 @@ class MessageHandler:
         print("Checking for new messages...")
 
         # poll for incoming messages
-        for fd, event in self.poll.poll(250): # wait 250ms for events
+        for fd, event in self.poll.poll(50): # wait 50ms for events
             if event & select.POLLIN:
                 self.recv_message()
 
@@ -75,7 +77,7 @@ class MessageHandler:
 
         # receive remainder of message
         message_part = self.sock.recv(owned_tank_count * 4)
-        tank_piece_id = struct.unpack('!'+'i'*owned_tank_count, message_part)
+        tank_piece_id = struct.unpack('<'+'i'*owned_tank_count, message_part)
 
         # print results
         print('''\
@@ -110,6 +112,7 @@ class MessageHandler:
     def unpack_event(self):
         # receive message
         message = self.sock.recv(9)
+        print(message)
         direction, value, piece_id = struct.unpack('<Bii', message)
 
         # print results
@@ -129,46 +132,61 @@ class MessageHandler:
         # TODO: handle message
 
     # create new game piece
+    def receive_piece(self, piece_type):
+        value, piece_id, x, y = self.unpack_create_piece()
+        self.game.battlefield.create_piece(piece_id, x, y, piece_type, value)
+
     def receive_brick_piece(self, piece_type):
-        value, piece_id, piece_coord_x, piece_coord_y = self.unpack_create_piece()
-        # TODO: handle message
+        receive_piece(piece_type)
 
     def receive_health_piece(self, piece_type):
-        value, piece_id, piece_coord_x, piece_coord_y = self.unpack_create_piece()
-        # TODO: handle message
+        receive_piece(piece_type)
 
     def receive_ammo_piece(self, piece_type):
-        value, piece_id, piece_coord_x, piece_coord_y = self.unpack_create_piece()
-        # TODO: handle message
+        receive_piece(piece_type)
 
     def receive_decoration_piece(self, piece_type):
-        value, piece_id, piece_coord_x, piece_coord_y = self.unpack_create_piece()
-        # TODO: handle message
+        receive_piece(piece_type)
 
     def receive_tank_piece(self, piece_type):
-        value, piece_id, piece_coord_x, piece_coord_y = self.unpack_create_piece()
-        # TODO: handle message
+        receive_piece(piece_type)
 
     # handle event
     def update_ammo(self, event_type):
         direction, value, piece_id = self.unpack_event()
-        # TODO: handle message
+        self.game.ammo = value
 
     def update_heath(self, event_type):
         direction, value, piece_id = self.unpack_event()
-        # TODO: handle message
+        self.game.battlefield.get_piece(piece_id).value = value
 
     def destroy_piece(self, event_type):
         direction, value, piece_id = self.unpack_event()
-        # TODO: handle message
+        self.game.battlefield.destroy_piece(piece_id)
 
     def move_piece(self, event_type):
-        direction, value, piece_id = self.unpack_event()
-        # TODO: handle message
+        direction, units, piece_id = self.unpack_event()
+        piece = self.game.battlefield.get_piece(piece_id)
+        if direction == card.north.value:
+            piece.move(0, -units).rotation = 0      # move north
+        elif direction == card.east.value:
+            piece.move(units, 0).rotation = 90      # move east
+        elif direction == card.south.value:
+            piece.move(0, units).rotation = 180     # move south
+        elif direction == card.west.value:
+            piece.move(-units, 0).rotation = 270    # move west
+        else:
+            print("Invalid move request. Unknown direction: {}".format(direction))
+        self.game.center_view()
 
     def game_over(self, event_type):
         direction, value, piece_id = self.unpack_event()
-        # TODO: handle message
+        if not value:
+            self.game.state = gs.lost
+        elif value == 1: # TODO: Remove magic number
+            self.game.state = gs.won
+        else:
+            print("Invalid game over value: {}".format(value))
 
     # map message type to functions
     message_actions = [None] * 256

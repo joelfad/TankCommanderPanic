@@ -108,9 +108,6 @@ tileheight = 32     # pixels high per tile graphic
 tilecount = 567     # total number of tiles in texture
 columns = 21        # columns in texture
 
-# mock properties
-tank_range = 5
-
 # mock tanks (id, x, y, type, value)
 red_commander       = (1, 1, 1, 16, 50)
 red_interceptor     = (2, 3, 2, 17, 30)

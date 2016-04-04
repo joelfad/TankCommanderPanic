@@ -8,6 +8,7 @@
 import sfml as sf
 from numpy import swapaxes
 from gamepiece import *
+from gamestate import GameState as gs
 import const
 Tile = sf.Sprite
 
@@ -100,13 +101,23 @@ class BattleField:
         return self.pieces[id_]
 
     # create new gamepiece
-    def create_piece(self, id_, x, y, type, value):
-        piece = GamePiece(id_, (x * self.tilewidth, y * self.tileheight), type, value, self.game.texturehandler)
+    def create_piece(self, id_, x, y, type_, value):
+        piece = GamePiece(id_, (x * self.tilewidth, y * self.tileheight), type_, value, self.game.texturehandler)
         self.pieces[id_] = piece
 
     # destroy gamepiece
     def destroy_piece(self, id_):
-        del self.pieces[id_]
+        piece = self.pieces[id_]
+        # check for destroyed tank
+        if piece in self.game.tanks:                # piece is player's tank
+            self.game.tanks.remove(piece)
+            if self.game.tanks:                     # piece is not last tank
+                if piece is self.game.active_tank:  # piece is active tank
+                    self.game.active_tank = self.game.tanks[0]
+            else:                                   # piece is last tank
+                self.game.state = gs.lose
+        # destroy
+        del piece
 
     # draw the battlefield
     def draw(self):

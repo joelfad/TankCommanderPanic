@@ -99,50 +99,50 @@ class InputHandler:
                 self.game.center_view()
 
     # move active tank
-    def move_north(self, units):
-        if self.game.active_tank.coord().y != 0:
-            self.game.active_tank.move(0, -units).rotation = 0
-            self.game.center_view()
-
-    def move_east(self, units):
-        if self.game.active_tank.coord().x != self.game.battlefield.map_tiles_x - 1:
-            self.game.active_tank.move(units, 0).rotation = 90
-            self.game.center_view()
-
-    def move_south(self, units):
-        if self.game.active_tank.coord().y != self.game.battlefield.map_tiles_y - 1:
-            self.game.active_tank.move(0, units).rotation = 180
-            self.game.center_view()
-
-    def move_west(self, units):
-        if self.game.active_tank.coord().x != 0:
-            self.game.active_tank.move(-units, 0).rotation = 270
-            self.game.center_view()
+    # def move_north(self, units):
+    #     if self.game.active_tank.coord().y != 0:
+    #         self.game.active_tank.move(0, -units).rotation = 0
+    #         self.game.center_view()
+    #
+    # def move_east(self, units):
+    #     if self.game.active_tank.coord().x != self.game.battlefield.map_tiles_x - 1:
+    #         self.game.active_tank.move(units, 0).rotation = 90
+    #         self.game.center_view()
+    #
+    # def move_south(self, units):
+    #     if self.game.active_tank.coord().y != self.game.battlefield.map_tiles_y - 1:
+    #         self.game.active_tank.move(0, units).rotation = 180
+    #         self.game.center_view()
+    #
+    # def move_west(self, units):
+    #     if self.game.active_tank.coord().x != 0:
+    #         self.game.active_tank.move(-units, 0).rotation = 270
+    #         self.game.center_view()
 
     # move requests
     def request_move_north(self):
         self.mh.send_message(action.attempt_move.value,
                              card.north.value,
                              self.game.active_tank.id)
-        self.move_north(1)
+        # self.move_north(1)
 
     def request_move_east(self):
         self.mh.send_message(action.attempt_move.value,
                              card.east.value,
                              self.game.active_tank.id)
-        self.move_east(1)
+        # self.move_east(1)
 
     def request_move_south(self):
         self.mh.send_message(action.attempt_move.value,
                              card.south.value,
                              self.game.active_tank.id)
-        self.move_south(1)
+        # self.move_south(1)
 
     def request_move_west(self):
         self.mh.send_message(action.attempt_move.value,
                              card.west.value,
                              self.game.active_tank.id)
-        self.move_west(1)
+        # self.move_west(1)
 
     # shoot requests
     def request_shoot_north(self):
