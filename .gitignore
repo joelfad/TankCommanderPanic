@@ -79,3 +79,7 @@ build-*-*-*/
 
 # Jetbrains
 .idea/
+
+# Symlinks
+Client
+Server

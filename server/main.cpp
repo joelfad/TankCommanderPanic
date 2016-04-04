@@ -28,7 +28,8 @@ int main(int argc, char *argv[]) {
 
     // validate the argument count
     if (argc != 2) {
-        std::cerr << "Usage: server <MAP>\n";
+        std::cerr << "Usage: " << argv[0] << " <MAP>" << std::endl;
+        std::cerr << "MAP is a path to a .map file" << std::endl;
         return 1;
     }
 
