@@ -64,7 +64,7 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
             auto player_id = action.player();
 
 #ifdef DEBUG
-            std::cerr << "Message Recieved" << std::endl;
+            std::cerr << "[Received] Action Message" << std::endl;
             std::cerr << "  player:    " << action.player() << std::endl;
             std::cerr << "  action:    " << static_cast<int>(action.action()) << std::endl;
             std::cerr << "  direction: " << static_cast<int>(action.direction()) << std::endl;
@@ -102,6 +102,13 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
                         protocol::EventMessageHandle win_msg;
                         win_msg.event_type(protocol::EventType::GAME_OVER);
                         win_msg.value(protocol::EndGameState::WIN);
+#ifdef DEBUG
+                        std::cerr << "[Sent] Event Message" << std::endl;
+                        std::cerr << "  event type: " << static_cast<int>(protocol::EventType::GAME_OVER) << std::endl;
+                        std::cerr << "  direction:  0" << std::endl;
+                        std::cerr << "  value:      " << static_cast<int>(protocol::EndGameState::WIN)<< std::endl;
+                        std::cerr << "  piece id:   0" << std::endl << std::endl;
+#endif
                         players.begin()->second->send(win_msg.to_msg());
                     }
                     else if (players.size() > 1) {
@@ -121,13 +128,17 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
 
 void send_envelopes(std::vector<MessageEnvelope> to_send, PlayerClientList& players, protocol::PlayerID actor) {
 
-    for (auto envelope: to_send) {
+    for (auto& envelope: to_send) {
         switch (envelope.get_recipient()) {
             case Recipient::ALL :
+
+                // send to all clients
                 players.send_all(envelope.get_message());
                 break;
             case Recipient::ACTOR :
-                // TODO send to correct client
+
+                // send to correct client
+                players[actor]->send(envelope.get_message());
                 break;
         }
     }
