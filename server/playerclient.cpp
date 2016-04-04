@@ -77,6 +77,12 @@ void PlayerClient::send(protocol::Message msg) {
     std::lock_guard<std::mutex> lock{spool_lock};
     //*** begin cirical zone ***
     bool not_writing = write_msg_spool.empty(); // check if there are current asynchronous write
+    std::cerr << "[SENDING] ";
+    for (int i = 0; i < msg.size(); i++) {
+        auto b = msg.byte(i);
+        std::cerr << std::hex << static_cast<int>(b) << " ";
+    }
+    std::cerr << std::endl << std::endl;
     write_msg_spool.push_back(msg);             // add new message buffer
     if (not_writing) {                          // if there are no asynchronous writes, do a new write
         write();
