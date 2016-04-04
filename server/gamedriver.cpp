@@ -12,6 +12,7 @@ Description:  The main game logic driver.
 #include "protocol/actionmessagehandle.hpp"
 #include "game_model/gamemodel.hpp"
 #include "protocol/eventmessagehandle.hpp"
+#include "protocol/gamestatemessage.hpp"
 
 // c++ standard libraries
 #include <chrono>
@@ -51,6 +52,27 @@ void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol:
 
     // TODO send all players the initial game state and game start messages
     //players.send_all();
+    for (auto& player_pair : model.get_players()) {
+        auto& player = player_pair.second;
+
+        auto game_state_message = protocol::GameStateMessageHandle();
+        game_state_message.map_id(model.get_map_id());
+        game_state_message.map_version(model.get_map_version());
+        game_state_message.player_id(player.get_id());
+        game_state_message.tank_piece_ids(player.get_tank_ids());
+        // TODO add debug printout
+#ifdef DEBUG
+        std::cerr << "[Sent] Game State Message" << std::endl;
+        std::cerr << "  message type:     0" << std::endl;
+        std::cerr << "  map id:           " << model.get_map_id() << std::endl;
+        std::cerr << "  map version:      " << model.get_map_version() << std::endl;
+        std::cerr << "  player id:        " << player.get_id() << std::endl;
+        std::cerr << "  owned tank count: " << player.get_tank_ids().size() << std::endl;
+        for (auto& tank : player.get_tank_ids())
+            std::cerr << "  tank piece id:    " << static_cast<int>(tank) << std::endl;
+#endif
+        players[player.get_id()]->send(game_state_message.to_msg());
+    }
 
     // run the game
     while (true) {

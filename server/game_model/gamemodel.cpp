@@ -105,6 +105,9 @@ game_model::GameModel::GameModel(std::string map_file_path) {
                                                                        protocol::TankModel::INTERCEPTOR);
             this->pieces.at(t3y).at(t3x) = std::make_unique<TankPiece>(player,
                                                                        protocol::TankModel::ELIMINATOR);
+            player.add_tank_id(this->pieces.at(t1y).at(t1x)->get_id());
+            player.add_tank_id(this->pieces.at(t2y).at(t2x)->get_id());
+            player.add_tank_id(this->pieces.at(t3y).at(t3x)->get_id());
 #ifdef DEBUG
             std::cerr << "tank " << this->pieces.at(t1y).at(t1x)->get_id() << std::endl;
             std::cerr << "tank " << this->pieces.at(t2y).at(t2x)->get_id() << std::endl;

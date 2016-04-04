@@ -37,6 +37,8 @@ public:
     /* handle game actions */
 
     auto get_players() const noexcept -> const std::map<protocol::PlayerID, GamePlayer>& { return this->players; }
+    auto get_map_version() const noexcept -> protocol::MapVersion { return map_version; }
+    auto get_map_id() const noexcept -> protocol::MapID { return map_id; }
 
 private:
 

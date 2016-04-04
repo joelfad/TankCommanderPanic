@@ -18,12 +18,11 @@ namespace protocol {
 class GameStateMessageHandle : public ServerMessageHandle {
     public:
         GameStateMessageHandle();
-        GameStateMessageHandle(ServerMsgType _message_type, MapID _map_id, MapVersion _map_version, PlayerID _player_id, const std::vector<PieceID>& _tank_ids);
+        GameStateMessageHandle(MapID _map_id, MapVersion _map_version, PlayerID _player_id, const std::vector<PieceID>& _tank_ids);
 
         Message to_msg() const override;
 
         // setters
-        void messsage_type(ServerMsgType msg_type) noexcept;
         void map_id(MapID id) noexcept;
         void map_version(MapVersion v) noexcept;
         void player_id(PlayerID id) noexcept;
@@ -31,7 +30,6 @@ class GameStateMessageHandle : public ServerMessageHandle {
         void append_tank(PieceID pid);
 
         // getters
-        auto messsage_type() const noexcept -> ServerMsgType;
         auto map_id() const noexcept -> MapID;
         auto map_version() const noexcept -> MapVersion;
         auto player_id() const noexcept -> PlayerID;
