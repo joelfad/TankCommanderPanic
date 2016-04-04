@@ -139,19 +139,19 @@ class MessageHandler:
         self.game.battlefield.create_piece(piece_type, *piece_data)
 
     def receive_brick_piece(self, piece_type):
-        receive_piece(piece_type)
+        self.receive_piece(piece_type)
 
     def receive_health_piece(self, piece_type):
-        receive_piece(piece_type)
+        self.receive_piece(piece_type)
 
     def receive_ammo_piece(self, piece_type):
-        receive_piece(piece_type)
+        self.receive_piece(piece_type)
 
     def receive_decoration_piece(self, piece_type):
-        receive_piece(piece_type)
+        self.receive_piece(piece_type)
 
     def receive_tank_piece(self, piece_type):
-        receive_piece(piece_type)
+        self.receive_piece(piece_type)
 
     # handle event
     def update_ammo(self, event_type):
