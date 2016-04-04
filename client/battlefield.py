@@ -105,7 +105,7 @@ class BattleField:
                 if piece is self.game.active_tank:  # piece is active tank
                     self.game.active_tank = self.game.tanks[0]
             else:                                   # piece is last tank
-                self.game.state = gs.lose
+                self.game.state = gs.lost
         # destroy
         del self.pieces[id_]
 

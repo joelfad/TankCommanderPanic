@@ -45,17 +45,24 @@ class HUD:
         self.update_range()
 
     def update_stats(self): # TODO: Remove magic numbers in this function
+        self.stats = []
+
         # translucent overlay
-        self.stats_box = sf.RectangleShape((480, 16))
-        self.stats_box.position = self.game.window.map_pixel_to_coords((0, 672))
+        if self.game.state is not gs.lost:
+            stats_box = sf.RectangleShape((480, 16))
+            stats_box.position = self.game.window.map_pixel_to_coords((0, 672))
+        else:
+            # dim display if lost
+            stats_box = sf.RectangleShape((480, 352))
+            stats_box.position = self.game.window.map_pixel_to_coords((0, 0))
 
         # set overlay white if player has won, black otherwise
-        if self.game.state is gs.won:
-            self.stats_box.fill_color = sf.Color(255, 255, 255, 160)
+        if self.game.state is gs.won or self.game.prev is gs.won:
+            stats_box.fill_color = sf.Color(255, 255, 255, 160)
         else:
-            self.stats_box.fill_color = sf.Color(0, 0, 0, 160)
+            stats_box.fill_color = sf.Color(0, 0, 0, 160)
 
-        self.stats = []
+        self.stats.append(stats_box)
 
         # display tank health if still playing
         if self.game.state is gs.play or (self.game.state is gs.pan and self.game.prev is gs.play):
@@ -171,7 +178,6 @@ class HUD:
         self.draw_range()
 
     def draw_stats(self):
-        self.game.window.draw(self.stats_box)
         for s in self.stats:
             self.game.window.draw(s)
 
