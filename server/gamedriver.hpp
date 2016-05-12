@@ -10,13 +10,9 @@ Description:  The main game logic driver.
 
 // project headers
 #include "playerclient.hpp"
-#include "messagespool.hpp"
+#include "protocol/message.hpp"
 
-// c++ standard libraries
-#include <vector>
-#include <memory>
-
-void game_driver(std::vector<std::shared_ptr<PlayerClient>>& clients, MessageSpool& msg_spool);
+void game_driver(PlayerSpool& client_spool, std::string map_file_path, protocol::MessageSpool& msg_spool);
 /*  runs the game */
 
 #endif // GAMEDRIVER_HPP

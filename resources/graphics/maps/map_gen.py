@@ -65,16 +65,16 @@ def generate(input_file_name):
         # get layer properties
         properties = layer.find("properties")
 
-        # skip the layer if it has no game properties
-        if properties is None:
-            continue
-
         # create a dictionary for the layer properties
         layer_properties = {}
 
         # iterate over the properties
         for ppty in properties:
             layer_properties[ppty.attrib["name"]] = ppty.attrib["value"]
+
+        # skip the layer if it has no game properties
+        if "cleardrive" not in layer_properties.keys():
+            continue
 
         # parse the properties
         cleardrive = (layer_properties["cleardrive"].find("true") >= 0)
@@ -141,11 +141,6 @@ def generate(input_file_name):
         output_file.write(map_properties["players"])
         output_file.write("\n")
 
-        # write the starting positions
-        for start_pos in start_poses:
-            output_file.write(start_pos)
-            output_file.write("\n")
-
         # write the maps's width
         output_file.write(str(map_properties["width"]))
         output_file.write("\n")
@@ -153,6 +148,11 @@ def generate(input_file_name):
         # write the maps's height
         output_file.write(str(map_properties["height"]))
         output_file.write("\n")
+
+        # write the starting positions
+        for start_pos in start_poses:
+            output_file.write(start_pos)
+            output_file.write("\n")
 
         # write the tile properties
         output_file.write("\n")
@@ -172,10 +172,10 @@ def combine(existing, new):
 
 """"Represent a tile's properties as a character for output."""
 def tilechar(tile):
-    result = 48 # offset
-    if tile[0]:
+    result = 48     # offset to get ascii '0' - '3'
+    if tile[0]:     # cleardrive
         result += 2
-    if tile[1]:
+    if tile[1]:     # clearshot
         result += 1
     return str(chr(result))
 
@@ -193,6 +193,7 @@ def print_tiles(tile_properties):
                 print("@", end="")
         print()
 
+# main function
 if __name__ == "__main__":
 
     # create a list of files to generate
@@ -228,7 +229,7 @@ if __name__ == "__main__":
 
     else:
         # print usage message
-        print("Usage: map_gen.py <tmx-map-file-path> [--debug]")
+        print("Usage: map_gen.py <tmx-map-file-path>... [--debug]")
 
     # iterate over queued input files
     for input_file_name in gen_queue:

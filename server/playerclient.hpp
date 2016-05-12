@@ -13,12 +13,13 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 
 // project headers
-#include "messagespool.hpp"
-#include "char_array.hpp"
+#include "protocol/message.hpp"
 
 // c++ standard libraries
 #include <deque>
 #include <mutex>
+#include <memory>
+#include <vector>
 
 // boost libraries
 #include <boost/asio.hpp>
@@ -27,10 +28,18 @@ Notes:  Code was inspired from some examples provided with the Boost.Asio librar
 
 class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
     public:
-        PlayerClient(boost::asio::ip::tcp::socket _socket, MessageSpool& _receive_msg_spool);
+        using Ptr = std::shared_ptr<PlayerClient>;
 
-        void send(std::string msg);
+        PlayerClient(boost::asio::ip::tcp::socket _socket, protocol::MessageSpool& _receive_msg_spool);
+
+        void send(protocol::Message msg);
         /*  adds message to buffer and performs asynchronous write */
+
+        void start();
+        /*  starts the server */
+
+        void disconnect();
+        /*  closes the connection to the client; all async operations are cancelled */
 
     private:
 
@@ -40,13 +49,15 @@ class PlayerClient : public std::enable_shared_from_this<PlayerClient> {
         void write();
         /*  performs asynchronous write on the socket */
 
-        boost::asio::ip::tcp::socket socket;        // the communication socket
+        boost::asio::ip::tcp::socket socket;            // the communication socket
 
-        MessageSpool& receive_msg_spool;            // spool for the messages recieved
-        char_array<8> read_buffer;                  // buffer in which to read messages
+        protocol::MessageSpool& receive_msg_spool;      // spool for the messages recieved
+        std::array<unsigned char, 8> read_buffer;       // buffer in which to read messages
 
-        std::deque<std::string> write_msg_spool;    // spool of messages (data buffers) to be written/sent
-        std::mutex spool_lock;                      // a mutex to prevent race condition with data buffers
+        std::deque<protocol::Message> write_msg_spool;  // spool of messages (data buffers) to be written/sent
+        std::mutex spool_lock;                          // a mutex to prevent race condition with data buffers
 };
+
+using PlayerSpool = spool<PlayerClient::Ptr>;
 
 #endif // PLAYERCLIENT_HPP
