@@ -33,11 +33,11 @@ The server and client can be compiled with a provided script:
 ## Running
 To run the Server:
 
-`./Server <port>`
+`./Server <map>`
 
 To run the Client:
 
-`./Client <host ip> <port>`
+`./Client <host ip>`
 
 
 ## Troubleshooting
