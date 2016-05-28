@@ -7,6 +7,8 @@ Description:  A handle for messages sent by clients.
 
 #include "createpiecemessagehandle.hpp"
 
+#include "serialize.hpp"
+
 
 
 //~constructors~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

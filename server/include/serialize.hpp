@@ -40,6 +40,16 @@ template <typename T> auto get_byte(T val, std::size_t n) noexcept -> byte {
     return static_cast<byte>((val >> (bit_count - n*8)) & 0xff);
 }
 
+/*
+Given a variable, sets the n'th byte of that variable (counted from 0) to the specified value.
+*/
+template <typename T> void set_byte(T& var, std::size_t n, byte val) {
+    constexpr auto type_size = sizeof(T);
+    constexpr auto bit_count = (type_size - 1) * 8;
+    var &= ~(static_cast<T>(0xff) << (bit_count - n*8));
+    var |= static_cast<T>(val) << (bit_count - n*8);
+}
+
 
 
 //~serialization functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,11 +61,11 @@ entered into the data structure, the iterator is moved forward. The number of av
 in the data structure, starting with and including the one being pointed to by the iterator, must
 be equal to or greater than the number of bytes used to store the value being serialized.
 */
-template <typename OutputIterator, typename T> auto serialize_into(OutputIterator data, T val) {
+template <typename OutputIterator, typename T> auto serialize_into(OutputIterator first, T val) {
     constexpr auto size = sizeof(T);
-    for (std::size_t i = 0; i < size; ++i, ++data)
-        *data = get_byte(val, i);
-    return data;
+    for (std::size_t i = 0; i < size; ++i, ++first)
+        *first = get_byte(val, i);
+    return first;
 }
 
 /*
@@ -66,10 +76,10 @@ available entries in the data structure, starting with and including the one bei
 the iterator, must be equal to or greater than the number of bytes used to store each value being
 serialized.
 */
-template <typename OutputIterator, typename T, typename... Ts> auto serialize_into(OutputIterator data, T val, Ts... rest) {
-    auto new_data = serialize_into(data, val);
-    new_data = serialize_into(new_data, rest...);
-    return new_data;
+template <typename OutputIterator, typename T, typename... Ts> auto serialize_into(OutputIterator first, T val, Ts... rest) {
+    auto next = serialize_into(first, val);
+    next = serialize_into(next, rest...);
+    return next;
 }
 
 /*
@@ -80,6 +90,29 @@ template <typename... Ts> auto serialize(Ts... vars) {
     auto data = byte_array<total_size<Ts...>::size>{};
     serialize_into(data.begin(), vars...);
     return data;
+}
+
+/*
+Takes a list of bytes as serialized data and puts the value into the variable passed. Returns
+an iterator pointing to one past the last byte processed. The data structure pointed to by the
+iterator is assumed to store at least the same number of bytes as the size of the variable.
+*/
+template <typename InputIterator, typename T> auto deserialize_into(InputIterator first, T& var) {
+    constexpr auto size = sizeof(T);
+    for (std::size_t i = 0; i < size; ++i, ++first)
+        set_byte(var, i, *first);
+    return first;
+}
+
+/*
+Takes a list of bytes as serialized data and puts the values into the variables listed. Returns
+an iterator pointing to one past the last byte processed. The data structure pointed to by the
+iterator is assumed to store at least the same number of bytes as the size of all variables.
+*/
+template <typename InputIterator, typename T, typename... Ts> auto deserialize_into(InputIterator first, T& var, Ts&... rest) {
+    auto next = deserialize_into(first, var);
+    next = deserialize_into(next, rest...);
+    return next;
 }
 
 } // namespace serialize

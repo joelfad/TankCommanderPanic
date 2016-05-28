@@ -10,7 +10,6 @@ Description:  A handle for messages sent by the server to clients.
 
 #include "protocoldefs.hpp"
 #include "servermessagehandle.hpp"
-#include "serialize.hpp"
 
 #include <vector>
 

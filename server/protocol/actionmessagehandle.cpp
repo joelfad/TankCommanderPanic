@@ -7,6 +7,7 @@ Description:  A handle for messages sent by clients.
 
 #include "actionmessagehandle.hpp"
 #include "protocolerror.hpp"
+#include "serialize.hpp"
 
 #include <string>
 
@@ -49,13 +50,7 @@ auto protocol::ActionMessageHandle::piece() const noexcept -> PieceID {
 //~static functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 auto protocol::ActionMessageHandle::make_from_msg(const Message& msg) -> ActionMessageHandle {
-    if (msg.size() < ActionMessageHandle::size)
-        throw MessageLengthError("message is too short for `ActionMessage` type", msg);
-    else if (msg.size() > ActionMessageHandle::size)
-        throw MessageLengthError("message is too long for `ActionMessage` type", msg);
-
     auto am = ActionMessageHandle{};
-    for (int i = 0; i < msg.size(); i++)
-        am.msg_data[i] = msg.byte(i);
+    serial::deserialize_into(msg.data(), am.msg_fields.player, am.msg_fields.action, am.msg_fields.direction, am.msg_fields.piece);
     return am;
 }

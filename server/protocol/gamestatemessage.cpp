@@ -7,6 +7,8 @@ Description:  A handle for messages sent by the server to clients.
 
 #include "gamestatemessage.hpp"
 
+#include "serialize.hpp"
+
 
 
 //~constructors~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

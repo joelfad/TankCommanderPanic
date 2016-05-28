@@ -8,6 +8,8 @@ Description:  Definitions of simple types for the game protocol.
 #ifndef PROTOCOL_FIELD_TYPES_HPP
 #define PROTOCOL_FIELD_TYPES_HPP
 
+#include "serialize.hpp"
+
 #include <cstdint>
 
 namespace protocol {
@@ -55,6 +57,16 @@ using PlayerID = std::uint16_t;
 
 enum class Action: char {NONE, MOVE, SHOOT, QUIT};
 enum class Direction: char {NONE, NORTH, EAST, SOUTH, WEST};
+
+
+
+//~functions needed to make types serializable~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+unsigned char get_byte(protocol::Action a, std::size_t n);
+unsigned char get_byte(protocol::Direction d, std::size_t n);
+void set_byte(protocol::Action& var, std::size_t n, serial::byte val);
+void set_byte(protocol::Direction& var, std::size_t n, serial::byte val);
+
 
 
 //~message structures~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

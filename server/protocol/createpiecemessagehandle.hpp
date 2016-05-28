@@ -10,7 +10,6 @@ Description:  A handle for messages sent by clients.
 
 #include "servermessagehandle.hpp"
 #include "protocoldefs.hpp"
-#include "serialize.hpp"
 
 namespace protocol {
 
@@ -44,11 +43,6 @@ class CreatePieceMessageHandle : public ServerMessageHandle {
             CreatePieceMessage msg_fields;
             unsigned char msg_data[sizeof(CreatePieceMessage)];
         };
-
-        //~helper functions needed to make types serializable~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-        unsigned char get_byte(protocol::Action a, std::size_t n) noexcept { return serial::get_byte(static_cast<char>(a), n); }
-        unsigned char get_byte(protocol::Direction d, std::size_t n) noexcept { return serial::get_byte(static_cast<char>(d), n); }
 };
 
 }
