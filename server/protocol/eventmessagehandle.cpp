@@ -7,6 +7,8 @@ Description:  A handle for messages sent by clients.
 
 #include "eventmessagehandle.hpp"
 
+
+
 //~constructors~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 protocol::EventMessageHandle::EventMessageHandle(ServerMsgType msg_type, Direction dir, std::int32_t val, PieceID pid)
@@ -25,6 +27,13 @@ protocol::EventMessageHandle::EventMessageHandle()
 
 protocol::Message protocol::EventMessageHandle::to_msg() const {
     return Message{msg_data, sizeof(msg_data)};
+    /*auto buff = serial::serialize(msg_fields.message_type,
+                                  msg_fields.direction,
+                                  msg_fields.value,
+                                  msg_fields.piece_id
+                                  );
+
+    return Message{buff.data(), buff.size()};*/
 }
 
 

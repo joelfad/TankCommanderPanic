@@ -26,7 +26,14 @@ protocol::CreatePieceMessageHandle::CreatePieceMessageHandle()
 //~overriden functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 protocol::Message protocol::CreatePieceMessageHandle::to_msg() const {
-    return Message{msg_data, sizeof(msg_data)};
+    auto buff = serial::serialize(msg_fields.message_type,
+                                  msg_fields.value,
+                                  msg_fields.piece_id,
+                                  msg_fields.piece_coord_x,
+                                  msg_fields.piece_coord_y
+                                  );
+
+    return Message{buff.data(), buff.size()};
 }
 
 

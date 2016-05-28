@@ -32,19 +32,31 @@ protocol::Message protocol::GameStateMessageHandle::to_msg() const {
     ### the tank ID's have to be inserted into the message manually.                           ##
     ###########################################################################################*/
 
+    // put message bytes into returned message
+    /*for (auto&& b : msg_data)
+        msg.push_back(b);*/
+    auto buff = serial::serialize(msg_fields.message_type,
+                                  msg_fields.map_id,
+                                  msg_fields.map_version,
+                                  msg_fields.player_id,
+                                  msg_fields.owned_tank_count
+                                  );
+
     auto msg = Message::byte_vector{};   // temporarily stores the message data
 
     // reserve enough bytes for the message and
-    msg.reserve(sizeof(GameStateMessage) + tank_ids.size());
+    msg.reserve(buff.size() + tank_ids.size());
 
-    // put message bytes into returned message
-    for (auto&& b : msg_data)
+    // put already serialized values in the message
+    for (auto&& b : buff) {
         msg.push_back(b);
+    }
 
     // put tank IDs into returned message
     for (auto&& id : tank_ids) {
-        for (int i = sizeof(id) - 1; i >= 0; i-- ) {
-            msg.push_back(static_cast<unsigned char>(id >> 8*i));
+        auto serialized_tank = serial::serialize(id);
+        for (auto&& b : serialized_tank) {
+            msg.push_back(b);
         }
     }
 
