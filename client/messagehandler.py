@@ -3,7 +3,7 @@
 # File: messagehandler.py
 # Author: Joel McFadden
 # Created: March 20, 2016
-# Modified: April 4, 2016
+# Modified: May 28, 2016
 
 import sys
 import socket
@@ -46,7 +46,7 @@ class MessageHandler:
 
     def send_message(self, action_type, direction=0, piece_id=0):
         # pack message into binary
-        message = struct.pack('<HBBi', self.game.player_id, action_type, direction, piece_id)
+        message = struct.pack('>HBBi', self.game.player_id, action_type, direction, piece_id)
 
         # send message
         self.sock.send(message)
@@ -73,12 +73,12 @@ class MessageHandler:
 
     def unpack_game_state(self):
         # receive first three bytes of message
-        message_part = self.sock.recv(7) # TODO: This should be 5
-        map_id, map_version, g1, player_id, owned_tank_count, g2 = struct.unpack('<BBBHBB', message_part) # TODO: Remove garbage (g1, g2)
+        message_part = self.sock.recv(5)
+        map_id, map_version, player_id, owned_tank_count = struct.unpack('>BBHB', message_part)
 
         # receive remainder of message
         message_part = self.sock.recv(owned_tank_count * 4)
-        tank_piece_ids = struct.unpack('!'+'i'*owned_tank_count, message_part)
+        tank_piece_ids = struct.unpack('>'+'i'*owned_tank_count, message_part)
 
         # print results
         print('''\
@@ -95,8 +95,8 @@ class MessageHandler:
 
     def unpack_create_piece(self):
         # receive message
-        message = self.sock.recv(15) # TODO: This should be 10
-        g1, g2, value, piece_id, piece_coord_x, piece_coord_y, g3 = struct.unpack('<BHiiBBH', message) # TODO: Remove garbage (g1, g2, g3)
+        message = self.sock.recv(10)
+        value, piece_id, piece_coord_x, piece_coord_y = struct.unpack('>iiBB', message)
 
         # print results
         print('''\
@@ -112,8 +112,8 @@ class MessageHandler:
 
     def unpack_event(self):
         # receive message
-        message = self.sock.recv(11) # TODO: This should be 9
-        direction, g1, value, piece_id = struct.unpack('<Bhii', message) # TODO: Remove garbage (g1)
+        message = self.sock.recv(9)
+        direction, value, piece_id = struct.unpack('>Bii', message)
 
         # print results
         print('''\
